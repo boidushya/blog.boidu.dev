@@ -1,5 +1,6 @@
 // biome-ignore lint/correctness/noUnusedVariables: <explanation>
-function copyText(text, el) {
+function copyText(el) {
+  const text = el.getAttribute("data-code");
   navigator.clipboard.writeText(text).then(() => {
     el.classList.add("copied");
     setTimeout(() => {

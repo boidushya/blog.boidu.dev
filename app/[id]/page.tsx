@@ -38,16 +38,23 @@ export default async function Post({
     <article className="pt-[104px] blog">
       <div className="grid place-items-center">
         <h1 className="!mb-2 !mt-6 text-center">{title}</h1>
-        <h6 className="flex items-center justify-center w-full py-3 border-y blog__meta border-accent-50/10">
+        <h6 className="flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
           <Image
             src={logo}
             placeholder="blur"
             alt="andi"
-            className="w-8 h-8 mr-4 border rounded-full border-accent-400"
+            className="w-8 h-8 mr-4 border rounded-full border-accent-600"
           />
-          <div>
-            <span className="mr-1">Published by Boidushya Bhattacharyay </span>•
-            <span className="mx-1">{readingTime}</span>•<span className="ml-1">{date}</span>
+          <div className="text-accent-300">
+            <span className="mr-1">
+              Published by <span className="text-accent-50">Boidushya Bhattacharyay</span>
+            </span>
+            <span className="mx-1">
+              <span className="whitespace-pre opacity-50"> • </span> {readingTime}
+            </span>
+            <span className="ml-1">
+              <span className="whitespace-pre opacity-50"> • </span> {date}
+            </span>
           </div>
         </h6>
       </div>

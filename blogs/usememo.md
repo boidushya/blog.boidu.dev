@@ -1,13 +1,11 @@
 ---
 title: "Understanding useMemo in React"
 date: "2020-01-06"
-banner: "https://source.unsplash.com/1600x900"
+banner: "https://images.unsplash.com/photo-1591267990439-bc68529677c3?q=80&w=1600&h=900&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 labels: ['Tutorial', 'React', 'hooks']
 description: >
   React provides a powerful hook called useMemo that can be a game-changer when
-  it comes to optimizing performance in your applications. In this blog post,
-  we'll explore what useMemo is, why and when you should use it, and how it can
-  enhance the efficiency of your React components.
+  it comes to optimizing performance in your applications. Wait but where do you use it? Do you even need it?
 ---
 
 

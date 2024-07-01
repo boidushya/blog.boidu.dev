@@ -11,6 +11,7 @@ import rehypeStringify from "rehype-stringify";
 import rehypeShiki from "@/utils/rehype-shiki";
 import { format } from "date-fns";
 import readingTime from "reading-time";
+import { rehypeAdmonitions } from "@/utils/rehype-admonitions";
 
 let p: ReturnType<typeof getParserPre> | undefined;
 
@@ -24,6 +25,7 @@ async function getParserPre() {
     })
     .use(rehypeStringify)
     .use(rehypeSlug)
+    .use(rehypeAdmonitions as any)
     .use(rehypeAutolinkHeadings, {
       content: arg => ({
         type: "element",
