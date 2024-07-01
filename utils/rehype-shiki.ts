@@ -95,7 +95,8 @@ function rehypeShikiFromHighlighter(
         ? classes.find(d => typeof d === "string" && d.startsWith(languagePrefix))
         : undefined;
 
-      let lang = typeof languageClass === "string" ? languageClass.slice(languagePrefix.length) : defaultLanguage;
+      let lang =
+        typeof languageClass === "string" ? languageClass.slice(languagePrefix.length) : (defaultLanguage as string);
 
       if (!lang) return;
 
