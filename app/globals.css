@@ -326,7 +326,7 @@ body {
 	--alert-alpha: 1;
     display: flex;
     margin-bottom: 0 !important;
-	padding: .5rem .75rem;
+	padding: .375rem .75rem;
 	border-radius: 0.25rem 0.25rem 0 0;
     align-items: center;
 	background: hsla(var(--alert-color-stops), 50%,var(--alert-alpha));
