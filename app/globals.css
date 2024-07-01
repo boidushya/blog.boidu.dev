@@ -109,7 +109,7 @@ body {
 }
 
 .blog p {
-	@apply text-accent-50/90 mb-6;
+	@apply text-accent-100 mb-6;
 }
 
 .blog strong {
@@ -117,7 +117,7 @@ body {
 }
 
 .blog a {
-	@apply text-accent-50 underline;
+	@apply text-accent-50 underline underline-offset-4;
 }
 
 .blog a:hover {
