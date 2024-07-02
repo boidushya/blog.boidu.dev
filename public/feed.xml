@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title><![CDATA[Boidu's Blog]]></title>
+        <description><![CDATA[Boidu's Blog]]></description>
+        <link>https://blog.boidu.dev</link>
+        <generator>RSS for Node</generator>
+        <lastBuildDate>Tue, 02 Jul 2024 15:14:59 GMT</lastBuildDate>
+        <atom:link href="https://blog.boidu.dev/feed.xml" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[Understanding useMemo in React]]></title>
+            <description><![CDATA[React provides a powerful hook called useMemo that can be a game-changer when it comes to optimizing performance in your applications. Wait but where do you use it? Do you even need it?
+]]></description>
+            <link>/posts/usememo</link>
+            <guid isPermaLink="true">/posts/usememo</guid>
+            <category><![CDATA[Tutorial]]></category>
+            <category><![CDATA[React]]></category>
+            <category><![CDATA[hooks]]></category>
+            <dc:creator><![CDATA[Boidushya Bhattacharyay]]></dc:creator>
+            <pubDate>Mon, 06 Jan 2020 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Shiki and why its excellent]]></title>
+            <description><![CDATA[Shiki is a fantastic library that provides a fast and feature-rich syntax highlighting experience for code snippets in your applications. But why Shiki?
+]]></description>
+            <link>/posts/shiki-and-why-its-excellent</link>
+            <guid isPermaLink="true">/posts/shiki-and-why-its-excellent</guid>
+            <category><![CDATA[Tutorial]]></category>
+            <category><![CDATA[React]]></category>
+            <category><![CDATA[Shiki]]></category>
+            <dc:creator><![CDATA[Boidushya Bhattacharyay]]></dc:creator>
+            <pubDate>Mon, 01 Jul 2024 00:00:00 GMT</pubDate>
+        </item>
+    </channel>
+</rss>
