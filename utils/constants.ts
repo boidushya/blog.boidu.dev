@@ -104,18 +104,18 @@ export const THEMES = {
     accent100: "#333847",
     accent50: "#0d0e12",
   },
-  frost: {
-    accent900: "#f6f9f9",
-    accent850: "#ecf2f2",
-    accent800: "#b0c9c9",
-    accent700: "#93b5b4",
-    accent600: "#85abab",
-    accent500: "#659292",
-    accent400: "#517878",
-    accent300: "#426262",
-    accent200: "#394545",
-    accent100: "#333d3d",
-    accent50: "#0d1212",
+  pastel: {
+    accent900: "#f6f6f6",
+    accent850: "#e7e7e7",
+    accent800: "#d1d1d1",
+    accent700: "#b0b0b0",
+    accent600: "#888888",
+    accent500: "#6d6d6d",
+    accent400: "#5d5d5d",
+    accent300: "#4f4f4f",
+    accent200: "#454545",
+    accent100: "#3d3d3d",
+    accent50: "#171717",
   },
   aurora: {
     accent900: "#f9f6f9",
@@ -129,6 +129,19 @@ export const THEMES = {
     accent200: "#533945",
     accent100: "#47333d",
     accent50: "#120d12",
+  },
+  frost: {
+    accent900: "#f6f9f9",
+    accent850: "#ecf2f2",
+    accent800: "#b0c9c9",
+    accent700: "#93b5b4",
+    accent600: "#85abab",
+    accent500: "#659292",
+    accent400: "#517878",
+    accent300: "#426262",
+    accent200: "#394545",
+    accent100: "#333d3d",
+    accent50: "#0d1212",
   },
   dawn: {
     accent900: "#f9f9f6",
@@ -145,6 +158,6 @@ export const THEMES = {
   },
 };
 
-export const LIGHT_THEMES = ["daybreak", "frost", "aurora", "dawn"];
+export const LIGHT_THEMES = ["daybreak", "frost", "aurora", "dawn", "pastel"];
 
 export type TThemeName = keyof typeof THEMES;
