@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
-import Navbar from "./nav";
-import Footer from "./footer";
+import Navbar from "@/components/nav";
+import Footer from "@/components/footer";
 import React from "react";
 import NextTopLoader from "nextjs-toploader";
 import Script from "next/script";
@@ -35,7 +35,6 @@ export default function RootLayout({
         <meta name="twitter:title" content={metadata.title} />
         <meta name="twitter:description" content={metadata.description} />
         <meta name="twitter:image" content={metadata.image} />
-        <title>{metadata.title}</title>
       </head>
       <body>
         <main className="relative max-w-3xl px-4 mx-auto sm:px-0">

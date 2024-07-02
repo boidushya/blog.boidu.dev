@@ -68,7 +68,7 @@ export function ContentBox({
         id !== length ? `border-b` : ``
       }`}
     >
-      <div className="relative flex items-start order-2 h-full col-span-1 border-l border-accent-400 border-opacity-10">
+      <div className="relative items-start order-2 hidden h-full col-span-1 border-l border-accent-400 border-opacity-10 sm:flex">
         <div className="absolute inset-0 bg-gradient-radial from-transparent to-accent-900/80" />
         <Image
           src={resolvedImage as string}
@@ -80,7 +80,7 @@ export function ContentBox({
           loading="lazy"
         />
       </div>
-      <div className="relative flex flex-col items-start justify-between order-1 h-full col-span-2 overflow-hidden tracking-normal isolate">
+      <div className="relative flex flex-col items-start justify-between order-1 h-full col-span-3 overflow-hidden tracking-normal sm:col-span-2 isolate">
         <div className="flex flex-row justify-start w-full gap-4 p-8 pb-0">
           {labels.map(label => (
             <span

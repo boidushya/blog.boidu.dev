@@ -43,13 +43,13 @@ const socialLinks = [
 
 const Footer: React.FC = () => {
   return (
-    <footer className="flex items-center justify-between w-full h-24 text-accent-800">
+    <footer className="flex flex-col items-center justify-center w-full h-24 gap-4 sm:justify-between text-accent-800 sm:flex-row">
       <p className="text-sm whitespace-pre">
         © {new Date().getFullYear()} •{" "}
         <a className="transition-colors hover:underline hover:text-accent-500" href="/">
           blog.boidu.dev
         </a>{" "}
-        • Boidushya • All rights reserved
+        • All rights reserved
       </p>
       <div className="flex items-center gap-4 social-container">
         {socialLinks.map(({ name, url, icon }) => (
