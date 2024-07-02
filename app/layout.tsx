@@ -1,11 +1,11 @@
-import "./globals.css";
+import "@/styles/globals.css";
 import Navbar from "./nav";
 import Footer from "./footer";
 import React from "react";
 import NextTopLoader from "nextjs-toploader";
-import Head from "next/head";
 import Script from "next/script";
 import { colors } from "@/utils/theme";
+import Providers from "@/providers";
 
 export const metadata = {
   title: "Boidu's Blog",
@@ -21,7 +21,7 @@ export default function RootLayout({
   const topLoaderColor = colors.accent[600] as string;
   return (
     <html lang="en">
-      <Head>
+      <head>
         <meta name="description" content={metadata.description} />
         <meta property="og:title" content={metadata.title} />
         <meta property="og:description" content={metadata.description} />
@@ -36,12 +36,16 @@ export default function RootLayout({
         <meta name="twitter:description" content={metadata.description} />
         <meta name="twitter:image" content={metadata.image} />
         <title>{metadata.title}</title>
-      </Head>
-      <body className={`max-w-3xl mx-auto relative`}>
-        <NextTopLoader color={topLoaderColor} />
-        <Navbar />
-        {children}
-        <Footer />
+      </head>
+      <body>
+        <main className="relative max-w-3xl px-4 mx-auto sm:px-0">
+          <Providers>
+            <NextTopLoader color={topLoaderColor} />
+            <Navbar />
+            {children}
+            <Footer />
+          </Providers>
+        </main>
       </body>
       <Script src="/static/script.js"></Script>
     </html>

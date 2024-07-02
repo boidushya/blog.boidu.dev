@@ -9,6 +9,8 @@ import { isYouTubeLink } from "@/utils/functions";
 import { ToggleGroup, ToggleGroupItem } from "@radix-ui/react-toggle-group";
 import { Toggle } from "@radix-ui/react-toggle";
 import { Tooltip } from "@/utils/components";
+import { useTheme } from "@/providers/theme";
+import { LIGHT_THEMES } from "@/utils/constants";
 
 const getYouTubeThumbnail = (url: string): string | null => {
   const match = url.match(
@@ -54,6 +56,11 @@ export function ContentBox({
 
   const isYoutubeVideo = isYouTubeLink(image);
   const resolvedImage = isYoutubeVideo ? getYouTubeThumbnail(image) : image;
+
+  const { theme } = useTheme();
+
+  const isLight = LIGHT_THEMES.includes(theme);
+
   return (
     <motion.div
       variants={projectVariants}
@@ -88,13 +95,18 @@ export function ContentBox({
           <h3 className="mb-4 text-2xl font-semibold tracking-tight text-accent-50">{title}</h3>
           <p className="text-sm tracking-normal text-accent-50/60">{description}</p>
         </div>
-        <Image
-          src={resolvedImage as string}
-          fill={true}
-          alt="Andi"
-          className="absolute inset-0 z-[-1] filter blur-3xl object-cover brightness-[33%]"
-          loading="lazy"
-        />
+        <div className="absolute inset-0 z-[-1] isolate">
+          <div className="absolute inset-0 z-10 bg-accent-900/50" />
+          {!isLight && (
+            <Image
+              src={resolvedImage as string}
+              fill={true}
+              alt="Boidu"
+              className="z-0 object-cover filter blur-3xl saturate-200"
+              loading="lazy"
+            />
+          )}
+        </div>
         <Link
           href={link}
           className="flex items-center justify-start w-full gap-1 px-8 py-4 text-sm font-semibold tracking-wide transition-colors border-t select-none border-accent-400 border-opacity-5 bg-opacity-30 group text-accent-400 bg-accent-800 hover:bg-opacity-50 hover:text-accent-300 hover:border-transparent"
@@ -211,7 +223,7 @@ export const ViewWithUtils = ({ data }: { data: any }) => {
             placeholder="e.g. Understanding React Hooks"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full p-2 px-3 transition-colors border rounded-md pl-9 border-accent-800/50 bg-accent-900 focus:outline-0 focus:border-accent-800 focus:ring-transparent"
+            className="w-full p-2 px-3 transition-colors border rounded-md pl-9 border-accent-800/50 bg-accent-900 focus:outline-0 focus:border-accent-800 focus:ring-transparent placeholder:text-accent-400/50"
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"

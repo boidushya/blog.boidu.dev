@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@leafac/html": "^4.0.1",
+    "@radix-ui/react-dropdown-menu": "^2.1.1",
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
     "@types/node": "20.1.4",

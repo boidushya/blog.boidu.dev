@@ -1,5 +1,16 @@
 {
   "[markdown]": {
     "editor.formatOnSave": false
+  },
+  "markdownlint.config": {
+    "MD033": {
+      "allowed_elements": ["p", "img", "a", "h1"]
+    },
+    "MD041": false
+  },
+  "editor.defaultFormatter": "biomejs.biome",
+  "prettier.enable": false,
+  "[postcss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
