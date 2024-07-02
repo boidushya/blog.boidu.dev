@@ -35,7 +35,7 @@ export default async function Post({
   const isYoutubeVideo = isYouTubeLink(banner);
 
   return (
-    <article className="pt-[104px] blog">
+    <article className="blog">
       <div className="grid place-items-center">
         <h1 className="!mb-2 !mt-6 text-center">{title}</h1>
         <h6 className="flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
@@ -47,12 +47,10 @@ export default async function Post({
           />
           <div className="text-accent-300">
             <span className="mr-1">
-              Published by{" "}
-              <span className="text-accent-50">Boidushya Bhattacharyay</span>
+              Published by <span className="text-accent-50">Boidushya Bhattacharyay</span>
             </span>
             <span className="mx-1">
-              <span className="whitespace-pre opacity-50"> • </span>{" "}
-              {readingTime}
+              <span className="whitespace-pre opacity-50"> • </span> {readingTime}
             </span>
             <span className="ml-1">
               <span className="whitespace-pre opacity-50"> • </span> {date}
@@ -63,19 +61,10 @@ export default async function Post({
       {isYoutubeVideo ? (
         <YoutubeEmbed url={banner} />
       ) : (
-        <FadeInImage
-          src={banner}
-          alt="Banner"
-          height={900}
-          width={1600}
-          className="mt-4 mb-10 rounded-lg"
-        />
+        <FadeInImage src={banner} alt="Banner" height={900} width={1600} className="mt-4 mb-10 rounded-lg" />
       )}
 
-      <main
-        className="text-lg leading-relaxed"
-        dangerouslySetInnerHTML={{ __html: html as string }}
-      />
+      <main className="text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: html as string }} />
     </article>
   );
 }
@@ -83,7 +72,7 @@ export default async function Post({
 export async function generateStaticParams() {
   const posts = await getAllPosts();
 
-  return posts.map((post) => ({
+  return posts.map(post => ({
     id: post.id,
   }));
 }
