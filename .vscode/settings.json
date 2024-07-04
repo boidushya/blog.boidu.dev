@@ -1,7 +1,12 @@
 {
   "[markdown]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
   },
+  "editor.codeActionsOnSave": {
+	"source.fixAll.markdownlint": "explicit"
+},
   "markdownlint.config": {
     "MD033": {
       "allowed_elements": ["p", "img", "a", "h1"]

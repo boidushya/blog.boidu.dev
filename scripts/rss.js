@@ -19,8 +19,6 @@ async function generate() {
       const content = await fs.readFile(path.join(__dirname, "..", "blogs", name));
       const frontmatter = matter(content);
 
-      console.log(frontmatter.data.labels);
-
       feed.item({
         title: frontmatter.data.title,
         url: "/posts/" + name.replace(/\.mdx?/, ""),

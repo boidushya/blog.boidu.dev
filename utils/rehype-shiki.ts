@@ -1,7 +1,7 @@
 /// <reference types="mdast-util-to-hast" />
 import type { LanguageInput } from "shiki/core";
 import type { BuiltinLanguage, BuiltinTheme } from "shiki";
-import { bundledLanguages, createHighlighter } from "shiki";
+import { bundledLanguages, getSingletonHighlighter } from "shiki";
 import type { Plugin } from "unified";
 import type {
   CodeOptionsMeta,
@@ -252,7 +252,7 @@ const rehypeShiki: Plugin<[RehypeShikiOptions], Root> = function (options = {} a
 
   return async tree => {
     if (!getHandler) {
-      getHandler = createHighlighter({
+      getHandler = getSingletonHighlighter({
         themes: themeNames,
         langs,
       }).then(highlighter => rehypeShikiFromHighlighter.call(this, highlighter, options));

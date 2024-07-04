@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,6 +11,7 @@
   font-display: block;
   src: url(/fonts/ABCDiatypeRoundedVariable.woff2) format("woff2");
 }
+
 
 :root {
   --alert-default-color-stops: 220, 20%;
@@ -112,7 +115,25 @@ body {
 }
 
 .blog p {
-  @apply text-accent-100 mb-6;
+  @apply text-accent-200 mb-6 tracking-normal;
+}
+
+.blog main img{
+	@apply w-full h-auto rounded-md border border-accent-600/20;
+}
+
+.blog main img + em{
+	@apply block text-center text-accent-400 font-normal text-sm not-italic mt-4;
+}
+
+.blog main img + em a{
+	@apply text-accent-400 no-underline hover:underline hover:text-accent-300;
+}
+
+
+.blog code:not(pre.shiki code) {
+	font-family: 'JetBrains Mono', monospace;
+	@apply rounded-md py-0.5 px-1.5 text-sm border bg-accent-800/50 text-accent-200 border-accent-800;
 }
 
 .blog strong {
@@ -224,7 +245,7 @@ body {
 }
 
 .heading-anchor {
-  @apply mr-2 !no-underline opacity-25 font-normal transform-gpu -translate-x-full pr-3 absolute transition-all;
+  @apply mr-2 !no-underline opacity-25 font-normal md:transform-gpu md:-translate-x-full md:pr-3 md:absolute transition-all;
 }
 
 .heading-anchor:hover {
