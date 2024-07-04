@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node ./scripts/rss.js && next build",
+    "build": "node ./scripts/feed.js && next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -20,6 +20,7 @@
     "date-fns": "^3.0.6",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.2",
+    "feed": "^4.2.2",
     "framer-motion": "^10.12.10",
     "gray-matter": "^4.0.3",
     "hast-util-to-text": "^4.0.0",

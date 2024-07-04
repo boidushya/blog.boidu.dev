@@ -1,0 +1,65 @@
+{
+    "version": "https://jsonfeed.org/version/1",
+    "title": "Boidu's Blog",
+    "home_page_url": "https://blog.boidu.dev",
+    "feed_url": "https://blog.boidu.dev/feed.json",
+    "description": "A blog where I write about my thoughts and experiences.",
+    "icon": "https://blog.boidu.dev/static/logo.jpg",
+    "author": {
+        "name": "Boidushya Bhattacharyay",
+        "url": "https://boidu.dev"
+    },
+    "items": [
+        {
+            "id": "https://blog.boidu.dev/posts/nextjs-and-its-paradigm-shift",
+            "url": "https://blog.boidu.dev/posts/nextjs-and-its-paradigm-shift",
+            "title": "Next.js and its Paradigm Shift",
+            "summary": "Next.js is excellent for building websites with a ton of complexities - and the best part? You can do all that with your existing React knowledge! Right? Nah, not really..\n",
+            "image": "https://res.cloudinary.com/boidu/image/upload/t_banner/v1720053968/Fb31GDDUYAQCGIl_wwua8t.jpg",
+            "date_modified": "2024-07-04T00:00:00.000Z",
+            "author": {
+                "name": "Boidushya Bhattacharyay",
+                "url": "https://boidu.dev"
+            },
+            "tags": [
+                "Tutorial",
+                "Next.js",
+                "React"
+            ]
+        },
+        {
+            "id": "https://blog.boidu.dev/posts/usememo",
+            "url": "https://blog.boidu.dev/posts/usememo",
+            "title": "Understanding useMemo in React",
+            "summary": "React provides a powerful hook called useMemo that can be a game-changer when it comes to optimizing performance in your applications. Wait but where do you use it? Do you even need it?\n",
+            "image": "https://images.unsplash.com/photo-1591267990439-bc68529677c3?q=80&w=1600&h=900&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "date_modified": "2020-01-06T00:00:00.000Z",
+            "author": {
+                "name": "Boidushya Bhattacharyay",
+                "url": "https://boidu.dev"
+            },
+            "tags": [
+                "Tutorial",
+                "React",
+                "hooks"
+            ]
+        },
+        {
+            "id": "https://blog.boidu.dev/posts/shiki-and-why-its-excellent",
+            "url": "https://blog.boidu.dev/posts/shiki-and-why-its-excellent",
+            "title": "Shiki and why its excellent",
+            "summary": "Shiki is a fantastic library that provides a fast and feature-rich syntax highlighting experience for code snippets in your applications. But why Shiki?\n",
+            "image": "https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?q=80&w=1600&h=900&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "date_modified": "2024-07-01T00:00:00.000Z",
+            "author": {
+                "name": "Boidushya Bhattacharyay",
+                "url": "https://boidu.dev"
+            },
+            "tags": [
+                "Tutorial",
+                "React",
+                "Shiki"
+            ]
+        }
+    ]
+}

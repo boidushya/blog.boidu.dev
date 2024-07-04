@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Boidu's Blog</title>
+        <link>https://blog.boidu.dev</link>
+        <description>A blog where I write about my thoughts and experiences.</description>
+        <lastBuildDate>Thu, 04 Jul 2024 23:24:17 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <language>en</language>
+        <image>
+            <title>Boidu's Blog</title>
+            <url>https://blog.boidu.dev/static/logo.jpg</url>
+            <link>https://blog.boidu.dev</link>
+        </image>
+        <copyright>All Rights Reserved 2024 Boidushya Bhattacharyay</copyright>
+        <atom:link href="https://blog.boidu.dev/rss.xml" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[Next.js and its Paradigm Shift]]></title>
+            <link>https://blog.boidu.dev/posts/nextjs-and-its-paradigm-shift</link>
+            <guid>https://blog.boidu.dev/posts/nextjs-and-its-paradigm-shift</guid>
+            <pubDate>Thu, 04 Jul 2024 00:00:00 GMT</pubDate>
+            <description><![CDATA[Next.js is excellent for building websites with a ton of complexities - and the best part? You can do all that with your existing React knowledge! Right? Nah, not really..
+]]></description>
+            <category>Tutorial</category>
+            <category>Next.js</category>
+            <category>React</category>
+            <enclosure url="https://res.cloudinary.com/boidu/image/upload/t_banner/v1720053968/Fb31GDDUYAQCGIl_wwua8t.jpg" length="0" type="image/jpg"/>
+        </item>
+        <item>
+            <title><![CDATA[Understanding useMemo in React]]></title>
+            <link>https://blog.boidu.dev/posts/usememo</link>
+            <guid>https://blog.boidu.dev/posts/usememo</guid>
+            <pubDate>Mon, 06 Jan 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[React provides a powerful hook called useMemo that can be a game-changer when it comes to optimizing performance in your applications. Wait but where do you use it? Do you even need it?
+]]></description>
+            <category>Tutorial</category>
+            <category>React</category>
+            <category>hooks</category>
+            <enclosure url="https://images.unsplash.com/photo-1591267990439-bc68529677c3?q=80&w=1600&h=900&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" length="0" type="image//photo-1591267990439-bc68529677c3"/>
+        </item>
+        <item>
+            <title><![CDATA[Shiki and why its excellent]]></title>
+            <link>https://blog.boidu.dev/posts/shiki-and-why-its-excellent</link>
+            <guid>https://blog.boidu.dev/posts/shiki-and-why-its-excellent</guid>
+            <pubDate>Mon, 01 Jul 2024 00:00:00 GMT</pubDate>
+            <description><![CDATA[Shiki is a fantastic library that provides a fast and feature-rich syntax highlighting experience for code snippets in your applications. But why Shiki?
+]]></description>
+            <category>Tutorial</category>
+            <category>React</category>
+            <category>Shiki</category>
+            <enclosure url="https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?q=80&w=1600&h=900&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" length="0" type="image//photo-1633356122102-3fe601e05bd2"/>
+        </item>
+    </channel>
+</rss>
