@@ -2,6 +2,7 @@
 title: "Next.js and its Paradigm Shift"
 date: "2024-07-04"
 banner: "https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?q=80&w=1600&h=900&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+banner: "https://res.cloudinary.com/boidu/image/upload/t_banner/v1720053968/Fb31GDDUYAQCGIl_wwua8t.jpg"
 labels: ['Tutorial', 'Next.js', 'React']
 description: >
   Next.js is excellent for building websites with a ton of complexities - and the best part? You can do all that with your existing React knowledge! Right? Nah, not really.

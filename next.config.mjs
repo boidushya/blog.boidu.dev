@@ -2,7 +2,7 @@
 
 const nextConfig = {
   images: {
-    domains: ["images.unsplash.com", "source.unsplash.com", "img.youtube.com", "whyflux.files.wordpress.com"],
+    domains: ["images.unsplash.com", "source.unsplash.com", "img.youtube.com", "res.cloudinary.com"],
   },
 };
 
