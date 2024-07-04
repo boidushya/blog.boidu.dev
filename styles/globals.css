@@ -133,7 +133,7 @@ body {
 
 .blog code:not(pre.shiki code) {
 	font-family: 'JetBrains Mono', monospace;
-	@apply rounded-md py-0.5 px-1.5 text-sm border bg-accent-800/50 text-accent-50/75 border-accent-800;
+	@apply rounded-md py-0.5 px-1.5 text-sm border bg-accent-800/50 text-accent-200 border-accent-800;
 }
 
 .blog strong {
