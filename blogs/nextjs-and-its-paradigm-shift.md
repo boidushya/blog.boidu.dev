@@ -98,7 +98,8 @@ I know, "B-But docs are so boring and I end up learning more by DOING!" - I don'
 Next.js docs are hands-down, THE BEST WAY to get started with Next.js. Yes, you can learn by trying, yes you can
 experiment your way through it, but the docs are so well written that you'll be up and running in no time.\
 Having trouble understanding how the app router works? Read the docs. Having trouble understanding how to fetch data?
-Read the docs. Having trouble understanding how to deploy your app? Read the docs. I can't stress this enough.\
+Read the docs. Having trouble understanding how to deploy your app? [READ. THE. DAMN. DOCS.](https://nextjs.org/docs).
+I can't stress this enough.\
 Next, you need to **build something**. You can't just read the docs and expect to be a Next.js pro. You need to build
 SOMETHING, ANYTHING. It could be a simple blog (broke the 4th wall here), a portfolio app,
 a newsletter (I can't stop doing it, if it wasn't obvious already), a pokedex, a clone of your favorite website,
