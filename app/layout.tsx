@@ -35,6 +35,11 @@ export default function RootLayout({
         <meta name="twitter:title" content={metadata.title} />
         <meta name="twitter:description" content={metadata.description} />
         <meta name="twitter:image" content={metadata.image} />
+        <script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="de3af0e1-5059-4da8-82ff-0129a817a658"
+        ></script>
       </head>
       <body>
         <main className="relative max-w-3xl px-4 mx-auto sm:px-0">
