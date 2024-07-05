@@ -3,6 +3,26 @@ const path = require("path");
 const { Feed } = require("feed");
 const matter = require("gray-matter");
 
+function escapeXmlAttr(unsafe) {
+  if (!unsafe) {
+    return;
+  }
+  return unsafe.replace(/[<>&'"]/g, function (c) {
+    switch (c) {
+      case "<":
+        return "&lt;";
+      case ">":
+        return "&gt;";
+      case "&":
+        return "&amp;";
+      case "'":
+        return "&apos;";
+      case '"':
+        return "&quot;";
+    }
+  });
+}
+
 async function generate() {
   const author = {
     name: "Boidushya Bhattacharyay",
@@ -39,7 +59,7 @@ async function generate() {
 
       const url = `https://blog.boidu.dev/posts/${name.replace(/\.mdx?/, "")}`;
 
-      const image = encodeURI(frontmatter.data.banner);
+      const image = escapeXmlAttr(frontmatter.data.banner);
 
       feed.addItem({
         title: frontmatter.data.title,
