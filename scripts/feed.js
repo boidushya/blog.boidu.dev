@@ -39,13 +39,15 @@ async function generate() {
 
       const url = `https://blog.boidu.dev/posts/${name.replace(/\.mdx?/, "")}`;
 
+      const image = encodeURI(frontmatter.data.banner);
+
       feed.addItem({
         title: frontmatter.data.title,
         id: url,
         link: url,
         date: new Date(frontmatter.data.date),
         description: frontmatter.data.description,
-        image: frontmatter.data.banner,
+        image,
         category: frontmatter.data.labels.map(label => ({ name: label })),
         author,
       });
