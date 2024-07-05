@@ -11,23 +11,6 @@
     },
     "items": [
         {
-            "id": "https://blog.boidu.dev/posts/nextjs-and-its-paradigm-shift",
-            "url": "https://blog.boidu.dev/posts/nextjs-and-its-paradigm-shift",
-            "title": "Next.js and its Paradigm Shift",
-            "summary": "Next.js is excellent for building websites with a ton of complexities - and the best part? You can do all that with your existing React knowledge! Right? Nah, not really..\n",
-            "image": "https://res.cloudinary.com/boidu/image/upload/t_banner/v1720053968/Fb31GDDUYAQCGIl_wwua8t.jpg",
-            "date_modified": "2024-07-04T00:00:00.000Z",
-            "author": {
-                "name": "Boidushya Bhattacharyay",
-                "url": "https://boidu.dev"
-            },
-            "tags": [
-                "Tutorial",
-                "Next.js",
-                "React"
-            ]
-        },
-        {
             "id": "https://blog.boidu.dev/posts/usememo",
             "url": "https://blog.boidu.dev/posts/usememo",
             "title": "Understanding useMemo in React",
@@ -42,6 +25,23 @@
                 "Tutorial",
                 "React",
                 "hooks"
+            ]
+        },
+        {
+            "id": "https://blog.boidu.dev/posts/nextjs-and-its-paradigm-shift",
+            "url": "https://blog.boidu.dev/posts/nextjs-and-its-paradigm-shift",
+            "title": "Next.js and its Paradigm Shift",
+            "summary": "Next.js is excellent for building websites with a ton of complexities - and the best part? You can do all that with your existing React knowledge! Right? Nah, not really..\n",
+            "image": "https://res.cloudinary.com/boidu/image/upload/t_banner/v1720053968/Fb31GDDUYAQCGIl_wwua8t.jpg",
+            "date_modified": "2024-07-04T00:00:00.000Z",
+            "author": {
+                "name": "Boidushya Bhattacharyay",
+                "url": "https://boidu.dev"
+            },
+            "tags": [
+                "Tutorial",
+                "Next.js",
+                "React"
             ]
         },
         {

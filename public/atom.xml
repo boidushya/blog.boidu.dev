@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.boidu.dev</id>
     <title>Boidu's Blog</title>
-    <updated>2024-07-05T00:21:08.259Z</updated>
+    <updated>2024-07-05T00:36:36.830Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>Boidushya Bhattacharyay</name>
@@ -16,17 +16,6 @@
     <icon>https://blog.boidu.dev/static/logo.jpg</icon>
     <rights>All Rights Reserved 2024 Boidushya Bhattacharyay</rights>
     <entry>
-        <title type="html"><![CDATA[Next.js and its Paradigm Shift]]></title>
-        <id>https://blog.boidu.dev/posts/nextjs-and-its-paradigm-shift</id>
-        <link href="https://blog.boidu.dev/posts/nextjs-and-its-paradigm-shift"/>
-        <updated>2024-07-04T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Next.js is excellent for building websites with a ton of complexities - and the best part? You can do all that with your existing React knowledge! Right? Nah, not really..
-]]></summary>
-        <category label="Tutorial"/>
-        <category label="Next.js"/>
-        <category label="React"/>
-    </entry>
-    <entry>
         <title type="html"><![CDATA[Understanding useMemo in React]]></title>
         <id>https://blog.boidu.dev/posts/usememo</id>
         <link href="https://blog.boidu.dev/posts/usememo"/>
@@ -36,6 +25,17 @@
         <category label="Tutorial"/>
         <category label="React"/>
         <category label="hooks"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Next.js and its Paradigm Shift]]></title>
+        <id>https://blog.boidu.dev/posts/nextjs-and-its-paradigm-shift</id>
+        <link href="https://blog.boidu.dev/posts/nextjs-and-its-paradigm-shift"/>
+        <updated>2024-07-04T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Next.js is excellent for building websites with a ton of complexities - and the best part? You can do all that with your existing React knowledge! Right? Nah, not really..
+]]></summary>
+        <category label="Tutorial"/>
+        <category label="Next.js"/>
+        <category label="React"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[Shiki and why its excellent]]></title>

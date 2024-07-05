@@ -7,6 +7,7 @@ function escapeXmlAttr(unsafe) {
   if (!unsafe) {
     return;
   }
+
   return unsafe.replace(/[<>&'"]/g, function (c) {
     switch (c) {
       case "<":
@@ -21,6 +22,12 @@ function escapeXmlAttr(unsafe) {
         return "&quot;";
     }
   });
+}
+
+function clean(data) {
+  data = data.replace(/type="image\/(?!png|jpg|jpeg)[^"]+"/g, 'type="image/jpeg"');
+
+  return data;
 }
 
 async function generate() {
@@ -74,7 +81,7 @@ async function generate() {
     })
   );
 
-  await fs.writeFile("./public/rss.xml", feed.rss2());
+  await fs.writeFile("./public/rss.xml", clean(feed.rss2()));
   await fs.writeFile("./public/feed.json", feed.json1());
   await fs.writeFile("./public/atom.xml", feed.atom1());
 }
