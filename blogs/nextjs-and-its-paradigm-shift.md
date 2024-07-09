@@ -76,6 +76,32 @@ and so on and so forth. You can check out the exhaustive list [here](https://nex
 ![Top level folders](https://nextjs.org/_next/image?url=%2Fdocs%2Fdark%2Fterminology-component-tree.png&w=3840&q=75)
 _Top level folders - [Next.js Docs](https://nextjs.org/docs/getting-started/project-structure)_
 
+If you want a `/dashboard` route on your website, you need to create a `/dashboard/page.tsx`
+file in the `app` directory. The layout, error, and other components are optional and get inherited from the
+"one level up" directory. If you want a `/dashboard/settings` route, you can create a `/dashboard/settings/page.tsx` file
+and so on. If you want to create a link to the `/dashboard` route, you can use the `Link` component from `next/link` and
+pass the `href` prop as `/dashboard`. You could also use the `useRouter` hook like this:
+
+```tsx
+// app/dashboard/settings/page.tsx
+
+'use client'
+
+import { useRouter } from 'next/navigation'
+
+export default function Page() {
+  const router = useRouter()
+
+  return (
+    <button type="button" onClick={() => router.push('/dashboard')}>
+      Dashboard
+    </button>
+  )
+}
+```
+
+The `useRouter` hook has a lot of other cool features which you can read about [here](https://nextjs.org/docs/app/api-reference/functions/use-router#userouter).
+
 This was a bit of a significant transition for me. I was so used to having a `pages` directory and just creating files
 in there. Moreover, before this, since I was rawdogging React, I had a `components` directory where I'd put all my
 components and call it a day. But now, I had to think about the structure of my app. I had to think about how I wanted
