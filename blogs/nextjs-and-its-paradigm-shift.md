@@ -77,11 +77,18 @@ and so on and so forth. You can check out the exhaustive list [here](https://nex
 _Top level folders - [Next.js Docs](https://nextjs.org/docs/getting-started/project-structure)_
 
 If you want a `/dashboard` route on your website, you need to create a `/dashboard/page.tsx`
-file in the `app` directory. The layout, error, and other components are optional and get inherited from the
-"one level up" directory. For a `/dashboard/settings` route, you can create a `/dashboard/settings/page.tsx` file
-and so on. Now lets say you're trying to send your user to `/dashboard`. You can use the `Link` component from
-`next/link` and pass the `href` prop as `/dashboard` (much like an `a` tag). You could also use the `useRouter`
-hook to get this done programmatically.
+file in the `app` directory.
+
+The layout, error, and other components are optional and get inherited from the
+"one level up" directory.
+
+For a `/dashboard/settings` route, you can create a `/dashboard/settings/page.tsx` file
+and so on.
+
+Now lets say you're trying to send your user to `/dashboard`. You can use the `Link` component from
+`next/link` and pass the `href` prop as `/dashboard` (much like an `a` tag).
+
+You could also use the `useRouter` hook to get this done programmatically.
 
 ```tsx
 // app/dashboard/settings/page.tsx
