@@ -70,9 +70,9 @@ they worked.
 ![Twitter post showing the Arc Boost version](https://res.cloudinary.com/boidu/image/upload/q_auto:eco/v1720787426/cbe97639-ad37-4ad0-9cec-b529ecc50626.png)
 _Twitter post showing the Arc Boost version_
 
-Originally I wanted to use [extensions.js.org](https://extension.js.org/) to create the extension, but I
-decided to go with the more traditional way of creating an extension - setting everything up from scratch. To be quite
-frank, it was incredibly easy to set up. I had the extension up and running in no time.
+Originally I wanted to use [extensions.js.org](https://extension.js.org/) to create it, but I
+decided to go with the more traditional way - YOLO-ing it & setting everything up from scratch. Well, to my surprise and
+to be quite frank, it was incredibly easy to set up. I had the extension up and running in no time.
 
 The extension was pretty simple
 to setup as well since I had already done the hard part - the backend. The extension was essentially a wrapper around
