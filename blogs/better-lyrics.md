@@ -85,7 +85,7 @@ On 5th June, I [launched](https://x.com/boidushya/status/1798405072625520902) th
 people to use it, but MAN was I wrong. The tweet started doing rounds on Twitter, and the extension got its initial
 liftoff.
 
-![Twitter post about Better Lyrics Launch](https://res.cloudinary.com/boidu/image/upload/q_auto:eco,c_crop,g_north,h_1300,w_1182,x_0,y_104/v1720787300/8b77e210-74b7-48a1-b4dc-6aa9c2bdf257.png)
+![Twitter post about Better Lyrics Launch](https://res.cloudinary.com/boidu/image/upload/q_auto:eco,c_crop,g_north,h_1295,w_1182,x_0,y_104/v1720787300/8b77e210-74b7-48a1-b4dc-6aa9c2bdf257.png)
 _Twitter post about Better Lyrics Launch_
 
 Now, once I passed the 100 user mark, I started noticing something. The backend was not able to handle the load. I was using
