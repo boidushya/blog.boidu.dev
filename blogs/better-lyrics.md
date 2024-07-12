@@ -124,7 +124,7 @@ long at all since that's what I do for a living.
 
 Fast forward to today, the extension has over 1500 daily active users, and has about 70,000 impressions across web stores.
 It's caching around 10,000 lyrics daily, which is pretty mind-blowing to me.
-The project has grown so much, I'd to make a [status page](https://better-lyrics-status.boidu.dev) to improve reliability
+The project has grown so much, I had to make a [status page](https://better-lyrics-status.boidu.dev) to improve reliability
 and transparency.
 
 One of the sicker developments is that the extension has been "Featured" under the Entertainment category on the
