@@ -135,8 +135,8 @@ What started as a simple fix for lackluster lyrics has evolved into a full-fledg
 beautiful time-synced lyrics, real-time translations, and more. It's available now for Chrome, Firefox, and Edge, and
 the response from users has been overwhelmingly positive.
 
-![Better Lyrics](https://res.cloudinary.com/boidu/image/upload/q_auto:eco/t_banner/v1720783608/Screenshot_2024-06-20_at_11.44.23_wwwrcc.png)
-_Better Lyrics_
+![Full Screen Mode - Better Lyrics](https://res.cloudinary.com/boidu/image/upload/q_auto:eco/t_banner/v1720783608/Screenshot_2024-06-20_at_11.44.23_wwwrcc.png)
+_Full Screen Mode - Better Lyrics_
 
 If you're interested in checking it out, you can find all the details on the [Better Lyrics website](https://better-lyrics.boidu.dev).
 
