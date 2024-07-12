@@ -88,9 +88,9 @@ liftoff.
 ![Twitter post about Better Lyrics Launch](https://res.cloudinary.com/boidu/image/upload/q_auto:eco,c_crop,g_north,h_1295,w_1182,x_0,y_104/v1720787300/8b77e210-74b7-48a1-b4dc-6aa9c2bdf257.png)
 _Twitter post about Better Lyrics Launch_
 
-Now, once I passed the 100 user mark, I started noticing something. The backend was not able to handle the load. I was using
-Railway's hobby tier and it was peaking at 600mb of memory. Mind you, I wasn't doing anything fancy, just fetching lyrics
-from an API and sending them back - no caching, no nothing.
+Now, once I passed the "100 users" mark, I started noticing something. The backend was not able to handle the load. I was
+using Railway's hobby tier and it was peaking at **600mb** of memory. Mind you, I wasn't doing anything fancy, just fetching
+lyrics from an API and sending them back - no caching, no nothing.
 
 Back then I was in another city with a friend who was also a developer. He was working as a Golang developer at a
 company, and he suggested I use Golang for the backend. I had never used Golang before, but I was willing to give it a
