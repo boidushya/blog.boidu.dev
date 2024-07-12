@@ -119,8 +119,7 @@ and the "fix bugs, add features" cycle was picking up pace. Meanwhile I made two
 and another on [r/webdev](https://www.reddit.com/r/webdev/comments/1dran79/i_built_a_browser_extension_for_youtube_music/).
 I also launched it on [Product Hunt](https://www.producthunt.com/posts/better-lyrics).
 
-The extension was getting more and more users, and I was getting
-more and more feedback. Somewhere along the way, I decided to make a website for the extension, which didn't take too
+Somewhere along the way, I decided to make a website for the extension, which didn't take too
 long at all since that's what I do for a living.
 
 Fast forward to today, the extension has over 1500 daily active users, and has about 70,000 impressions across web stores.
