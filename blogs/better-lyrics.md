@@ -92,8 +92,8 @@ Now, once I passed the "100 users" mark, I started noticing something. The backe
 using Railway's hobby tier and it was peaking at **600mb** of memory. Mind you, I wasn't doing anything fancy, just fetching
 lyrics from an API and sending them back - no caching, no nothing.
 
-Back then I was in another city with a friend who was also a developer. He was working as a Golang developer at a
-company, and he suggested I use Golang for the backend. I had never used Golang before, but I was willing to give it a
+Back then I was in another city with a friend who was also a developer. He was working as a Golang dev at a
+company, and he suggested I use it for the backend. I had never used Go before, but I was willing to give it a
 shot.
 
 ## The rewrite
