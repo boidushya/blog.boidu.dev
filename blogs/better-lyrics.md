@@ -47,7 +47,7 @@ I tried to reverse engineer end points they were using on their app, but I could
 
 ## The backend
 
-While researching for ways to get time-synced lyrics, I stumbled upon [this repository](https://github.com/akashrchandran/spotify-lyrics-api)
+While researching for ways to get time-synced lyrics, I stumbled upon [this repository](https://github.com/akashrchandran/spotify-lyrics-api).
 Now while this was excellent, it didn't really satisfy my exact use case. I checked out the outine of the API and how it
 worked and decided to make my own. The initial iteration was with Express and Typescript, and that took like a weekend to
 get up and running. I won't go into the specifics of the API, but the general idea was pretty much exactly like
