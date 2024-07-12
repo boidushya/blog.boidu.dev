@@ -104,11 +104,11 @@ Scratch for adults". And he was spot on. The language is incredibly easy to pick
 so jam packed with features that you don't really need to use any third party modules.
 
 I was able to rewrite the entire backend in one night.
-Mind you, I'd never used Golang before in a production environment- all I knew were the basics.
-But I was able to get the backend up and running in one night. I got it deployed on Railway, and it was running like a
-horse on coke.
+Keep in mind, I'd never used Golang before in a production environment- all I knew were the basics.
+But I was able to get the backend up and running pretty quickly - thanks to the excellent documentation and the
+community around it. I got it deployed on Railway, and it was running like a horse on coke.
 
-The memory usage was down to - wait for it - _15mb_! The response times were lightning fast as well.
+The memory usage was down to - _wait for it_ - _**15mb**_! The response times were lightning fast as well.
 I got so carried away I decided to implement a caching layer as well. Added some standard IP rate limiting and we were
 ready to go (I'm so good with puns).
 
