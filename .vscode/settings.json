@@ -5,8 +5,8 @@
     "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
   },
   "editor.codeActionsOnSave": {
-	"source.fixAll.markdownlint": "explicit"
-},
+    "source.fixAll.markdownlint": "explicit"
+  },
   "markdownlint.config": {
     "MD033": {
       "allowed_elements": ["p", "img", "a", "h1"]
