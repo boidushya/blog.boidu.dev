@@ -130,10 +130,13 @@ body {
 	@apply text-accent-400 no-underline hover:underline hover:text-accent-300;
 }
 
-
 .blog code:not(pre.shiki code) {
 	font-family: 'JetBrains Mono', monospace;
 	@apply rounded-md py-0.5 px-1.5 text-sm border bg-accent-800/50 text-accent-200 border-accent-800;
+}
+
+.blog iframe{
+	max-width: 100%;
 }
 
 .blog strong {
