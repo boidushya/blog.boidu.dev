@@ -101,7 +101,7 @@ shot.
 Here's the thing about Golang - it's fast. Not just in terms of runtime, but also in terms of development. If I remember
 correctly, [ThePrimeagen](https://x.com/ThePrimeagen) mentioned this comparison in one of his videos - "Golang is like
 Scratch for adults". And he was spot on. The language is incredibly easy to pick up, and the standard library is just
-so jam packed with features that you don't really need to use any third party libraries.
+so jam packed with features that you don't really need to use any third party modules.
 
 I was able to rewrite the entire backend in one night.
 Mind you, I'd never used Golang before in a production environment- all I knew were the basics.
