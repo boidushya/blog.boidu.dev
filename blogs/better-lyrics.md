@@ -114,8 +114,8 @@ ready to Go (I'm so good with puns).
 
 ## The aftermath
 
-I let the extension do its thing for a few days, and I was getting more and more users. I was getting feedback from users
-and I was able to fix bugs and add features quickly. Meanwhile I made two posts on Reddit - one on [r/youtubemusic](https://www.reddit.com/r/YoutubeMusic/comments/1db1j6a/introducing_better_lyrics_enhance_your_youtube/)
+I let the extension do its thing for a few days, and I was getting more and more users. I was getting feedback from them
+and the "fix bugs, add features" cycle was picking up pace. Meanwhile I made two posts on Reddit - one on [r/youtubemusic](https://www.reddit.com/r/YoutubeMusic/comments/1db1j6a/introducing_better_lyrics_enhance_your_youtube/)
 and another on [r/webdev](https://www.reddit.com/r/webdev/comments/1dran79/i_built_a_browser_extension_for_youtube_music/).
 I also launched it on [Product Hunt](https://www.producthunt.com/posts/better-lyrics).
 
