@@ -98,19 +98,19 @@ shot.
 
 ## The rewrite
 
-Here's the thing about Golang - it's fast. Not just in terms of runtime, but also in terms of development. If I remember
-correctly, [ThePrimeagen](https://x.com/ThePrimeagen) mentioned this comparison in one of his videos - "Golang is like
+Here's the thing about Go - it's fast. Not just in terms of runtime, but also in terms of development. If I remember
+correctly, [ThePrimeagen](https://x.com/ThePrimeagen) mentioned this comparison in one of his videos - "Go is like
 Scratch for adults". And he was spot on. The language is incredibly easy to pick up, and the standard library is just
 so jam packed with features that you don't really need to use any third party modules.
 
 I was able to rewrite the entire backend in one night.
-Keep in mind, I'd never used Golang before in a production environment- all I knew were the basics.
+Keep in mind, I'd never used Go before in a production environment- all I knew were the basics.
 But I was able to get the backend up and running pretty quickly - thanks to the excellent documentation and the
 community around it. I got it deployed on Railway, and it was running like a horse on coke.
 
 The memory usage was down to - _wait for it_ - _**15mb**_! The response times were lightning fast as well.
 I got so carried away I decided to implement a caching layer as well. Added some standard IP rate limiting and we were
-ready to go (I'm so good with puns).
+ready to Go (I'm so good with puns).
 
 ## The aftermath
 
