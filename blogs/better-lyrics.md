@@ -1,5 +1,5 @@
 ---
-title: "How I Accidentally Became YouTube Music's Unofficial UX Designer - Better Lyrics"
+title: "How I Fixed YouTube Music's Biggest Flaw - Better Lyrics"
 date: "2024-07-12"
 banner: "https://www.youtube.com/watch?v=GACsqMfhDVE"
 labels: ['Story', 'Extension', 'Javascript']

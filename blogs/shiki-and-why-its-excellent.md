@@ -1,5 +1,5 @@
 ---
-title: "Shiki and why its excellent"
+title: "Shiki and why its Excellent"
 date: "2024-07-01"
 banner: "https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?q=80&w=1600&h=900&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 labels: ['Tutorial', 'React', 'Shiki']

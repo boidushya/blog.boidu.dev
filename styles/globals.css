@@ -36,6 +36,11 @@ body {
   @apply bg-accent-900 text-accent-50 tracking-normal;
 }
 
+.react-auto-width {
+  overflow: hidden;
+  transition: width 500ms;
+}
+
 @keyframes spin {
   from {
     opacity: 1;
