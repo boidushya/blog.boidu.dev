@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node ./scripts/feed.js && next build",
+    "build": "node ./scripts/feed.js && next build && next-sitemap --config sitemap.config.js",
     "start": "next start",
     "lint": "next lint"
   },
@@ -54,6 +54,7 @@
     "@shikijs/rehype": "^1.10.0",
     "@types/lodash.debounce": "^4.0.9",
     "bufferutil": "4.0.7",
+    "next-sitemap": "^4.2.3",
     "supports-color": "8.1.1",
     "utf-8-validate": "5.0.10"
   }

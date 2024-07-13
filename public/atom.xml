@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.boidu.dev</id>
     <title>Boidu's Blog</title>
-    <updated>2024-07-05T00:36:36.830Z</updated>
+    <updated>2024-07-13T20:19:31.050Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>Boidushya Bhattacharyay</name>
@@ -16,15 +16,26 @@
     <icon>https://blog.boidu.dev/static/logo.jpg</icon>
     <rights>All Rights Reserved 2024 Boidushya Bhattacharyay</rights>
     <entry>
-        <title type="html"><![CDATA[Understanding useMemo in React]]></title>
-        <id>https://blog.boidu.dev/posts/usememo</id>
-        <link href="https://blog.boidu.dev/posts/usememo"/>
-        <updated>2020-01-06T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[React provides a powerful hook called useMemo that can be a game-changer when it comes to optimizing performance in your applications. Wait but where do you use it? Do you even need it?
+        <title type="html"><![CDATA[How I Fixed YouTube Music's Biggest Flaw - Better Lyrics]]></title>
+        <id>https://blog.boidu.dev/posts/better-lyrics</id>
+        <link href="https://blog.boidu.dev/posts/better-lyrics"/>
+        <updated>2024-07-12T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[From fixing lyrics to features Google missed - how my side project became 1500+ users' must-have extension for YouTube Music.
+]]></summary>
+        <category label="Story"/>
+        <category label="Extension"/>
+        <category label="Javascript"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Shiki and why its Excellent]]></title>
+        <id>https://blog.boidu.dev/posts/shiki-and-why-its-excellent</id>
+        <link href="https://blog.boidu.dev/posts/shiki-and-why-its-excellent"/>
+        <updated>2024-07-01T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Shiki is a fantastic library that provides a fast and feature-rich syntax highlighting experience for code snippets in your applications. But why Shiki?
 ]]></summary>
         <category label="Tutorial"/>
         <category label="React"/>
-        <category label="hooks"/>
+        <category label="Shiki"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[Next.js and its Paradigm Shift]]></title>
@@ -38,14 +49,14 @@
         <category label="React"/>
     </entry>
     <entry>
-        <title type="html"><![CDATA[Shiki and why its excellent]]></title>
-        <id>https://blog.boidu.dev/posts/shiki-and-why-its-excellent</id>
-        <link href="https://blog.boidu.dev/posts/shiki-and-why-its-excellent"/>
-        <updated>2024-07-01T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Shiki is a fantastic library that provides a fast and feature-rich syntax highlighting experience for code snippets in your applications. But why Shiki?
+        <title type="html"><![CDATA[Understanding useMemo in React]]></title>
+        <id>https://blog.boidu.dev/posts/usememo</id>
+        <link href="https://blog.boidu.dev/posts/usememo"/>
+        <updated>2020-01-06T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[React provides a powerful hook called useMemo that can be a game-changer when it comes to optimizing performance in your applications. Wait but where do you use it? Do you even need it?
 ]]></summary>
         <category label="Tutorial"/>
         <category label="React"/>
-        <category label="Shiki"/>
+        <category label="hooks"/>
     </entry>
 </feed>
