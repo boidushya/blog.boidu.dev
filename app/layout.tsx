@@ -35,6 +35,7 @@ export default function RootLayout({
         <meta name="twitter:title" content={metadata.title} />
         <meta name="twitter:description" content={metadata.description} />
         <meta name="twitter:image" content={metadata.image} />
+        <meta name="google-site-verification" content="hsxkLtNCoahD0HV2cRmDi9op-0LMgf7wPrcehV7vEyU" />
         <script
           defer
           src="https://cloud.umami.is/script.js"
