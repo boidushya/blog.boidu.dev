@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        mono: ['"JetBrains Mono"', "monospace"],
+      },
       colors: {
         accent: {
           50: "rgb(var(--color-accent-50) / <alpha-value>)",
@@ -21,6 +24,9 @@ module.exports = {
           850: "rgb(var(--color-accent-850) / <alpha-value>)",
           900: "rgb(var(--color-accent-900) / <alpha-value>)",
         },
+      },
+      boxShadow: {
+        deep: "rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

@@ -4,6 +4,8 @@ import logo from "@/assets/images/logo.jpg";
 import Image from "next/image";
 import { FadeInImage } from "@/utils/components";
 import { isYouTubeLink, truncate } from "@/utils/functions";
+import React from "react";
+import Like from "@/components/like";
 
 function YoutubeEmbed({ url }: { url: string }) {
   const matchResult = url.match(
@@ -35,37 +37,42 @@ export default async function Post({
   const isYoutubeVideo = isYouTubeLink(banner);
 
   return (
-    <article className="blog">
-      <div className="grid place-items-center">
-        <h1 className="!mb-2 !mt-6 text-center">{title}</h1>
-        <h6 className="flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
-          <Image
-            src={logo}
-            placeholder="blur"
-            alt="Boidu's Logo"
-            className="w-8 h-8 mr-4 border rounded-full border-accent-600"
-          />
-          <div className="text-accent-300">
-            <span className="mr-1">
-              Published by <span className="text-accent-50">Boidushya Bhattacharyay</span>
-            </span>
-            <span className="mx-1">
-              <span className="whitespace-pre opacity-50"> • </span> {readingTime}
-            </span>
-            <span className="ml-1">
-              <span className="whitespace-pre opacity-50"> • </span> {date}
-            </span>
-          </div>
-        </h6>
-      </div>
-      {isYoutubeVideo ? (
-        <YoutubeEmbed url={banner} />
-      ) : (
-        <FadeInImage src={banner} alt="Banner" height={900} width={1600} className="mt-4 mb-10 rounded-lg" />
-      )}
+    <>
+      <article className="blog">
+        <div className="grid place-items-center">
+          <h1 className="!mb-2 !mt-6 text-center">{title}</h1>
+          <h6 className="flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
+            <Image
+              src={logo}
+              placeholder="blur"
+              alt="Boidu's Logo"
+              className="w-8 h-8 mr-4 border rounded-full border-accent-600"
+            />
+            <div className="text-accent-300">
+              <span className="mr-1">
+                Published by <span className="text-accent-50">Boidushya Bhattacharyay</span>
+              </span>
+              <span className="mx-1">
+                <span className="whitespace-pre opacity-50"> • </span> {readingTime}
+              </span>
+              <span className="ml-1">
+                <span className="whitespace-pre opacity-50"> • </span> {date}
+              </span>
+            </div>
+          </h6>
+        </div>
+        {isYoutubeVideo ? (
+          <YoutubeEmbed url={banner} />
+        ) : (
+          <FadeInImage src={banner} alt="Banner" height={900} width={1600} className="mt-4 mb-10 rounded-lg" />
+        )}
 
-      <main className="text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: html as string }} />
-    </article>
+        <main className="text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: html as string }} />
+      </article>
+      <div className="fixed sm:bottom-12 sm:right-12 bottom-4 right-4">
+        <Like postId={id} />
+      </div>
+    </>
   );
 }
 
