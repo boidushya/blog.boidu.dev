@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
-import { AnimatePresence, motion, useAnimate, useMotionTemplate, useMotionValue, useTransform } from "framer-motion";
+import { AnimatePresence, motion, useAnimate, useMotionTemplate, useMotionValue } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
+import { Tooltip } from "@/utils/components";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -60,16 +61,25 @@ const SignGallery = ({ id }: { id: string }) => {
 
   return (
     <div className="p-4 border border-dashed border-accent-600/50 bg-accent-800/25 rounded-xl">
-      <h3 className="flex items-center justify-between gap-2 mb-4 text-lg font-semibold text-accent-400">
-        <span className="flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" className="inline-block w-5 h-5" viewBox="0 0 256 256">
-            <path
-              fill="currentColor"
-              d="M80.3 120.26a58.3 58.3 0 0 1 .7-23.19C83.32 87 87.89 80 92.1 80c2.57 0 2.94.67 3.12 1c.88 1.61 4 10.93-12.63 46.52a29 29 0 0 1-2.29-7.26M232 56v144a16 16 0 0 1-16 16H40a16 16 0 0 1-16-16V56a16 16 0 0 1 16-16h176a16 16 0 0 1 16 16M84 160c2-3.59 3.94-7.32 5.9-11.14c10.34-.32 22.21-7.57 35.47-21.68c5 9.69 11.38 15.25 18.87 16.55c8 1.38 16-2.38 23.94-11.2c6 5.53 16.15 11.47 31.8 11.47a8 8 0 0 0 0-16c-17.91 0-24.3-10.88-24.84-11.86a7.83 7.83 0 0 0-6.54-4.51a8 8 0 0 0-7.25 3.6c-6.78 10-11.87 13.16-14.39 12.73c-4-.69-9.15-10-11.23-18a8 8 0 0 0-14-3c-8.88 10.94-16.3 17.79-22.13 21.66c15.8-35.65 13.27-48.59 9.6-55.3c-1.85-3.48-6.61-9.32-17.1-9.32c-12.44 0-22.42 11-26.69 29.46a75 75 0 0 0-.83 29.81c1.7 8.9 5.17 15.73 10.16 20.12c-3 5.81-6.09 11.43-9 16.61H56a8 8 0 0 0 0 16h.44c-4.26 7.12-7.11 11.59-7.18 11.69a8 8 0 0 0 13.48 8.62c.36-.55 5.47-8.57 12.29-20.31H200a8 8 0 0 0 0-16Z"
-            />
-          </svg>
-          Sign Board
-        </span>
+      <h3 className="flex items-center justify-between gap-2 mb-4 text-lg font-semibold cursor-help text-accent-400">
+        <Tooltip
+          content={
+            <p className="max-w-xs p-2 text-base font-normal text-accent-400/75">
+              This section displays the signs that were created by the readers of this post. <br /> You can create a
+              sign by liking this post.
+            </p>
+          }
+        >
+          <span className="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="inline-block w-5 h-5" viewBox="0 0 256 256">
+              <path
+                fill="currentColor"
+                d="M80.3 120.26a58.3 58.3 0 0 1 .7-23.19C83.32 87 87.89 80 92.1 80c2.57 0 2.94.67 3.12 1c.88 1.61 4 10.93-12.63 46.52a29 29 0 0 1-2.29-7.26M232 56v144a16 16 0 0 1-16 16H40a16 16 0 0 1-16-16V56a16 16 0 0 1 16-16h176a16 16 0 0 1 16 16M84 160c2-3.59 3.94-7.32 5.9-11.14c10.34-.32 22.21-7.57 35.47-21.68c5 9.69 11.38 15.25 18.87 16.55c8 1.38 16-2.38 23.94-11.2c6 5.53 16.15 11.47 31.8 11.47a8 8 0 0 0 0-16c-17.91 0-24.3-10.88-24.84-11.86a7.83 7.83 0 0 0-6.54-4.51a8 8 0 0 0-7.25 3.6c-6.78 10-11.87 13.16-14.39 12.73c-4-.69-9.15-10-11.23-18a8 8 0 0 0-14-3c-8.88 10.94-16.3 17.79-22.13 21.66c15.8-35.65 13.27-48.59 9.6-55.3c-1.85-3.48-6.61-9.32-17.1-9.32c-12.44 0-22.42 11-26.69 29.46a75 75 0 0 0-.83 29.81c1.7 8.9 5.17 15.73 10.16 20.12c-3 5.81-6.09 11.43-9 16.61H56a8 8 0 0 0 0 16h.44c-4.26 7.12-7.11 11.59-7.18 11.69a8 8 0 0 0 13.48 8.62c.36-.55 5.47-8.57 12.29-20.31H200a8 8 0 0 0 0-16Z"
+              />
+            </svg>
+            Sign Board
+          </span>
+        </Tooltip>
         <button
           onClick={() => setHasMore(!hasMore)}
           className={`items-center justify-between h-8 gap-3 px-4 pr-5 text-sm rounded-lg bg-accent-900 hover:bg-accent-800/25 select-none ${
@@ -119,7 +129,7 @@ const SignGallery = ({ id }: { id: string }) => {
           style={{
             maskImage,
           }}
-          className={`grid grid-cols-4 pt-2 gap-4 overflow-hidden transition-[max-height] duration-500 ${
+          className={`grid grid-cols-2 sm:grid-cols-4 pt-2 gap-4 overflow-hidden transition-[max-height] duration-500 ${
             hasMore ? "max-h-24" : "max-h-[1000px] overflow-auto"
           }`}
         >
