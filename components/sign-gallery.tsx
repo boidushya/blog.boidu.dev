@@ -1,18 +1,14 @@
 "use client";
 
-import { useSign } from "@/providers/sign";
 import React from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useAnimate, useMotionTemplate, useMotionValue, useTransform } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 
 const containerVariants = {
-  hidden: {
-    opacity: 0,
-  },
+  hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.125,
-    },
+    transition: { staggerChildren: 0.125 },
   },
 };
 
@@ -21,35 +17,46 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
+const fetchSigns = async (id: string) => {
+  const response = await fetch(`/api/sign?id=${id}`);
+  const data = await response.json();
+  return data.svgTexts as string[];
+};
+
 const SignGallery = ({ id }: { id: string }) => {
-  const [signs, setSigns] = React.useState<string[]>([]);
   const [hasMore, setHasMore] = React.useState(true);
-  const [isEmpty, setIsEmpty] = React.useState(true);
 
-  const { open } = useSign();
+  const maskAlpha = useMotionValue(0);
+  const maskImage = useMotionTemplate`linear-gradient(rgba(0,0,0,1), rgba(0,0,0,${maskAlpha}))`;
 
-  const fetchSigns = async () => {
-    const response = await fetch(`/api/sign?id=${id}`);
-    const data = await response.json();
-    const svgTexts = data.svgTexts as string[];
+  const {
+    data: fetchedSigns = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["signs", id],
+    queryFn: () => fetchSigns(id),
+    select: data => {
+      const uniqueSigns = Array.from(new Set(data));
+      return uniqueSigns;
+    },
+  });
 
-    if (svgTexts.length === 0) {
-      setIsEmpty(true);
+  const isEmpty = fetchedSigns.length === 0;
+
+  React.useEffect(() => {
+    setHasMore(fetchedSigns.length > 4);
+  }, [fetchedSigns]);
+
+  React.useEffect(() => {
+    if (hasMore && fetchedSigns.length > 4) {
+      setTimeout(() => {
+        maskAlpha.set(0);
+      }, 250);
+    } else {
+      maskAlpha.set(1);
     }
-
-    setSigns((prevSigns: string[]) => {
-      const uniqueSigns = Array.from(new Set([...prevSigns, ...svgTexts]));
-      return Array(8).fill(uniqueSigns).flat();
-    });
-  };
-
-  React.useEffect(() => {
-    fetchSigns();
-  }, [id, open]);
-
-  React.useEffect(() => {
-    setHasMore(signs.length > 4);
-  }, [signs]);
+  }, [hasMore]);
 
   return (
     <div className="p-4 border border-dashed border-accent-600/50 bg-accent-800/25 rounded-xl">
@@ -63,17 +70,37 @@ const SignGallery = ({ id }: { id: string }) => {
           </svg>
           Sign Board
         </span>
-        {hasMore && (
-          <button
-            onClick={() => setHasMore(false)}
-            className="flex items-center justify-between h-8 gap-3 px-4 pr-5 text-sm rounded-lg bg-accent-900 hover:bg-accent-800/25"
-          >
-            Show All
-          </button>
-        )}
+        <button
+          onClick={() => setHasMore(!hasMore)}
+          className={`items-center justify-between h-8 gap-3 px-4 pr-5 text-sm rounded-lg bg-accent-900 hover:bg-accent-800/25 select-none ${
+            fetchedSigns.length > 4 ? "flex" : "hidden"
+          } `}
+        >
+          Show {hasMore ? "More" : "Less"}
+        </button>
       </h3>
-      <hr className="border-dashed border-accent-600/50" />
-      {isEmpty ? (
+      <hr className="mb-4 border-dashed border-accent-600/50" />
+      {isLoading ? (
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          className="grid grid-cols-4 gap-4"
+        >
+          {[...Array(4)].map((_, index) => (
+            <motion.div
+              key={index}
+              variants={itemVariants}
+              className="h-20 border border-dashed rounded-lg border-accent-600/50 bg-accent-900/50 animate-pulse"
+            />
+          ))}
+        </motion.div>
+      ) : isError && !isEmpty ? (
+        <p className="flex items-center justify-center w-full h-10 gap-2 mt-4 text-accent-400/50">
+          Error fetching signs. Please try again later.
+        </p>
+      ) : isEmpty ? (
         <p className="flex items-center justify-center w-full h-10 gap-2 mt-4 text-accent-400/50">
           <svg xmlns="http://www.w3.org/2000/svg" className="inline-block w-5 h-5" viewBox="0 0 256 256">
             <path
@@ -89,10 +116,15 @@ const SignGallery = ({ id }: { id: string }) => {
           initial="hidden"
           animate="visible"
           exit="hidden"
-          className={`grid grid-cols-4 gap-4 overflow-hidden transition-[max-height] duration-500 ${hasMore ? "gradient-mask max-h-24" : "max-h-full"}`}
+          style={{
+            maskImage,
+          }}
+          className={`grid grid-cols-4 pt-2 gap-4 overflow-hidden transition-[max-height] duration-500 ${
+            hasMore ? "max-h-24" : "max-h-[1000px] overflow-auto"
+          }`}
         >
           <AnimatePresence>
-            {signs.map((svgText: string, index: number) => (
+            {fetchedSigns.map((svgText: string, index: number) => (
               <motion.div
                 key={svgText + index}
                 variants={itemVariants}

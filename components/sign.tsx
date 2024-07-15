@@ -6,6 +6,7 @@ import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { useSign } from "@/providers/sign";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface SignProps extends ComponentProps<"div"> {
   id: string;
@@ -13,6 +14,33 @@ interface SignProps extends ComponentProps<"div"> {
 
 const Sign = ({ id }: SignProps) => {
   const { setOpen } = useSign();
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (newSign: { svgText: string; id: string }) =>
+      fetch("/api/sign", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newSign),
+      }).then(response => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      }),
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["signs", id] });
+      setOpen(false);
+    },
+    onError: error => {
+      console.error("Error submitting sign", error);
+      // You might want to show an error message to the user here
+    },
+  });
 
   const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -25,21 +53,8 @@ const Sign = ({ id }: SignProps) => {
   const handleAddSignature = async () => {
     const signature = await canvasRef.current?.exportSvg();
 
-    try {
-      const response = await fetch("/api/sign", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ svgText: signature, id }),
-      });
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-    } catch (error) {
-      console.error("Error submitting sign", error);
-    } finally {
-      setOpen(false);
+    if (signature) {
+      mutation.mutate({ svgText: signature, id });
     }
   };
 
@@ -103,8 +118,9 @@ const Sign = ({ id }: SignProps) => {
             </svg>
           </button>
           <button
-            className="flex items-center justify-between gap-3 px-4 pr-5 text-sm rounded-lg h-9 bg-accent-800/50 hover:bg-accent-800/75"
+            className="flex items-center justify-between gap-3 px-4 pr-5 text-sm rounded-lg h-9 bg-accent-800/50 hover:bg-accent-800/75 disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={handleAddSignature}
+            disabled={mutation.isPending}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -120,7 +136,7 @@ const Sign = ({ id }: SignProps) => {
                 d="M7.864 4.243A7.5 7.5 0 0 1 19.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 0 0 4.5 10.5a7.464 7.464 0 0 1-1.15 3.993m1.989 3.559A11.209 11.209 0 0 0 8.25 10.5a3.75 3.75 0 1 1 7.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 0 1-3.6 9.75m6.633-4.596a18.666 18.666 0 0 1-2.485 5.33"
               />
             </svg>
-            Add Signature
+            {mutation.isPending ? "Adding..." : "Add Signature"}
           </button>
         </div>
       </div>
