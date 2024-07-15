@@ -102,7 +102,7 @@ const SignGallery = ({ id }: { id: string }) => {
             <motion.div
               key={index}
               variants={itemVariants}
-              className="h-20 border border-dashed rounded-lg border-accent-600/50 bg-accent-900/50 animate-pulse"
+              className="h-20 border rounded-lg border-accent-600/50 bg-accent-900/50 animate-pulse"
             />
           ))}
         </motion.div>
@@ -138,7 +138,7 @@ const SignGallery = ({ id }: { id: string }) => {
               <motion.div
                 key={svgText + index}
                 variants={itemVariants}
-                className="border border-dashed rounded-lg border-accent-600/50 bg-accent-900/50"
+                className="border rounded-lg border-accent-600/50 bg-accent-900/50"
                 dangerouslySetInnerHTML={{ __html: svgText }}
               />
             ))}
