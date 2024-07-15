@@ -65,8 +65,8 @@ const SignGallery = ({ id }: { id: string }) => {
         <Tooltip
           content={
             <p className="max-w-xs p-2 text-base font-normal text-accent-400/75">
-              This section displays the signatures from readers of this post. <br /> You can create a sign by liking
-              this post.
+              This section displays the signatures from readers of this post. <br /> You can add your signature by
+              liking this post.
             </p>
           }
         >
