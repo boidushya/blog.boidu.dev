@@ -6,6 +6,7 @@ const nextConfig = {
   },
   webpack: config => {
     config.externals.push("utf-8-validate", "bufferutil");
+    config.ignoreWarnings = [{ message: /Critical dependency: require function/ }];
     return config;
   },
 };

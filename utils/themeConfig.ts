@@ -26,6 +26,11 @@ export const getThemeVariables = (themeName: TThemeName): Record<ColorVariable, 
   );
 };
 
+export const getCurrentThemeColors = () => {
+  const themeName = localStorage.getItem("blog-theme") as TThemeName;
+  return getThemeVariables(themeName);
+};
+
 export const getThemeHint = (themeName: TThemeName) => {
   const theme = THEMES[themeName];
 
