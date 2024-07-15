@@ -12,6 +12,8 @@ import {
 } from "framer-motion";
 import { supabase } from "../lib/supabaseClient";
 import { useResizeObserver } from "@/utils/hooks";
+import Sign from "./sign";
+import { useSign } from "@/providers/sign";
 
 const likeCountVariants: Variants = {
   initial: direction => ({
@@ -60,10 +62,12 @@ export default function Like({ postId }: { postId: string }) {
   const [liked, setLiked] = React.useState(false);
   const [likeCount, setLikeCount] = React.useState<number | null>(null);
 
+  const { open: signModalOpen, setOpen: setSignModalOpen } = useSign();
+
   const [scope, animate] = useAnimate();
 
   const onResize = useCallback((target: HTMLButtonElement) => {
-    animate(scope.current, { width: target.offsetWidth }, transition);
+    animate(scope.current, { width: target.offsetWidth, height: target.offsetHeight }, transition);
   }, []);
 
   const contentRef = useResizeObserver<HTMLButtonElement>(onResize);
@@ -110,72 +114,79 @@ export default function Like({ postId }: { postId: string }) {
     fetchLikeCount();
   }, [postId]);
 
+  React.useEffect(() => {
+    setSignModalOpen(liked);
+  }, [liked]);
+
   return (
-    <motion.div
-      ref={scope}
-      className={`border rounded-full bg-accent-900/50 border-accent-600/50 backdrop-blur hover:bg-accent-850/50 shadow-deep transition-[opacity,transform] ${likeCount === null ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"}`}
-    >
-      <button
-        onClick={handleClick}
-        ref={contentRef}
-        className="flex items-center justify-center gap-2 px-3 py-2 pr-4 text-sm leading-none text-pink-500"
+    <>
+      <AnimatePresence>{signModalOpen && <Sign id={postId} />}</AnimatePresence>
+      <motion.div
+        ref={scope}
+        className={`relative border rounded-full bg-accent-900/50 border-accent-600/50 backdrop-blur hover:bg-accent-850/50 shadow-deep transition-[opacity,transform] ${likeCount === null ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"}`}
       >
-        <AnimatePresence mode="popLayout" initial={false}>
-          <div key={likeCount} className="relative w-5 h-5">
-            {liked ? (
-              <motion.svg
-                variants={likeSvgVariants}
-                custom={liked ? 1 : -1}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={transition}
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="absolute w-5 h-5"
-              >
-                <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
-              </motion.svg>
-            ) : (
-              <motion.svg
-                variants={likeSvgVariants}
-                custom={liked ? 1 : -1}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={transition}
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="absolute w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-                />
-              </motion.svg>
-            )}
-          </div>
-        </AnimatePresence>
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.p
-            key={likeCount ?? "loading"}
-            variants={likeCountVariants}
-            custom={liked ? 1 : -1}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            transition={transition}
-            className="font-mono text-accent-200"
-          >
-            {likeCount ?? 0}
-          </motion.p>
-        </AnimatePresence>
-      </button>
-    </motion.div>
+        <button
+          onClick={handleClick}
+          ref={contentRef}
+          className="flex items-center justify-center gap-2 px-3 py-2 pr-4 text-sm leading-none text-pink-500"
+        >
+          <AnimatePresence mode="popLayout" initial={false}>
+            <div key={likeCount} className="relative w-5 h-5">
+              {liked ? (
+                <motion.svg
+                  variants={likeSvgVariants}
+                  custom={liked ? 1 : -1}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={transition}
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="absolute w-5 h-5"
+                >
+                  <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                </motion.svg>
+              ) : (
+                <motion.svg
+                  variants={likeSvgVariants}
+                  custom={liked ? 1 : -1}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={transition}
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="absolute w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                  />
+                </motion.svg>
+              )}
+            </div>
+          </AnimatePresence>
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.p
+              key={likeCount ?? "loading"}
+              variants={likeCountVariants}
+              custom={liked ? 1 : -1}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={transition}
+              className="font-mono text-accent-200"
+            >
+              {likeCount ?? 0}
+            </motion.p>
+          </AnimatePresence>
+        </button>
+      </motion.div>
+    </>
   );
 }

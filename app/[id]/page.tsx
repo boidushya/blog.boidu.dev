@@ -6,6 +6,9 @@ import { FadeInImage } from "@/utils/components";
 import { isYouTubeLink, truncate } from "@/utils/functions";
 import React from "react";
 import Like from "@/components/like";
+import Sign from "@/components/sign";
+import SignGallery from "@/components/sign-gallery";
+import ArticleExtra from "@/components/article-extra";
 
 function YoutubeEmbed({ url }: { url: string }) {
   const matchResult = url.match(
@@ -69,9 +72,7 @@ export default async function Post({
 
         <main className="text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: html as string }} />
       </article>
-      <div className="fixed sm:bottom-12 sm:right-12 bottom-4 right-4">
-        <Like postId={id} />
-      </div>
+      <ArticleExtra id={id} />
     </>
   );
 }

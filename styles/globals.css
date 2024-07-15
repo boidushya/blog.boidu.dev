@@ -37,8 +37,29 @@ body {
 }
 
 .react-auto-width {
-  overflow: hidden;
-  transition: width 500ms;
+	overflow: hidden;
+	transition: width 500ms;
+}
+
+path[id^="react-sketch-canvas__"]{
+	@apply !stroke-accent-200;
+}
+
+circle[id^="react-sketch-canvas__"]{
+	@apply !stroke-accent-200 !fill-accent-200;
+}
+
+.sketch-canvas{
+	/* border: none !important; */
+	border-radius: 0.5rem !important;
+	@apply !border !border-accent-600/50 bg-accent-900/75 !border-dashed;
+	background-image: linear-gradient(to right, rgb(var(--color-accent-600) / 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(var(--color-accent-600) / 0.15) 1px, transparent 1px);
+  background-size: 25px 25px;
+}
+
+.gradient-mask{
+	mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1.0) 0%, transparent 100%);
 }
 
 @keyframes spin {
