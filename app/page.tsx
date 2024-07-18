@@ -1,6 +1,6 @@
-import React from "react";
-import { getAllBlogs } from "@/lib/blogs";
 import { ViewWithUtils } from "@/components";
+import { getAllBlogs } from "@/lib/blogs";
+import React from "react";
 
 export default async function Home() {
   const data = await getAllBlogs();

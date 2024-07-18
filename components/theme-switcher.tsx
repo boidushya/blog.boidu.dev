@@ -2,6 +2,7 @@
 
 import { useTheme } from "@/providers/theme";
 import { TThemeName } from "@/utils/constants";
+import { LIGHT_THEMES } from "@/utils/constants";
 import { getAllThemes, getThemeHint } from "@/utils/themeConfig";
 import {
   DropdownMenu,
@@ -15,7 +16,6 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import React from "react";
-import { LIGHT_THEMES } from "@/utils/constants";
 
 const SunIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3">

@@ -1,8 +1,8 @@
 "use client";
 
-import React, { createContext, Dispatch, SetStateAction, useEffect, useLayoutEffect, useState } from "react";
-import { getThemeVariables } from "@/utils/themeConfig";
 import { TThemeName } from "@/utils/constants";
+import { getThemeVariables } from "@/utils/themeConfig";
+import React, { createContext, Dispatch, SetStateAction, useEffect, useLayoutEffect, useState } from "react";
 
 export interface TThemeContext {
   theme: TThemeName;

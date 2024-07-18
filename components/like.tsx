@@ -1,19 +1,19 @@
 "use client";
 
-import React, { useCallback, useRef } from "react";
+import { useSign } from "@/providers/sign";
+import { useResizeObserver } from "@/utils/hooks";
 import {
-  animate,
   AnimatePresence,
+  ValueAnimationTransition,
+  Variants,
+  animate,
   motion,
   motionValue,
   useAnimate,
-  ValueAnimationTransition,
-  Variants,
 } from "framer-motion";
+import React, { useCallback, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
-import { useResizeObserver } from "@/utils/hooks";
 import Sign from "./sign";
-import { useSign } from "@/providers/sign";
 
 const likeCountVariants: Variants = {
   initial: direction => ({

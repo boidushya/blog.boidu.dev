@@ -1,7 +1,7 @@
-import { SKIP, visit } from "unist-util-visit";
-import { isElement } from "hast-util-is-element";
-import type { Root, Element, ElementContent, Parent, Text } from "hast";
+import type { Element, ElementContent, Parent, Root, Text } from "hast";
 import { fromHtml } from "hast-util-from-html";
+import { isElement } from "hast-util-is-element";
+import { SKIP, visit } from "unist-util-visit";
 
 export interface IAlert {
   keyword: string;

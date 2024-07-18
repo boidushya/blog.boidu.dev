@@ -1,14 +1,14 @@
-/* eslint-disable @next/next/no-img-element */
-import { getPostById, getAllPosts } from "@/lib/blogs";
 import logo from "@/assets/images/logo.jpg";
-import Image from "next/image";
-import { FadeInImage } from "@/utils/components";
-import { isYouTubeLink, truncate } from "@/utils/functions";
-import React from "react";
+import ArticleExtra from "@/components/article-extra";
 import Like from "@/components/like";
 import Sign from "@/components/sign";
 import SignGallery from "@/components/sign-gallery";
-import ArticleExtra from "@/components/article-extra";
+/* eslint-disable @next/next/no-img-element */
+import { getAllPosts, getPostById } from "@/lib/blogs";
+import { FadeInImage } from "@/utils/components";
+import { isYouTubeLink, truncate } from "@/utils/functions";
+import Image from "next/image";
+import React from "react";
 
 function YoutubeEmbed({ url }: { url: string }) {
   const matchResult = url.match(

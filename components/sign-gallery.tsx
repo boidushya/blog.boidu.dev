@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
-import { AnimatePresence, motion, useAnimate, useMotionTemplate, useMotionValue } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
 import { Tooltip } from "@/utils/components";
+import { useQuery } from "@tanstack/react-query";
+import { AnimatePresence, motion, useAnimate, useMotionTemplate, useMotionValue } from "framer-motion";
+import React from "react";
 
 const containerVariants = {
   hidden: { opacity: 0 },

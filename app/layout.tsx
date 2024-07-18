@@ -1,11 +1,11 @@
 import "@/styles/globals.css";
-import Navbar from "@/components/nav";
 import Footer from "@/components/footer";
-import React from "react";
-import NextTopLoader from "nextjs-toploader";
-import Script from "next/script";
-import { colors } from "@/utils/theme";
+import Navbar from "@/components/nav";
 import Providers from "@/providers";
+import { colors } from "@/utils/theme";
+import Script from "next/script";
+import NextTopLoader from "nextjs-toploader";
+import React from "react";
 
 export const metadata = {
   title: "Boidu's Blog",

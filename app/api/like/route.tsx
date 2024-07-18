@@ -1,6 +1,6 @@
+import cors from "@/lib/cors";
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../lib/supabaseClient";
-import cors from "@/lib/cors";
 
 type ActionType = "increment" | "decrement";
 

@@ -1,10 +1,10 @@
 "use client";
 
+import SignProvider from "@/providers/sign";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import Like from "./like";
 import SignGallery from "./sign-gallery";
-import SignProvider from "@/providers/sign";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 

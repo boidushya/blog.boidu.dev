@@ -1,8 +1,9 @@
-/// <reference types="mdast-util-to-hast" />
-import type { LanguageInput } from "shiki/core";
+import type { Element, Root } from "hast";
+import { toString } from "hast-util-to-string";
 import type { BuiltinLanguage, BuiltinTheme } from "shiki";
 import { bundledLanguages, getSingletonHighlighter } from "shiki";
-import type { Plugin } from "unified";
+/// <reference types="mdast-util-to-hast" />
+import type { LanguageInput } from "shiki/core";
 import type {
   CodeOptionsMeta,
   CodeOptionsThemes,
@@ -10,9 +11,8 @@ import type {
   HighlighterGeneric,
   TransformerOptions,
 } from "shiki/core";
-import type { Element, Root } from "hast";
+import type { Plugin } from "unified";
 import type { Transformer } from "unified";
-import { toString } from "hast-util-to-string";
 import { visit } from "unist-util-visit";
 
 export interface MapLike<K = any, V = any> {
