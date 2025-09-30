@@ -1,5 +1,6 @@
 import fs from "fs";
 import { join } from "path";
+import { getAuthorsData } from "@/utils/functions";
 import { rehypeAdmonitions } from "@/utils/rehype-admonitions";
 import rehypeShiki from "@/utils/rehype-shiki";
 import { format } from "date-fns";
@@ -12,7 +13,6 @@ import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
-import { getAuthorsData } from "@/utils/functions";
 
 let p: ReturnType<typeof getParserPre> | undefined;
 
