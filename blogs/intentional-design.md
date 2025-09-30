@@ -2,7 +2,7 @@
 title: "Intentional Design - Better Lyrics"
 date: "2025-09-30"
 banner: "https://res.cloudinary.com/boidu/image/upload/t_banner/v1720053968/Fb31GDDUYAQCGIl_wwua8t.jpg"
-labels: ['Story', 'Extension', 'Design']
+labels: ['Design', 'Principles','Extension']
 authors: ["cubey"]
 description: >
   The core ideology powering Better Lyrics, Youtube musics' most loved extension
