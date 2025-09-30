@@ -12,6 +12,7 @@ import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
+import { getAuthorsData } from "@/utils/functions";
 
 let p: ReturnType<typeof getParserPre> | undefined;
 
@@ -57,6 +58,8 @@ export async function getPostById(id: string) {
   const parser = await getParser();
   const html = await parser.process(content);
 
+  const authors = data.authors ? getAuthorsData(data.authors) : [];
+
   return {
     ...data,
     title: data.title,
@@ -67,6 +70,7 @@ export async function getPostById(id: string) {
     readingTime: readingTime(content).text,
     html: html.value.toString(),
     labels: data.labels || [],
+    authors: authors || [],
   };
 }
 

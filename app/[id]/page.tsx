@@ -6,7 +6,7 @@ import SignGallery from "@/components/sign-gallery";
 /* eslint-disable @next/next/no-img-element */
 import { getAllPosts, getPostById } from "@/lib/blogs";
 import { FadeInImage } from "@/utils/components";
-import { isYouTubeLink, truncate } from "@/utils/functions";
+import { getAuthorsData, isYouTubeLink, truncate } from "@/utils/functions";
 import Image from "next/image";
 import React from "react";
 
@@ -35,7 +35,7 @@ export default async function Post({
 }: {
   params: { id: string };
 }) {
-  const { html, title, date, readingTime, banner } = await getPostById(id);
+  const { html, title, date, readingTime, banner, authors } = await getPostById(id);
 
   const isYoutubeVideo = isYouTubeLink(banner);
 
@@ -45,15 +45,42 @@ export default async function Post({
         <div className="grid place-items-center">
           <h1 className="!mb-2 !mt-6 text-center">{title}</h1>
           <h6 className="flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
-            <Image
-              src={logo}
-              placeholder="blur"
-              alt="Boidu's Logo"
-              className="w-8 h-8 mr-4 border rounded-full border-accent-600"
-            />
+            <div className="flex mr-4 -space-x-2 rtl:space-x-reverse">
+              <Image
+                src={logo}
+                placeholder="blur"
+                alt="Boidu's Logo"
+                className="w-8 h-8 border rounded-full border-accent-600"
+              />
+              {authors.map(item => (
+                <Image
+                  src={item.logo}
+                  width={32}
+                  height={32}
+                  alt="Boidu's Logo"
+                  className="w-8 h-8 border rounded-full border-accent-600"
+                />
+              ))}
+            </div>
             <div className="text-accent-300">
               <span className="mr-1">
-                Published by <span className="text-accent-50">Boidushya Bhattacharyay</span>
+                Published by <span className="text-accent-50">Boidushya</span>
+                {authors &&
+                  authors.map((author, index) => {
+                    if (index === authors.length - 1) {
+                      return (
+                        <>
+                          {" "}
+                          & <span className="text-accent-50">{author.name}</span>
+                        </>
+                      );
+                    }
+                    return (
+                      <>
+                        , <span className="text-accent-50">{author.name}</span>
+                      </>
+                    );
+                  })}
               </span>
               <span className="mx-1">
                 <span className="whitespace-pre opacity-50"> • </span> {readingTime}

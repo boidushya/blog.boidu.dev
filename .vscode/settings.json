@@ -17,5 +17,7 @@
   "prettier.enable": false,
   "[postcss]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true
 }

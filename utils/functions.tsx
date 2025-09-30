@@ -17,3 +17,18 @@ export function truncate(str: string, num: number) {
   }
   return str.slice(0, num) + "...";
 }
+
+export function getAuthorData(id: string) {
+  switch (id) {
+    case "cubey":
+      return { name: "Adalie", logo: "https://avatars.githubusercontent.com/u/59785640?v=4" };
+    default:
+      return { name: "Anon", logo: "https://api.dicebear.com/9.x/glass/png" };
+  }
+}
+
+export function getAuthorsData(authorsList: Array<string>) {
+  return authorsList.map(item => ({
+    ...getAuthorData(item),
+  }));
+}
