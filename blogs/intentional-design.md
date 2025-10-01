@@ -145,6 +145,14 @@ When people ask me about Better Lyrics' design, I usually don't have much to say
 
 It's just a collection of thousand small decisions, all to serve the user's needs, nothing more, nothing less.
 
+I often stumble upon Reddit threads where someone asks "how do I get lyrics on YouTube Music?" and there's always a few people recommending Better Lyrics.
+
+Intentional design creates its own marketing. Think about the last restaurant you recommended to a friend. You didn't do it because of their ads. You did it because the experience felt right. When you build something that truly serves people, they tell others about it. Not because you asked them to, but because they want their friends to have the same experience.
+
+Better Lyrics has never had a marketing budget. It's free and open source, and it's staying that way forever.
+
+It's our love letter to building things the right way - to intentional design.
+
 The best compliment Better Lyrics has ever gotten wasn't "this looks so beautiful" or "the animations are pretty." It was "I don't believe Google hasn't implemented this already."
 
 That's when we knew we got it right.
