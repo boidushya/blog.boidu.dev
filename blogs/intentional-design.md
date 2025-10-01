@@ -24,7 +24,9 @@ If you don't know what Better Lyrics is, I'd highly recommend reading [my previo
 
 Here's a trap I see constantly: developers and designers building products for other developers and designers. We get caught up in showing off our skills - clever interactions, elaborate animations, unconventional layouts. We forget that most users don't care about our craft. They care about their music.
 
-When someone opens YouTube Music, they're not thinking "I wonder how the lyrics extension will wow me today." They're thinking "I want to read what this song has to say." The moment your design becomes the focus, you've failed.
+When someone opens YouTube Music, they're not thinking "I wonder how the lyrics extension will wow me today." They're thinking "I want to follow along with the lyrics."
+
+The moment your design becomes the focus, you've failed.
 
 ## The Design Principles
 
@@ -60,7 +62,7 @@ Every feature that makes it into Better Lyrics exists because it directly serves
 
 This isn't about being minimal for the sake of minimalism. It's about intentionality. When you introduce features just because you can, you dilute the experience. Every addition has a cost - cognitive load, visual clutter, maintenance burden. If it's not earning its place, it doesn't belong.
 
-Better Lyrics does fewer things, but it does them exceptionally well. Users don't have to learn a complex interface or navigate through features they'll never use. They just get, well, better lyrics.
+Better Lyrics does fewer things, but it does them exceptionally well. Users don't have to learn a complex interface or navigate through features they'll never use. They just get, well, *better lyrics*.
 
 We've gotten reviews from people saying "there's no instructions for onboarding" and that's because there are none. And honestly? That makes us proud.
 
