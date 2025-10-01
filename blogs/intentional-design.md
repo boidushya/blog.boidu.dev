@@ -32,7 +32,7 @@ When someone opens YouTube Music, they're not thinking "I wonder how the lyrics 
 
 Here's the thing: Better Lyrics doesn't look like YouTube Music. At all.
 
-And that's intentional. Because "respecting the platform" doesn't mean copying it - it means understanding what the platform *should* be. YouTube Music's lyrics interface isn't just underwhelming, it's a missed opportunity. So instead of blending in, I asked: what would lyrics look like if YouTube Music had actually thought about this from first principles?
+And that's intentional. Because "respecting the platform" doesn't mean copying it - it means understanding what the platform *should* be. YouTube Music's lyrics interface falls flat, and that's what stings - it had so much potential. So instead of blending in, I asked: what would lyrics look like if YouTube Music had actually thought about this from first principles?
 
 Better Lyrics is pretty. It's meant to be. The typography is crisp, the gradients are smooth & the animations feel premium. It doesn't look like an Apple Music clone or a Spotify knockoff - it's its own thing. Because at the end of the day, lyrics are an emotional, artistic experience. They deserve to look beautiful.
 
