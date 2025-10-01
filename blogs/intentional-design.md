@@ -72,13 +72,13 @@ A lot of software has trained people to expect complexity, so when something jus
 
 If your design causes jank, it doesn't matter how pretty it is. It's bad design.
 
-Better Lyrics runs on every YouTube Music page load. If it's slow, users will notice. If it blocks rendering, users will notice. If it causes the music to stutter even for a millisecond, **users will definitely notice.**
+Better Lyrics runs on every YouTube Music page load. If it's slow, users will notice. If it blocks rendering, users will notice. If it causes the music to stutter even for a few millisecond, **users will definitely notice.**
 
-This is why I obsess over bundle size, lazy loading, and efficient DOM manipulation. Not because I'm a performance nerd (okay, maybe a little), but because speed is invisible until it's gone. Then suddenly, it's all users can see.
+This is why we obsess over bundle size, lazy loading, and efficient DOM manipulation. Not because we're performance nerds (okay, maybe a little), but because speed is invisible until it's gone. Then suddenly, it's all users can see.
 
 Even though this sometimes means we have to reinvent the wheel, we do it. Simply because we obsess over User Experience over how easy it is to develop.
 
-Better Lyrics could have used an extension framework. There are great ones I use for other projects. But we didn't. Frameworks add bloat, increase bundle size, and ship features you'll never use. We kept it lean instead.
+Better Lyrics could have used an extension framework. There are great ones I use for other projects. But we didn't. Frameworks add bloat, increase bundle size, and ship features you'll never use. We choose to keep it lean instead.
 
 ### 4. Anticipate Intent
 
