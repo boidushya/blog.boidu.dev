@@ -52,7 +52,7 @@ Most settings in Better Lyrics exist because different contexts genuinely need d
 
 Here's a question me and other maintainers ask before adding anything to Better Lyrics: **Does this really have a purpose in Better Lyrics?**
 
-Not "would this be cool?" Not "do other apps have this?" But does it serve the core function - helping users read and experience lyrics better?
+Not "would this be cool?". Not "do other apps have this?". The only question that matters is whether it helps you engage with the lyrics in a more human way.
 
 This filter is ruthless. We've killed dozens of feature ideas that sounded great on paper but failed this test. Social sharing? Doesn't help you read lyrics. Lyric annotations? Adds complexity without improving the core experience. AI-generated song meanings? Cool, but unnecessary.
 
