@@ -147,4 +147,4 @@ It's just a collection of thousand small decisions, all to serve the user's need
 
 The best compliment Better Lyrics has ever gotten wasn't "this looks so beautiful" or "the animations are pretty." It was "I don't believe Google hasn't implemented this already."
 
-That's when I knew I got it right.
+That's when we knew we got it right.
