@@ -62,6 +62,12 @@ This isn't about being minimal for the sake of minimalism. It's about intentiona
 
 Better Lyrics does fewer things, but it does them exceptionally well. Users don't have to learn a complex interface or navigate through features they'll never use. They just get, well, better lyrics.
 
+We've gotten reviews from people saying "there's no instructions for onboarding" and that's because there are none. And honestly? That makes us proud.
+
+There is no getting started. No setup wizard, no settings to configure, no onboarding flow.
+
+A lot of software has trained people to expect complexity, so when something just works out of the box, it can feel almost suspicious. You install it, lyrics appear. That's the entire experience, and that's exactly how it should be.
+
 ### 4. Performance IS Design
 
 If your design causes jank, it doesn't matter how pretty it is. It's bad design.
