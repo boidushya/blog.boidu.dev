@@ -100,7 +100,7 @@ Some of the most important parts of Better Lyrics are things users will never no
 
 **Responsive Adaptation**: Better Lyrics detects your window size and adjusts accordingly. Not because there's a "mobile mode" toggle, but because it just does the right thing. I didn't even know mobile browsers supported extensions when I started building Better Lyrics. Turns out they do, and users love it.
 
-These aren't features I can market. They don't make flashy demo videos. But they're the reason Better Lyrics feels polished.
+These aren't features we can market. They don't make flashy demo videos. But they're the reason Better Lyrics feels polished.
 
 ## When Intentionality Breaks Down
 
