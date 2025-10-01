@@ -114,7 +114,7 @@ I spent days fixing that bug. It violated the core principle: if you're going to
 
 The irony of intentional design is that it takes enormous effort to create something that feels effortless.
 
-Every detail of Better Lyrics - from the backgrounds to the exact timing of the scroll animations - was carefully considered. Adalie and me have probably spent more time on details that 99% of users will never consciously notice than on the features they explicitly asked for.
+Every detail of Better Lyrics - from the backgrounds to the exact timing of the scroll animations was carefully considered. Adalie and me have probably spent more time on details that 99% of users will never consciously notice than on the features they explicitly asked for.
 
 But that's the point. The sum of these intentional decisions creates an experience that just **feels right**. Users might not be able to articulate why Better Lyrics is better, they just know it is.
 
