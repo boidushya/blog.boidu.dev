@@ -54,7 +54,7 @@ export default async function Post({
         <div className="grid place-items-center">
           <h1 className="!mb-2 !mt-6 text-center">{title}</h1>
           <h6 className="flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
-            <div className="flex mr-4 -space-x-2 rtl:space-x-reverse">
+            <div className="flex mr-4 -space-x-2 rtl:space-x-reverse shrink-0">
               <Image
                 src={logo}
                 placeholder="blur"

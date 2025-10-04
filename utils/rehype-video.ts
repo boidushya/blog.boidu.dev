@@ -26,10 +26,10 @@ const rehypeVideo: Plugin<[], Root> = function () {
         tagName: "video",
         properties: {
           controls: false,
-          autoPlay: true,
+          autoplay: true,
           loop: true,
           muted: true,
-          playsInline: true,
+          playsinline: true,
           loading: "lazy",
           style: "width: 100%; height: auto; border-radius: 0.5rem;",
         },
