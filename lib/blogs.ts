@@ -3,6 +3,7 @@ import { join } from "path";
 import { getAuthorsData } from "@/utils/functions";
 import { rehypeAdmonitions } from "@/utils/rehype-admonitions";
 import rehypeShiki from "@/utils/rehype-shiki";
+import rehypeVideo from "@/utils/rehype-video";
 import { format } from "date-fns";
 import matter from "gray-matter";
 import readingTime from "reading-time";
@@ -27,6 +28,7 @@ async function getParserPre() {
     .use(rehypeStringify)
     .use(rehypeSlug)
     .use(rehypeAdmonitions as any)
+    .use(rehypeVideo)
     .use(rehypeAutolinkHeadings, {
       content: arg => ({
         type: "element",
@@ -51,12 +53,26 @@ function getParser() {
 }
 
 export async function getPostById(id: string) {
-  const realId = id.replace(/\.md$/, "");
-  const fullPath = join("blogs", `${realId}.md`);
-  const { data, content } = matter(await fs.promises.readFile(fullPath, "utf8"));
+  const realId = id.replace(/\.mdx?$/, "");
 
-  const parser = await getParser();
-  const html = await parser.process(content);
+  let fullPath = join("blogs", `${realId}.mdx`);
+  let isMDX = fs.existsSync(fullPath);
+  if (!isMDX) {
+    fullPath = join("blogs", `${realId}.md`);
+  }
+
+  const fileContent = await fs.promises.readFile(fullPath, "utf8");
+  const { data, content } = matter(fileContent);
+
+  let html: string;
+
+  if (isMDX) {
+    html = content;
+  } else {
+    const parser = await getParser();
+    const processed = await parser.process(content);
+    html = processed.value.toString();
+  }
 
   const authors = data.authors ? getAuthorsData(data.authors) : [];
 
@@ -68,7 +84,8 @@ export async function getPostById(id: string) {
     description: data.description,
     date: format(new Date(data.date), "LLL dd, yyyy"),
     readingTime: readingTime(content).text,
-    html: html.value.toString(),
+    html,
+    isMDX,
     labels: data.labels || [],
     authors: authors || [],
   };
@@ -81,7 +98,6 @@ export async function getAllPosts() {
 
 export async function getAllBlogs() {
   const posts = await Promise.all(fs.readdirSync("blogs").map(id => getPostById(id)));
-  // sort the posts by date
   return posts
     .sort((post1, post2) => {
       const date1 = new Date(post1.date);

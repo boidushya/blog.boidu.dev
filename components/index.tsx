@@ -5,12 +5,11 @@ import { Tooltip } from "@/utils/components";
 import { LIGHT_THEMES } from "@/utils/constants";
 import { isYouTubeLink } from "@/utils/functions";
 import { useWaterMark } from "@/utils/hooks";
-import { Toggle } from "@radix-ui/react-toggle";
 import { ToggleGroup, ToggleGroupItem } from "@radix-ui/react-toggle-group";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import React, { PropsWithoutRef } from "react";
+import React from "react";
 
 const getYouTubeThumbnail = (url: string): string | null => {
   const match = url.match(

@@ -32,6 +32,19 @@ module.exports = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      borderWidth: {
+        0.5: "0.5px",
+      },
+      keyframes: {
+        "slide-hint": {
+          "0%, 50%": { transform: "translateX(0)" },
+          "12.5%": { transform: "translateX(-2px)" },
+          "37.5%": { transform: "translateX(2px)" },
+        },
+      },
+      animation: {
+        "slide-hint": "slide-hint 2s ease infinite",
+      },
     },
   },
   plugins: [],

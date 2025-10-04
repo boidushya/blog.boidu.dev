@@ -5,10 +5,18 @@ import Sign from "@/components/sign";
 import SignGallery from "@/components/sign-gallery";
 /* eslint-disable @next/next/no-img-element */
 import { getAllPosts, getPostById } from "@/lib/blogs";
+import { mdxComponents } from "@/lib/mdx-components";
 import { FadeInImage } from "@/utils/components";
 import { getAuthorsData, isYouTubeLink, truncate } from "@/utils/functions";
+import { rehypeAdmonitions } from "@/utils/rehype-admonitions";
+import rehypeShiki from "@/utils/rehype-shiki";
+import rehypeVideo from "@/utils/rehype-video";
+import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import React from "react";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypeSlug from "rehype-slug";
+import remarkGfm from "remark-gfm";
 
 function YoutubeEmbed({ url }: { url: string }) {
   const matchResult = url.match(
@@ -35,7 +43,8 @@ export default async function Post({
 }: {
   params: { id: string };
 }) {
-  const { html, title, date, readingTime, banner, authors } = await getPostById(id);
+  const post = await getPostById(id);
+  const { html, title, date, readingTime, banner, authors, isMDX } = post;
 
   const isYoutubeVideo = isYouTubeLink(banner);
 
@@ -54,6 +63,7 @@ export default async function Post({
               />
               {authors.map(item => (
                 <Image
+                  key={item.name}
                   src={item.logo}
                   width={32}
                   height={32}
@@ -69,16 +79,16 @@ export default async function Post({
                   authors.map((author, index) => {
                     if (index === authors.length - 1) {
                       return (
-                        <>
+                        <React.Fragment key={author.name}>
                           {" "}
                           & <span className="text-accent-50">{author.name}</span>
-                        </>
+                        </React.Fragment>
                       );
                     }
                     return (
-                      <>
+                      <React.Fragment key={author.name}>
                         , <span className="text-accent-50">{author.name}</span>
-                      </>
+                      </React.Fragment>
                     );
                   })}
               </span>
@@ -94,10 +104,52 @@ export default async function Post({
         {isYoutubeVideo ? (
           <YoutubeEmbed url={banner} />
         ) : (
-          <FadeInImage src={banner} alt="Banner" height={900} width={1600} className="mt-4 mb-10 rounded-lg" />
+          <FadeInImage
+            src={banner}
+            alt="Banner"
+            height={900}
+            width={1600}
+            quality={100}
+            className="mt-4 mb-10 rounded-lg"
+          />
         )}
 
-        <main className="text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: html as string }} />
+        {isMDX ? (
+          <main className="text-lg leading-relaxed">
+            {/* @ts-expect-error Async Server Component */}
+            <MDXRemote
+              source={html}
+              components={mdxComponents}
+              options={{
+                mdxOptions: {
+                  remarkPlugins: [remarkGfm],
+                  rehypePlugins: [
+                    [rehypeShiki, { theme: "tokyo-night" }],
+                    rehypeSlug,
+                    rehypeAdmonitions as any,
+                    rehypeVideo,
+                    [
+                      rehypeAutolinkHeadings,
+                      {
+                        content: (arg: any) => ({
+                          type: "element",
+                          tagName: "a",
+                          properties: {
+                            href: "#" + arg.properties?.id,
+                            className: "heading-anchor",
+                          },
+                          children: [{ type: "text", value: "#" }],
+                        }),
+                      },
+                    ],
+                  ],
+                },
+              }}
+            />
+          </main>
+        ) : (
+          <main className="text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: html as string }} />
+        )}
       </article>
       <ArticleExtra id={id} />
     </>
