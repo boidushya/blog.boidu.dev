@@ -38,7 +38,7 @@ The moment your design becomes the focus, you've failed.
 
 ## The Design Principles
 
-### 1. Reimagine, Don't Replicate
+### Reimagine, Don't Replicate
 
 Here's the thing: Better Lyrics doesn't look like YouTube Music. At all.
 
@@ -53,7 +53,10 @@ But here's where intentionality comes in: the beauty isn't the point. It's in se
 
 And because design is subjective - because everyone's idea of "beautiful" is different - Better Lyrics has themes. Users can choose what feels right to them. Some want minimal. Some want vibrant. The intentional part isn't forcing everyone into one aesthetic, it's giving them the tools to make it feel like _their_ YouTube Music.
 
-### 2. Default to Smart
+![Themes for Better Lyrics](https://res.cloudinary.com/boidu/image/upload/v1759541981/bl/themes_axek4h.jpg)
+_Beauty is subjective - so we let you decide_
+
+### Default to Smart
 
 Here's a controversial take: settings pages are often a sign of design failure.
 
@@ -61,7 +64,7 @@ Don't get me wrong - Better Lyrics has settings. But every time we add a new one
 
 Most settings in Better Lyrics exist because different contexts genuinely need different behaviors - not because we couldn't decide what was better.
 
-### 3. Everything Needs a Purpose
+### Everything Needs a Purpose
 
 Here's a question me and other maintainers ask before adding anything to Better Lyrics: **Does this really have a purpose in Better Lyrics?**
 
@@ -81,7 +84,7 @@ There is no getting started. No setup wizard, no settings to configure, no onboa
 
 A lot of software has trained people to expect complexity, so when something just works out of the box, it can feel almost suspicious. You install it, lyrics appear. That's the entire experience, and that's exactly how it should be.
 
-### 4. Performance IS Design
+### Performance IS Design
 
 If your design causes jank, it doesn't matter how pretty it is. It's bad design.
 
@@ -93,7 +96,7 @@ Even though this sometimes means we have to reinvent the wheel, we do it. Simply
 
 Better Lyrics could have used an extension framework. There are great ones I use for other projects. But we didn't. Frameworks add bloat, increase bundle size, and ship features you'll never use. We choose to keep it lean instead.
 
-### 4. Anticipate Intent
+### Anticipate Intent
 
 The best interfaces predict what you want to do next.
 
@@ -107,11 +110,30 @@ These tiny decisions compound. Each one removes friction. Each one reinforces th
 
 Some of the most important parts of Better Lyrics are things users will never notice:
 
-**Error Recovery**: If RichSynced lyrics api fails, we fall back through multiple sources until we hit YouTube Music's defaults. Silent failures, no broken states. Recent versions are even slicker - we show non-synced lyrics immediately while searching in the background. A subtle indicator appears, then the lyrics just sync. Magic!
+### Error Recovery
 
-**Progressive Enhancement**: The extension loads in stages. First, the essential styling. Then, the synced lyrics. Then, translations. If something fails halfway through, you still get a working experience.
+If RichSynced lyrics api fails, we fall back through multiple sources until we hit YouTube Music's defaults. Silent failures, no broken states.
 
-**Responsive Adaptation**: Better Lyrics detects your window size and adjusts accordingly. Not because there's a "mobile mode" toggle, but because it just does the right thing. I didn't even know mobile browsers supported extensions when I started building Better Lyrics. Turns out they do, and users love it.
+Recent versions are even slicker - we show non-synced lyrics immediately while searching in the background. A subtle indicator appears, then the lyrics just sync. Magic!
+
+![Sync](https://res.cloudinary.com/boidu/video/upload/q_auto:eco/v1759542136/bl/auto-sync.mp4)
+_Seamless fallbacks you'll never notice_
+
+### Progressive Enhancement
+
+The extension loads in stages. First, the essential styling. Then, the synced lyrics. Then, translations. If something fails halfway through, you still get a working experience.
+
+![Wrong Sync](https://res.cloudinary.com/boidu/video/upload/q_auto:eco/v1759542136/bl/wrong%20unsynced.mp4)
+_Notice how the first line switched? Neither do most users._
+
+### Responsive Adaptation
+
+Better Lyrics adapts to your window size because good design means anticipating what you'd expect and delivering it without being asked.
+
+I didn't even know mobile browsers supported extensions when I started building Better Lyrics. Turns out they do, and users love it.
+
+![Responsive](https://res.cloudinary.com/boidu/video/upload/q_auto:eco/v1759543051/bl/mobile.mp4)
+_Even the resume autoscroll button works perfectly on mobile._
 
 These aren't features we can market. They don't make flashy demo videos. But they're the reason Better Lyrics feels polished.
 
