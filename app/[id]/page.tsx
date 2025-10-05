@@ -185,7 +185,7 @@ export async function generateMetadata({
         {
           url: banner,
           width: 1200,
-          height: 900,
+          height: 675,
           alt: title,
         },
       ],

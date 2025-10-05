@@ -20,7 +20,7 @@ export const metadata = {
       {
         url: "https://i.ibb.co/RbdLBCb/og.png",
         width: 1200,
-        height: 900,
+        height: 628,
         alt: "Boidu's Blog",
       },
     ],
