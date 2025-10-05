@@ -10,7 +10,29 @@ import React from "react";
 export const metadata = {
   title: "Boidu's Blog",
   description: "A blog where I write about my thoughts and experiences.",
-  image: "https://i.ibb.co/RbdLBCb/og.png",
+  openGraph: {
+    title: "Boidu's Blog",
+    description: "A blog where I write about my thoughts and experiences.",
+    url: "https://blog.boidu.dev",
+    siteName: "blog.boidu.dev",
+    images: [
+      {
+        url: "https://i.ibb.co/RbdLBCb/og.png",
+        width: 1200,
+        height: 900,
+        alt: "Boidu's Blog",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@boidushya",
+    creator: "@boidushya",
+    title: "Boidu's Blog",
+    description: "A blog where I write about my thoughts and experiences.",
+    images: ["https://i.ibb.co/RbdLBCb/og.png"],
+  },
 };
 
 export default function RootLayout({
@@ -22,19 +44,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="description" content={metadata.description} />
-        <meta property="og:title" content={metadata.title} />
-        <meta property="og:description" content={metadata.description} />
-        <meta property="og:image" content={metadata.image} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://blog.boidu.dev" />
-        <meta property="og:site_name" content={metadata.title} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@boidushya" />
-        <meta name="twitter:creator" content="@boidushya" />
-        <meta name="twitter:title" content={metadata.title} />
-        <meta name="twitter:description" content={metadata.description} />
-        <meta name="twitter:image" content={metadata.image} />
         <meta name="google-site-verification" content="hsxkLtNCoahD0HV2cRmDi9op-0LMgf7wPrcehV7vEyU" />
         <script
           defer
