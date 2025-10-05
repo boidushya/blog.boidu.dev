@@ -8,12 +8,13 @@ import NextTopLoader from "nextjs-toploader";
 import React from "react";
 
 export const metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://blog.boidu.dev"),
   title: "Boidu's Blog",
   description: "A blog where I write about my thoughts and experiences.",
   openGraph: {
     title: "Boidu's Blog",
     description: "A blog where I write about my thoughts and experiences.",
-    url: "https://blog.boidu.dev",
+    url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://blog.boidu.dev"}`,
     siteName: "blog.boidu.dev",
     images: [
       {
