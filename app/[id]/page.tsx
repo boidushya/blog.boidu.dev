@@ -171,7 +171,7 @@ export async function generateMetadata({
 }) {
   const { title, description, banner } = await getPostById(id);
 
-  const processedDescription = truncate(description, 160) + " | blog.boidu.dev";
+  const processedDescription = truncate(description, 160);
 
   return {
     title,
