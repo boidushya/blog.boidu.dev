@@ -176,6 +176,26 @@ export async function generateMetadata({
   return {
     title,
     description: processedDescription,
-    image: banner,
+    openGraph: {
+      title,
+      description: processedDescription,
+      url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://blog.boidu.dev"}/${id}`,
+      siteName: "blog.boidu.dev",
+      images: [
+        {
+          url: banner,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: processedDescription,
+      images: [banner],
+    },
   };
 }
