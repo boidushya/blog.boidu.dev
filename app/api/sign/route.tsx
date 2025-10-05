@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     return cors(request, NextResponse.json({ error: "Missing id parameter" }, { status: 400 }), corsOptions);
   }
 
-  const { data, error } = await supabase.from("signs").select("svg_text").eq("post_id", id);
+  const { data, error } = await supabase.from("signs").select("svg_text, id").eq("post_id", id);
 
   if (error) {
     return cors(request, NextResponse.json({ error: error.message }, { status: 500 }), corsOptions);
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
     return cors(request, NextResponse.json({ error: "No signs found for this post ID" }, { status: 404 }), corsOptions);
   }
 
-  const svgTexts = data.map(item => item.svg_text);
+  const svgTexts = data.map(item => ({ svgText: item.svg_text, id: item.id }));
 
-  return cors(request, NextResponse.json({ svgTexts }, { status: 200 }), corsOptions);
+  return cors(request, NextResponse.json(svgTexts, { status: 200 }), corsOptions);
 }

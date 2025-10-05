@@ -21,7 +21,7 @@ const itemVariants = {
 const fetchSigns = async (id: string) => {
   const response = await fetch(`/api/sign?id=${id}`);
   const data = await response.json();
-  return data.svgTexts as string[];
+  return data as { svgText: string; id: string }[];
 };
 
 const SignGallery = ({ id }: { id: string }) => {
@@ -134,12 +134,13 @@ const SignGallery = ({ id }: { id: string }) => {
           }`}
         >
           <AnimatePresence>
-            {fetchedSigns.map((svgText: string, index: number) => (
+            {fetchedSigns.map((sign, index: number) => (
               <motion.div
-                key={svgText + index}
+                key={sign.svgText + index}
+                data-id={sign.id}
                 variants={itemVariants}
                 className="border rounded-lg border-accent-600/50 bg-accent-900/50"
-                dangerouslySetInnerHTML={{ __html: svgText }}
+                dangerouslySetInnerHTML={{ __html: sign.svgText }}
               />
             ))}
           </AnimatePresence>
