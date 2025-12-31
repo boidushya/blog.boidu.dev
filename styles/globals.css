@@ -515,3 +515,32 @@ circle[id^="react-sketch-canvas__"]{
     transform: translateX(0);
   }
 }
+
+.scrollbar-overlay {
+  scrollbar-width: 0;
+}
+
+.scrollbar-overlay::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background: transparent;
+  position: absolute;
+}
+
+.scrollbar-overlay::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-overlay::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+.scrollbar-overlay:hover::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-accent-500) / 0.2);
+}
+
+.scrollbar-overlay:hover::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--color-accent-500) / 0.3);
+}

@@ -130,7 +130,7 @@ const SignGallery = ({ id }: { id: string }) => {
             maskImage,
           }}
           className={`grid grid-cols-2 sm:grid-cols-4 pt-2 gap-4 overflow-hidden transition-[max-height] duration-500 ${
-            hasMore ? "max-h-24" : "max-h-[1000px] overflow-auto"
+            hasMore ? "max-h-24" : "max-h-[1000px] overflow-y-auto scrollbar-overlay"
           }`}
         >
           <AnimatePresence>
