@@ -11,7 +11,7 @@ description: >
 
 To set the stage, I am a YouTube Music "fan." In my opinion, the recommendation algorithm is brilliant and fits my use
 case orders of magnitude better than Spotify. However, since this is a Google product (and other than the constant fear
-of it being randomly sunset), the UX is pretty trash — especially the lyrics. They've hardly made any changes to their
+of it being randomly sunset), the UX is pretty trash - especially the lyrics. They've hardly made any changes to their
 web app over the past several years, and their interface looks like something straight out of 2016 at times.
 
 Now I was all-in on YouTube Music, I had canceled my Spotify subscription and was using it daily, the listening experience
@@ -28,7 +28,7 @@ That's when I decided to make them look better - at least from my own sake.
 
 ## How it started
 
-It started out as an Arc Boost (fancy way of saying UserScripts) to fix an issue I thought was really niche — the fact that
+It started out as an Arc Boost (fancy way of saying UserScripts) to fix an issue I thought was really niche - the fact that
 default YouTube Music lyrics suck. The initial iteration was quick. Arc boosts are incredibly easy to setup - you click on
 the boost icon and write some CSS (and javascript if you want to) and voila! You have essentially created a mini extension.
 
