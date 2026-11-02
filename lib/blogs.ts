@@ -13,24 +13,22 @@ import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
-import { unified } from "unified";
+import type { Element } from "hast";
+import { type PluggableList, unified } from "unified";
 
 let p: ReturnType<typeof getParserPre> | undefined;
 
-async function getParserPre() {
-  return unified()
-    .use(remarkParse)
-    .use(remarkRehype)
-    .use(remarkGfm)
-    .use(rehypeShiki, {
-      theme: "tokyo-night",
-    })
-    .use(rehypeStringify)
-    .use(rehypeSlug)
-    .use(rehypeAdmonitions as any)
-    .use(rehypeVideo)
-    .use(rehypeAutolinkHeadings, {
-      content: arg => ({
+export const remarkPlugins: PluggableList = [remarkGfm];
+
+export const rehypePlugins: PluggableList = [
+  [rehypeShiki, { theme: "tokyo-night" }],
+  rehypeSlug,
+  rehypeAdmonitions as any,
+  rehypeVideo,
+  [
+    rehypeAutolinkHeadings,
+    {
+      content: (arg: Element) => ({
         type: "element",
         tagName: "a",
         properties: {
@@ -39,7 +37,12 @@ async function getParserPre() {
         },
         children: [{ type: "text", value: "#" }],
       }),
-    });
+    },
+  ],
+];
+
+async function getParserPre() {
+  return unified().use(remarkParse).use(remarkPlugins).use(remarkRehype).use(rehypePlugins).use(rehypeStringify);
 }
 
 function getParser() {

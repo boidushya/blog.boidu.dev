@@ -4,19 +4,13 @@ import Like from "@/components/like";
 import Sign from "@/components/sign";
 import SignGallery from "@/components/sign-gallery";
 /* eslint-disable @next/next/no-img-element */
-import { getAllPosts, getPostById } from "@/lib/blogs";
+import { getAllPosts, getPostById, rehypePlugins, remarkPlugins } from "@/lib/blogs";
 import { mdxComponents } from "@/lib/mdx-components";
 import { FadeInImage } from "@/utils/components";
 import { getAuthorsData, isYouTubeLink, truncate } from "@/utils/functions";
-import { rehypeAdmonitions } from "@/utils/rehype-admonitions";
-import rehypeShiki from "@/utils/rehype-shiki";
-import rehypeVideo from "@/utils/rehype-video";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import React from "react";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypeSlug from "rehype-slug";
-import remarkGfm from "remark-gfm";
 
 function YoutubeEmbed({ url }: { url: string }) {
   const matchResult = url.match(
@@ -121,29 +115,7 @@ export default async function Post({
               source={html}
               components={mdxComponents}
               options={{
-                mdxOptions: {
-                  remarkPlugins: [remarkGfm],
-                  rehypePlugins: [
-                    [rehypeShiki, { theme: "tokyo-night" }],
-                    rehypeSlug,
-                    rehypeAdmonitions as any,
-                    rehypeVideo,
-                    [
-                      rehypeAutolinkHeadings,
-                      {
-                        content: (arg: any) => ({
-                          type: "element",
-                          tagName: "a",
-                          properties: {
-                            href: "#" + arg.properties?.id,
-                            className: "heading-anchor",
-                          },
-                          children: [{ type: "text", value: "#" }],
-                        }),
-                      },
-                    ],
-                  ],
-                },
+                mdxOptions: { remarkPlugins, rehypePlugins },
               }}
             />
           </main>
