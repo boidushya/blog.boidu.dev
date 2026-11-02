@@ -26,7 +26,6 @@
         "hast-util-to-text": "^4.0.0",
         "isomorphic-dompurify": "^2.12.0",
         "lodash.debounce": "^4.0.8",
-        "mdast-util-find-and-replace": "^3.0.2",
         "next": "13.4.2",
         "next-mdx-remote": "^6.0.0",
         "nextjs-toploader": "^1.6.6",

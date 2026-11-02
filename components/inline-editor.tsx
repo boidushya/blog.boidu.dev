@@ -31,7 +31,6 @@ const FORMATS: Record<string, Format> = {
   i: { label: "Italic", text: "I", before: "_", after: "_" },
   e: { label: "Code", text: "Code", before: "`", after: "`" },
   k: { label: "Link", text: "Link", before: "[", after: "](https://)" },
-  h: { label: "Highlight", text: "Mark", before: "==", after: "==" },
 };
 
 const findArticle = () => document.querySelector<HTMLElement>("article.blog");
@@ -212,7 +211,7 @@ export default function InlineEditor({ id }: { id: string }) {
     }
     if (!mod) return;
     const key = event.key.toLowerCase();
-    if (key === "h" ? !event.shiftKey : event.shiftKey) return;
+    if (event.shiftKey) return;
     const format = FORMATS[key];
     if (!format) return;
     event.preventDefault();

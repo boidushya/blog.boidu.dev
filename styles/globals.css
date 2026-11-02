@@ -205,41 +205,6 @@ circle[id^="react-sketch-canvas__"]{
 	@apply rounded-md py-0.5 px-1.5 text-sm border bg-accent-800/50 text-accent-200 border-accent-800;
 }
 
-.blog mark {
-  color: inherit;
-  padding: 0 0.2em;
-  margin: 0 -0.1em;
-  border-radius: 0.25em 0.4em 0.3em 0.45em;
-  background-image: linear-gradient(
-    100deg,
-    rgb(var(--color-accent-400) / 0.15),
-    rgb(var(--color-accent-400) / 0.35) 6%,
-    rgb(var(--color-accent-400) / 0.3) 94%,
-    rgb(var(--color-accent-400) / 0.1)
-  );
-  background-repeat: no-repeat;
-  background-position: 0 90%;
-  background-size: 100% 70%;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-}
-
-@keyframes mark-draw {
-  from {
-    background-size: 0% 70%;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .blog mark {
-      animation: mark-draw linear both;
-      animation-timeline: view();
-      animation-range: entry 100% cover 40%;
-    }
-  }
-}
-
 .blog iframe{
 	max-width: 100%;
 }
