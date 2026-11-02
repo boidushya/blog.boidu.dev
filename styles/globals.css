@@ -114,7 +114,7 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .social-container svg {
-  @apply w-4 h-4 transition-colors fill-current hover:text-accent-500;
+  @apply w-4 h-4 transition-colors fill-current hover:text-accent-300;
 }
 
 .stroke {

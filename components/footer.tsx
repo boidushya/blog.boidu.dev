@@ -56,17 +56,17 @@ const socialLinks = [
 
 const Footer: React.FC = () => {
   return (
-    <footer className="flex flex-col items-center justify-center w-full h-24 gap-4 sm:justify-between text-accent-800 sm:flex-row">
+    <footer className="flex flex-col items-center justify-center w-full h-24 gap-4 sm:justify-between text-accent-500 sm:flex-row">
       <p className="text-sm whitespace-pre">
-        © {new Date().getFullYear()} •{" "}
-        <a className="transition-colors hover:underline hover:text-accent-500" href="/">
+        © {new Date().getFullYear()} ·{" "}
+        <a className="transition-colors hover:underline hover:text-accent-300" href="/">
           blog.boidu.dev
         </a>{" "}
-        • All rights reserved
+        · All rights reserved
       </p>
-      <div className="flex items-center gap-4 social-container">
+      <div className="flex items-center -mx-2 social-container">
         {socialLinks.map(({ name, url, icon }) => (
-          <a key={name} href={url} target="_blank">
+          <a key={name} href={url} target="_blank" rel="noopener noreferrer" aria-label={name} className="p-2">
             {icon}
           </a>
         ))}
