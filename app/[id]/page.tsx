@@ -75,8 +75,8 @@ export default async function Post({
                 />
               ))}
             </div>
-            <div className="text-accent-300">
-              <span className="mr-1">
+            <div className="flex flex-wrap items-center min-w-0 text-accent-300">
+              <span className="mr-1 whitespace-nowrap">
                 Published by <span className="text-accent-50">Boidushya</span>
                 {authors &&
                   authors.map((author, index) => {
@@ -95,11 +95,10 @@ export default async function Post({
                     );
                   })}
               </span>
-              <span className="mx-1">
-                <span className="whitespace-pre opacity-50"> · </span>{" "}
-                <span className="tabular-nums">{readingTime}</span>
+              <span className="mx-1 whitespace-nowrap">
+                <span className="whitespace-pre opacity-50"> · </span> {readingTime}
               </span>
-              <span className="ml-1">
+              <span className="ml-1 whitespace-nowrap">
                 <span className="whitespace-pre opacity-50"> · </span> {date}
               </span>
             </div>
@@ -119,7 +118,7 @@ export default async function Post({
         )}
 
         {isMDX ? (
-          <main className="text-lg leading-[1.7]">
+          <main className="text-[1.0625rem] sm:text-lg leading-[1.7]">
             {/* @ts-expect-error Async Server Component */}
             <MDXRemote
               source={html}
@@ -130,7 +129,10 @@ export default async function Post({
             />
           </main>
         ) : (
-          <main className="text-lg leading-[1.7]" dangerouslySetInnerHTML={{ __html: html as string }} />
+          <main
+            className="text-[1.0625rem] sm:text-lg leading-[1.7]"
+            dangerouslySetInnerHTML={{ __html: html as string }}
+          />
         )}
       </article>
       <ArticleExtra id={id} />

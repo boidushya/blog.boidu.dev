@@ -150,15 +150,15 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .blog h1 {
-  @apply text-4xl font-bold tracking-tight text-accent-50;
+  @apply text-3xl sm:text-4xl font-bold tracking-tight text-accent-50;
 }
 
 .blog h2 {
-  @apply text-3xl font-bold tracking-tight text-accent-50;
+  @apply text-2xl sm:text-3xl font-bold tracking-tight text-accent-50;
 }
 
 .blog h3 {
-  @apply text-2xl font-bold tracking-tight text-accent-50;
+  @apply text-xl sm:text-2xl font-bold tracking-tight text-accent-50;
 }
 
 .blog h4 {
@@ -322,7 +322,7 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .heading-anchor {
-  @apply mr-2 !no-underline opacity-25 font-normal md:transform-gpu md:-translate-x-full md:pr-3 md:absolute transition-opacity;
+  @apply max-md:hidden mr-2 !no-underline opacity-25 font-normal md:transform-gpu md:-translate-x-full md:pr-3 md:absolute transition-opacity;
 }
 
 @media (hover: hover) {

@@ -86,7 +86,7 @@ export function ContentBox({
         />
       </div>
       <div className="relative flex flex-col items-start justify-between order-1 h-full col-span-3 overflow-hidden tracking-normal sm:col-span-2 isolate">
-        <div className="flex flex-row justify-start w-full gap-2 p-8 pb-0">
+        <div className="flex flex-row flex-wrap justify-start w-full gap-2 p-6 pb-0 sm:p-8 sm:pb-0">
           {(draft ? ["Draft", ...labels] : labels).map(label => (
             <span
               key={label}
@@ -96,7 +96,7 @@ export function ContentBox({
             </span>
           ))}
         </div>
-        <div className="flex flex-col justify-center h-full p-8 pb-12">
+        <div className="flex flex-col justify-center h-full p-6 pb-10 sm:p-8 sm:pb-12">
           <h3 className="mb-4 text-2xl font-semibold tracking-tight text-accent-50 [text-wrap:balance]">{title}</h3>
           <p className="text-sm tracking-normal text-accent-50/70 [text-wrap:pretty]">{description}</p>
         </div>
@@ -114,7 +114,7 @@ export function ContentBox({
         </div>
         <div
           aria-hidden="true"
-          className="flex items-center justify-start w-full gap-1 px-8 py-4 text-sm font-semibold tracking-wide transition-colors border-t select-none border-accent-400 border-opacity-5 bg-opacity-30 text-accent-400 bg-accent-800 group-hover:bg-opacity-50 group-hover:text-accent-300 group-hover:border-transparent"
+          className="flex items-center justify-start w-full gap-1 px-6 py-4 sm:px-8 text-sm font-semibold tracking-wide transition-colors border-t select-none border-accent-400 border-opacity-5 bg-opacity-30 text-accent-400 bg-accent-800 group-hover:bg-opacity-50 group-hover:text-accent-300 group-hover:border-transparent"
         >
           Read More
           <svg
