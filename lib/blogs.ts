@@ -8,6 +8,7 @@ import rehypeVideo from "@/utils/rehype-video";
 import remarkMark from "@/utils/remark-mark";
 import { format } from "date-fns";
 import matter from "gray-matter";
+import type { Element } from "hast";
 import readingTime from "reading-time";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSlug from "rehype-slug";
@@ -15,7 +16,6 @@ import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
-import type { Element } from "hast";
 import { type PluggableList, unified } from "unified";
 
 let p: ReturnType<typeof getParserPre> | undefined;

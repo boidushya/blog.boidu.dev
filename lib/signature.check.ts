@@ -22,9 +22,11 @@ assert.equal(parseSignature(canvasSvg('<path d="M 1,1 L 2,2" onload="alert(1)"><
 assert.equal(parseSignature(canvasSvg('<path d="M 1,1 L 2,2\\" onload=\\"alert(1)"></path>')), null);
 assert.equal(parseSignature(canvasSvg('<path d="M 1,1 A 2,2 0 0 1 3,3"></path>')), null);
 assert.equal(parseSignature(canvasSvg('<path d="url(javascript:alert(1))"></path>')), null);
-assert.equal(parseSignature(canvasSvg('<path></path>')), null);
+assert.equal(parseSignature(canvasSvg("<path></path>")), null);
 assert.equal(parseSignature(canvasSvg('<circle cx="x" cy="1" r="1"></circle>')), null);
-assert.ok(!toSvg(parseSignature(canvasSvg(`<script>alert(1)</script>${stroke}`)) ?? { paths: [], dots: [] }).includes("script"));
+assert.ok(
+  !toSvg(parseSignature(canvasSvg(`<script>alert(1)</script>${stroke}`)) ?? { paths: [], dots: [] }).includes("script")
+);
 
 const huge = `<path d="M 0,0 ${"L 1,1 ".repeat(25000)}"></path>`;
 assert.equal(parseSignature(canvasSvg(huge)), null);

@@ -1,8 +1,8 @@
+import fs from "fs";
+import { join } from "path";
 import { applyBlockEdit, readBody } from "@/lib/source-edit";
 import { IS_DEV } from "@/utils/constants";
-import fs from "fs";
 import { type NextRequest, NextResponse } from "next/server";
-import { join } from "path";
 
 export const dynamic = "force-dynamic";
 

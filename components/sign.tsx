@@ -3,8 +3,8 @@
 import React, { ComponentProps, useEffect } from "react";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 
-import { useSign } from "@/providers/sign";
 import { type StoredSignature, signsQueryKey } from "@/components/sign-gallery";
+import { useSign } from "@/providers/sign";
 import { Tooltip } from "@/utils/components";
 import { ToggleGroup } from "@radix-ui/react-toggle-group";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
