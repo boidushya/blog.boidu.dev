@@ -3,7 +3,7 @@
 import { SIGNATURE_VIEWBOX, type Signature } from "@/lib/signature";
 import { Tooltip } from "@/utils/components";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import React from "react";
 
 export type StoredSignature = Signature & { id: string };
@@ -42,6 +42,8 @@ const SignatureArt = React.memo(function SignatureArt({ paths, dots }: Signature
 
 const SignGallery = ({ id }: { id: string }) => {
   const [expanded, setExpanded] = React.useState(false);
+  const boardRef = React.useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
 
   const {
     data: signs = [],
@@ -54,10 +56,17 @@ const SignGallery = ({ id }: { id: string }) => {
 
   const isEmpty = signs.length === 0;
   const collapsible = signs.length > COLLAPSED_COUNT;
-  const visibleSigns = collapsible && !expanded ? signs.slice(0, COLLAPSED_COUNT * 2) : signs;
+
+  const onGridTransitionEnd = (event: React.TransitionEvent<HTMLDivElement>) => {
+    if (!expanded || event.propertyName !== "max-height" || event.target !== event.currentTarget) return;
+    boardRef.current?.scrollIntoView({ block: "nearest", behavior: reduceMotion ? "auto" : "smooth" });
+  };
 
   return (
-    <div className="p-4 border border-dashed border-accent-600/50 bg-accent-800/25 rounded-xl">
+    <div
+      ref={boardRef}
+      className="p-4 border border-dashed scroll-my-6 border-accent-600/50 bg-accent-800/25 rounded-xl"
+    >
       <h3 className="flex items-center justify-between gap-2 mb-4 text-lg font-semibold cursor-help text-accent-400">
         <Tooltip
           content={
@@ -113,13 +122,14 @@ const SignGallery = ({ id }: { id: string }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className={`grid grid-cols-2 sm:grid-cols-4 pt-2 gap-4 ${
+          onTransitionEnd={onGridTransitionEnd}
+          className={`grid grid-cols-2 sm:grid-cols-4 pt-2 gap-4 transition-[max-height] duration-500 ease-out motion-reduce:transition-none ${
             collapsible && !expanded
               ? "max-h-24 overflow-hidden sign-board--collapsed"
               : "max-h-[1000px] overflow-y-auto scrollbar-overlay"
           }`}
         >
-          {visibleSigns.map(sign => (
+          {signs.map(sign => (
             <div
               key={sign.id}
               data-id={sign.id}
