@@ -95,13 +95,21 @@ export async function getPostById(id: string) {
   };
 }
 
-export async function getAllPosts() {
+export const isHiddenDraft = (post: { draft?: unknown }) =>
+  post.draft === true && process.env.NODE_ENV === "production";
+
+async function getVisiblePosts() {
   const posts = await Promise.all(fs.readdirSync("blogs").map(id => getPostById(id)));
+  return posts.filter(post => !isHiddenDraft(post));
+}
+
+export async function getAllPosts() {
+  const posts = await getVisiblePosts();
   return posts.sort((post1, post2) => (post1.date > post2.date ? -1 : 1));
 }
 
 export async function getAllBlogs() {
-  const posts = await Promise.all(fs.readdirSync("blogs").map(id => getPostById(id)));
+  const posts = await getVisiblePosts();
   return posts
     .sort((post1, post2) => {
       const date1 = new Date(post1.date);
@@ -116,6 +124,7 @@ export async function getAllBlogs() {
         image: post.banner,
         link: `/${post.id}`,
         labels: post.labels,
+        draft: post.draft === true,
       };
     });
 }

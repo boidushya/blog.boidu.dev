@@ -35,6 +35,7 @@ export function ContentBox({
   link,
   length,
   labels,
+  draft,
 }: {
   id: number;
   title: string;
@@ -43,6 +44,7 @@ export function ContentBox({
   link: string;
   length: number;
   labels: string[];
+  draft: boolean;
 }) {
   const projectVariants = {
     hidden: {
@@ -85,7 +87,7 @@ export function ContentBox({
       </div>
       <div className="relative flex flex-col items-start justify-between order-1 h-full col-span-3 overflow-hidden tracking-normal sm:col-span-2 isolate">
         <div className="flex flex-row justify-start w-full gap-2 p-8 pb-0">
-          {labels.map(label => (
+          {(draft ? ["Draft", ...labels] : labels).map(label => (
             <span
               key={label}
               className={`bg-accent-800/50 text-accent-50/75 border border-accent-800 px-2 py-1 text-xs rounded-md`}
@@ -165,6 +167,7 @@ export function View({ data }: { data: any }) {
                 image: string;
                 link: string;
                 labels: string[];
+                draft: boolean;
               }
             ) => (
               <ContentBox length={data.length} key={item.id} {...item} />
