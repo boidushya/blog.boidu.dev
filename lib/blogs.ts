@@ -3,6 +3,7 @@ import { join } from "path";
 import { getAuthorsData } from "@/utils/functions";
 import { rehypeAdmonitions } from "@/utils/rehype-admonitions";
 import rehypeShiki from "@/utils/rehype-shiki";
+import rehypeSourceBlocks from "@/utils/rehype-source-blocks";
 import rehypeVideo from "@/utils/rehype-video";
 import remarkMark from "@/utils/remark-mark";
 import { format } from "date-fns";
@@ -22,6 +23,7 @@ let p: ReturnType<typeof getParserPre> | undefined;
 export const remarkPlugins: PluggableList = [remarkGfm, remarkMark];
 
 export const rehypePlugins: PluggableList = [
+  rehypeSourceBlocks,
   [rehypeShiki, { theme: "tokyo-night" }],
   rehypeSlug,
   rehypeAdmonitions as any,
