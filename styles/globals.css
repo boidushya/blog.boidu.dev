@@ -31,12 +31,12 @@
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button,
 [role^="menuitem"] {
   @apply select-none;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .pressable {

@@ -56,8 +56,8 @@ export default async function Post({
             </span>
           )}
           <h1 className="!mt-2 !mb-0 sm:!mt-6 sm:!mb-2 text-center">{title}</h1>
-          <div className="flex items-center justify-start sm:justify-center w-full py-3 border-y blog__meta border-accent-800/50">
-            <div className="flex mr-3 sm:mr-4 -space-x-2 rtl:space-x-reverse shrink-0">
+          <div className="flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
+            <div className="flex mr-3 min-[360px]:-ml-6 sm:mr-4 sm:-ml-[72px] -space-x-2 rtl:space-x-reverse shrink-0">
               <Image
                 src={logo}
                 placeholder="blur"
@@ -75,8 +75,8 @@ export default async function Post({
                 />
               ))}
             </div>
-            <div className="flex flex-wrap items-center min-w-0 text-accent-300">
-              <span className="mr-1 whitespace-nowrap max-sm:basis-full">
+            <div className="flex flex-col min-w-0 sm:flex-row sm:flex-wrap sm:items-center text-accent-300">
+              <span className="whitespace-nowrap">
                 Published by <span className="text-accent-50">Boidushya</span>
                 {authors &&
                   authors.map((author, index) => {
@@ -95,11 +95,15 @@ export default async function Post({
                     );
                   })}
               </span>
-              <span className="whitespace-nowrap sm:mx-1">
-                <span className="whitespace-pre opacity-50 max-sm:hidden"> · </span> {readingTime}
-              </span>
-              <span className="ml-1 whitespace-nowrap">
-                <span className="whitespace-pre opacity-50"> · </span> {date}
+              <span className="whitespace-nowrap">
+                <span aria-hidden="true" className="mx-1.5 opacity-50 max-sm:hidden">
+                  ·
+                </span>
+                {readingTime}
+                <span aria-hidden="true" className="mx-1.5 opacity-50">
+                  ·
+                </span>
+                {date}
               </span>
             </div>
           </div>
