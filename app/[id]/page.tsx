@@ -57,7 +57,7 @@ export default async function Post({
           )}
           <h1 className="!mt-2 !mb-0 sm:!mt-6 sm:!mb-2 text-center">{title}</h1>
           <div className="flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
-            <div className="flex mr-3 min-[360px]:-ml-6 sm:mr-4 sm:-ml-[72px] -space-x-2 rtl:space-x-reverse shrink-0">
+            <div className="flex mr-3 sm:mr-4 -space-x-2 rtl:space-x-reverse shrink-0">
               <Image
                 src={logo}
                 placeholder="blur"
