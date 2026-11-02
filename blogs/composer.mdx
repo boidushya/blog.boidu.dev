@@ -1,0 +1,268 @@
+---
+title: "Composer: The Other Half of Better Lyrics"
+date: "2026-06-15"
+banner: "https://composer.betterlyrics.org/og-image.png"
+labels: ['Story', 'Web App', 'TypeScript', 'React']
+description: >
+  Better Lyrics fixed how I listen to lyrics. Composer is how I let everyone else write them, because the tool everyone was using made me want to throw my laptop.
+---
+
+## How it started
+
+If you've read the [Better Lyrics post](/better-lyrics), you already know the setup. YouTube Music's lyrics were either missing or just plain ugly, so I built an extension to fix it. A couple of years and a lot of users later, my inbox stopped being "this is great" and started being "song X has no lyrics, can you add them?"
+
+I'd always reply with some version of the same thing. Better Lyrics isn't a lyrics database, it just shows whatever is out there, and if nobody has made synced lyrics for your song then nobody is going to, me included.
+
+At some point I even had an artist reach out about getting proper synced lyrics for their own songs, and the only thing I could point them to was the one tool everyone in this space uses. Which brings me to the part of this post I've been waiting to write.
+
+## My five minutes with AMLL Tool
+
+Better Lyrics gets its synced lyrics in a format called TTML. TTML was cooked up as a modern answer to .srt, and the difference between the two is basically the difference between a .txt and a .doc: same idea, but one of them is a whole lot richer. Somewhere along the way, Apple Music saw this and decided to make a restricted subset of it just for lyrics. GENIUS! Someone at Apple, clearly as obsessed as me, looked at .lrc files and went "you know what, this isn't good enough, we're doing our own thing". I love them for it. It's also why songs with proper lyrics scroll word by word in karaoke style.
+
+The format itself is fine. The problem is making one, because your options are writing XML by hand or using [AMLL TTML Tool](https://tool.amll.dev/) (or one of its forks, which bolt features on top but keep the same bones underneath).
+
+So I opened it, fully expecting to be fine, since building interfaces is _literally_ my job.
+
+Reader, I was not fine. This is what you're greeted with:
+
+![AMLL Tool's starting screen](/composer/amll-start.png)
+_A ribbon full of fields for a song you haven't even loaded yet, and a whole lot of nothing_
+
+The second most important thing in a lyrics syncing tool is the audio. In AMLL Tool, that's a tiny button next to, *checks notes*, the play button, tucked away in the bottom left corner. And the most important thing, the lyrics? Hidden inside a dropdown.
+
+![AMLL Tool's File menu, with Import lyrics near the bottom](/composer/amll-file-menu.png)
+_File, then Import lyrics, then pick a format. Obviously._
+
+Meanwhile, there's a football field's worth of empty space in the middle of the screen that you can't click and that does absolutely nothing. _\*insert rolling tumbleweed gif here\*_
+
+Some of the forks do try to fill it, and I'll give them that, but mostly by swapping the nothing for a few buttons that send you off somewhere else. It's an improvement, just not much of one.
+
+Once I worked out how you're actually supposed to sync, it turned out to be a few keys, pressed on every single word from start to finish, and good luck finding the ones you missed!
+
+I closed the tab within five minutes and felt kind of insulted on behalf of everyone I'd been sending there. It's the kind of tool that will technically get you there, as long as you never expect it to be _nice_ to you.
+
+That kept bugging me. Better Lyrics only exists because the default thing was unfriendly, and here I was telling people (and an artist!) to go fix their own lyrics, knowing they'd hit the exact same wall.
+
+So I started building my own.
+
+## Where the idea came from
+
+I've been a Premiere Pro guy all my life. The first time I opened DaVinci Resolve it felt like magic, mostly because it lays the whole job out as a row of pages along the bottom of the screen, in the order you'd actually do things. You always know where you are and where you go next.
+
+I wanted lyrics to feel like that: a linear workflow that matches what you'd do in your head anyway, with the heavy tools waiting around for when a song actually needs them.
+
+From day one the goal was that a kid should be able to use it. If a complete beginner can't get from "I have a song" to "I have synced lyrics" without asking for help, something's broken. You shouldn't even need to know what TTML is, since it's just the file you get at the end.
+
+You import a song, paste your lyrics, tap along with the music, and walk away with a synced TTML file. All of it happens in your browser, your audio never leaves your machine, and there's no account to make.
+
+The tabs follow that flow:
+
+1. **Import** an audio file (MP3, WAV, M4A, OGG, FLAC) or paste a YouTube link
+2. **Edit** the lyrics, assign singers, add background vocals
+3. **Sync** by tapping along with the music
+4. **Timeline** to clean up whatever you missed
+5. **Preview** the result, then export
+
+Timeline and Preview sit right next to each other because that's where you'll bounce back and forth the most. People tend to assume the Timeline is the "advanced mode", which isn't really how it works in practice. Most projects use the tabs for the rough pass and the Timeline for cleanup, and since both read from the same project, nothing ever gets out of sync between them.
+
+## The Sync tab
+
+![Syncing lyrics in Composer](/composer/sync.mp4)
+_Tap along, and the words land on the timeline as you go_
+
+The Sync tab does what you'd expect, with one detail that took me forever to settle on. Tapping Space gives the current word a start time, and holding F gives it a start and an end. Tap Space while holding F and you get gapless syllable boundaries without having to think about it.
+
+That sounds dumb written out, but it makes a huge difference. Space alone is enough for most songs. Add F and you can handle rap, staccato, or Japanese and Korean lyrics where every character needs its own timing. It also works with touch, so yes, you can sync on your phone!
+
+Why Enter to play and Space to tap? I took it from Cubase, where Enter starts playback. That left Space free, and older versions of Cubase even had you tap a song's tempo on the space bar while it played, which is exactly the feeling I wanted for syncing: the song plays, you tap.
+
+Somewhere down the line, I realised I'd been shipping a garbage default this whole time! Pretty much every other editor uses Space to play and pause, and that's the first thing anyone opening Composer reaches for. So newer versions come with a "Remastered" shortcuts preset, a.k.a. the keys I should've shipped in the first place. Space plays, Enter taps, and the arrow keys seek.
+
+![The Remastered shortcuts preset in Composer's settings](/composer/remastered-preset.png)
+_Six keys I got wrong, fixed in one click_
+
+Composer also notices when you're fighting it. If you're on the default keys and hit Space expecting the song to play, or hit Space and then reach for the real play key a second later, a toast pops up asking if you want Space to play. One click swaps you over, and it points you to Remastered if you want the arrow keys to seek too.
+
+We do this kind of thing a lot. Turn on the pitch line before separating the vocals and Composer tells you that's what it needs. Try to auto-align without a synced line and it tells you what to select first. Whenever someone gets stuck, I'd rather Composer hold their hand through it if it can, instead of leaving them guessing.
+
+If your fingers already know another editor's keys, there are more presets for that (muscle memory is hard to unlearn, I get it, no judgement... mostly), and there's even one for osu! players. Click circles, sync lyrics! All of the almost 100 shortcuts can be remapped, and you can share your setup as a code.
+
+Miss a tap and the arrow keys will nudge it. Really miss a tap? Time for the Timeline!
+
+## Walking into my own trap
+
+In the [Intentional Design](/intentional-design) post, I wrote about getting so excited about a clever interaction that you forget the person using it just wants to listen to their music. I'd LOVE to tell you I learned that lesson for good. _I did not._
+
+Composer doesn't have nightlies or a beta channel. I ship something, people use it that same day, and I hear about it that same day too, which is great right up until it isn't. A little while ago I spent a ton of time redesigning the Sync tab into what I called a reading lane. The current line sat a third of the way down, the next few lines filled the rest of the panel, singers sat on their own side like they do in Preview, and the next word got a little tint so you'd know what was coming. I was really happy with it.
+
+Users lost their shit, and almost instantly. The update had taken away something they relied on: once a song was fully synced, they couldn't go back and re-sync a line the way they used to, and pausing the song no longer dropped them back into the list they knew.
+
+On top of that, the tap mode they'd gotten used to looked completely different. Drag the slider to see what I did to it:
+
+<ImageCompare
+  before="/composer/sync-classic.png"
+  after="/composer/sync-reading-lane.png"
+  beforeLabel="Classic"
+  afterLabel="Reading lane"
+/>
+
+The classic look was progressive disclosure at its most basic: show the line you're on, keep its neighbours quietly in view, and don't overload anyone. (The classic screenshot is on the first line of the song, so there's nothing above it yet.) I'd traded that for something busier, and a couple of people told me they couldn't even tell which word they were syncing anymore, because the tinted next word looked like the one being sung.
+
+They were right. People had built up muscle memory for the old Sync tab over months, and I'd broken it to make something prettier. So within an hour I put the classic view back. The small fixes that came along with the redesign stayed, like long lines no longer overlapping and split syllables staying joined, but everything people actually touched went back to exactly how it was. If it ain't broke, don't fix it. Less really is more sometimes, and apparently I need to keep relearning that.
+
+## The Timeline
+
+![The Composer Timeline](/composer/timeline.mp4)
+_Drag a word and it snaps to where the voice actually starts_
+
+This is where Composer stops being a guided workflow and turns into an actual tool. The waveform sits on top, lyric lines stack below it as tracks, and every word is a block you can drag around. If you've ever touched a DAW or a video editor, it'll feel familiar pretty much instantly. Tapping along gets you close, but nobody would edit audio without a timeline, so I don't see why lyrics should be any different.
+
+It's the part of Composer I spent the most time on, and most of that time went into how things feel rather than adding features.
+
+### Scrubbing you can hear
+
+Drag the playhead or scroll over the waveform and Composer plays a tiny snippet of audio right under the cursor, with the pitch kept intact. It's a lot like running your finger over a vinyl record. Once you're used to it, a silent scrubber feels broken, which is a polite way of describing every other lyrics tool I've tried.
+
+### Snapping
+
+Word edges lock onto neighbouring words, the playhead and a few more things I'll get to in a bit. Hold Cmd (or Ctrl on Windows) when you want to place something by hand. It took me three attempts to get this feeling right, and I'm hoping nobody ever notices.
+
+### Linked groups
+
+Most songs repeat themselves. Mark a chorus as a group, and every other copy of it gets linked, so when you fix one, the others follow, but only on the parts you actually changed. Composer will even suggest groups when it spots repeated lines. The rules for how edits spread between copies took longer than anything else in the app.
+
+![Linked groups in Composer](/composer/groups.mp4)
+_Move a word in one chorus and the other chorus moves with it_
+
+### Loop and cue
+
+You can draw a region on the waveform (or use a selection or a group) and loop it while you fix it. Set a cue, and you can replay from that spot as many times as it takes.
+
+### Dragging across lines
+
+You can grab a word and drop it on a completely different line. Composer works out whether that should move the word, add a syllable, send it to the background vocals, or refuse because there's no room, and the cursor changes shape so you know which one is about to happen.
+
+There's a lot more in there, like marquee selection, rolling edits, stretching a whole selection at once, and splitting and merging words. The help inside the app is searchable and covers all of it.
+
+And yes, Composer has onboarding. If you've read the [Intentional Design](/intentional-design) post, you might remember me being weirdly proud that Better Lyrics doesn't have any. That works when the whole experience is "install it, open a song, lyrics show up". A full-on editor like Composer is a different story, and pretending otherwise would just leave beginners stranded. So there's a tour that runs on your own song, and if you already know your way around, you can skip it.
+
+## Vocal separation, and the person behind it
+
+Composer can pull the vocals out of a song right in your browser. Click a button, wait a minute, and you can sync against the voice on its own without the drums and bass getting in the way. Not long ago you'd have needed a desktop app for that. If you already have the stems, you can import those instead.
+
+This one is almost entirely [Adalie's](https://github.com/adaliea) work. She got the model running in the browser, figured out how to cut the audio into chunks and stitch them back together without the seams popping, set it up to use WebGPU with a WASM fallback, and shipped the whole thing while I was busy yelling at the Timeline. The model itself is [HTDemucs](https://github.com/facebookresearch/demucs) from Facebook AI Research, but everything between "model file on a server" and "vocals playing in your browser tab" is hers.
+
+If you've read the [Intentional Design](/intentional-design) post, you've already seen her work. We each take the parts of the ecosystem that suit us best, and somehow it still ends up feeling like one project.
+
+## For beginners, and for people who do this all day
+
+I always wanted a kid to be able to use Composer, but I didn't want it to be a toy either. People who sync lyrics seriously want precision and a proper look at the audio, and they don't want to tap through the same song five times. So the Timeline grew a second layer. None of it gets in your way when you're starting out, and it's all one key away once you need it.
+
+Once the vocals are separated, Composer finds the vocal onsets, the points where each sung sound starts, and draws a dashed guide line at each one. Word edges snap to them, which is exactly what the drag in the Timeline demo above lands on.
+
+You can also drop your own snap markers, either at the playhead with a key or by clicking the waveform in marker mode. They keep pulling word edges in even with snapping turned off, they save with the project, and they never end up in the exported file.
+
+Then there's the beat grid. Composer detects the song's tempo on your device (it downloads a 9 MB model the first time) and draws bars and beats behind the waveform so words can snap to the beat. If the tempo is weird, you can type it in or tap it out, and there are quick fixes for half time, double time and a downbeat that landed in the wrong place, because detection gets those wrong more often than you'd think.
+
+### Spectrum and pitch line
+
+These two are the part of Composer I'm proudest of, so bear with me.
+
+They exist because of one person in our Discord. Before Composer, they synced lyrics with a custom Audacity plugin, because they were OBSESSED with getting the timing exactly right. AMLL Tool was, and I know this will come as a HUGE shock to everyone, _not_ it. And back then Composer leaned way more towards beginners, so neither one cut it.
+
+They also know a ridiculous amount about a ridiculous number of things, from how spectrograms actually work to vocal separation to the politics among the top dogs of the osu! community. We disagree on plenty, but when it comes to syncing lyrics, they're as pro as it gets. This is someone who worked out the built-in delay in Braccato, Better Lyrics' rendering engine, down to the nearest ten milliseconds, by themselves, without ever looking at the code.
+
+They gave me a bunch of pointers, I went off and did a lot of reading, and then we went back and forth for a good while. It took some time to find a middle ground, but it was one both of us ended up really happy with. This is what came out of it.
+
+One key swaps the waveform for a spectrum. A sung vowel shows up as a stack of bright bands and a consonant as a short burst of noise, so you can actually see where a word starts and ends instead of squinting at a blob of waveform. Plenty of tools give you a spectrogram and wish you luck, but I wanted this one to actually help you read it.
+
+That's something they told me early on: you can actually read vowels and consonants straight off a spectrogram. After daily driving this version of Composer for a while, I can do it now too, which is pretty cool!
+
+Turn on the pitch line and you get a line under each word that follows the melody. When it turns amber, the voice is still going past the end of the word. That doesn't automatically mean you messed up (a lot of the time it's fine), but seeing exactly where the pitch moves makes it way easier to line syllables up with where the note actually changes, or to spot where a new line or verse kicks in. It sounds like a small thing, but it catches stuff I'd never hear on my own.
+
+![Spectrum and pitch line in Composer](/composer/pitch.mp4)
+_Amber means the voice keeps going past the word. Here, it's worth dragging the edge out to meet it._
+
+While you drag a word edge, a little magnifier pops up with the spectrum around it, so you can line the edge up with the sound without zooming the whole timeline in and losing your place.
+
+All of this runs in your browser and gets saved alongside the separated vocals, so the second time you open a song it's instant. Beat detection uses [Beat This!](https://github.com/CPJKU/beat_this) from JKU Linz, and the pitch line uses [SwiftF0](https://github.com/lars76/swift-f0). Huge thanks to the people behind both.
+
+It's the same thinking as Better Lyrics, really. Beginners never have to see any of this, and pros never have to leave Composer to get it.
+
+## Auto-align
+
+This is the newest big feature, it changes the job quite a bit, and it's also Adalie's. (Yes, again. I told you she's good.)
+
+You tap the rough timing of each line, same as you would in the Sync tab, and Composer lines every word up against the separated vocals. Under the hood it's a heavily fine-tuned version of [HubertFA](https://github.com/wolfgitpr/HubertFA), a forced alignment model, running right in your browser, plus a pronunciation step so it knows what each word should sound like. That step uses the CMU dictionary for English, kuromoji for Japanese and pinyin for Chinese, so those are the three languages it works with for now.
+
+I'd rather be upfront about this: it isn't perfect. Shocking, I know. It gets most words right and a few confidently wrong, so Composer warns you if you try to export timing you haven't checked yet. What it does is turn "time every syllable by hand" into "fix the handful it missed", which is a much nicer afternoon.
+
+If you like to tinker, you can swap the alignment model in Settings, and anyone self-hosting Composer can drop in their own checkpoints.
+
+## The Preview tab
+
+![Previewing lyrics in Composer](/composer/preview.mp4)
+_Same timing as Better Lyrics, minus the eye candy_
+
+The Preview tab runs Braccato, the same rendering engine Better Lyrics uses, so the timing you see here is 1:1 with what people will see on YouTube Music. Word fill, the gaps between lines, where each singer sits, how background vocals tuck in under the main line, all of it.
+
+What it doesn't do is try to blow you away. I stripped out the fluff and the visual niceties on purpose, because a preview's job is to help you catch mistakes, and it's a lot easier to notice a word lighting up 80 ms late when there isn't a gorgeous blurred album cover pulling your eye away. I've seen editors make their preview the prettiest screen in the whole app. It looks great in a screenshot, and it does absolutely nothing for your timing.
+
+It also follows the playhead while you drag on the Timeline, so there's no more exporting a file, loading it into the extension, finding the right song and hoping it looks alright.
+
+## Composer Bridge
+
+YouTube blocks cloud IP ranges pretty aggressively. Public yt-dlp servers get throttled or blocked within hours of going live, so I'd ship a fix, the same thing would break two days later, and my inbox would fill up with "YouTube import broken." Eventually I realised your own laptop looks like a normal viewer to YouTube, so why not just run yt-dlp _there_?
+
+[Composer Bridge](https://github.com/better-lyrics/composer-bridge) is a tiny [Wails](https://wails.io) app that runs yt-dlp behind a local server on your machine. You install it, leave it running in the background, and Composer sends its YouTube imports through it over your own connection, with no rate limits and no server of mine in the middle. It updates yt-dlp once a day by itself and checks its own installer against a manifest before writing anything to disk.
+
+Yes, that means a little Go binary living on your laptop _forever_. I looked at rotating proxies, paying for a hosted yt-dlp service and doing the extraction in the browser, and every one of them was either more expensive, more fragile or flat out impossible.
+
+The installer is unsigned, because Apple and Microsoft code signing costs more than this project earns (which is **zero**, if you were curious). You'll get a scary warning the first time you run it, and after that you'll forget it's there.
+
+## How I actually built it
+
+Unlike Better Lyrics, Composer has been heavily AI assisted from the very beginning. That still meant a lot of work on my end, though.
+
+At the start my whole focus was getting the architecture and UX exactly how I wanted them. I don't believe in nits at that stage (I love to nitpick). Every view got its own spec and design doc, some with a lot more back and forth than others. I'd sketch a rough mockup in HTML, pull it into Figma, build a design system around it, and only then let the agent build the design system, the views and finally the logic, in that order. A good chunk of the early architecture I still wrote by hand, because the agents kept making the same mistakes and it was easier to just take the wheel.
+
+The other thing I learned the hard way is that telling an agent not to do something is never enough. You need guardrails in the code itself, so rules like "one owner per piece of logic" are enforced by checks that fail the build. That made the first few weeks painfully slow, but these days I barely worry about the core of the codebase changing behind my back, and I get to spend my time on the UX instead.
+
+The other reason Composer feels the way I want it to is boring: I use it. A lot. And like I said, I love to nitpick. The big features still get the full spec and mockup treatment, but for the small stuff, when something looks or feels even slightly off, I don't brainstorm, open Figma or sketch mocks about it. I just fix it, right then.
+
+My worst fear is Composer slowly turning into AMLL Tool. I don't think it will, though, because I actually use the thing and I care about how every interaction feels.
+
+Oh, and the animated demos in this post were built with [Stageshow](https://benji.org/stageshow), which draws product UI in code.
+
+## Not everyone was a fan
+
+Getting people to switch hasn't exactly been smooth. A lot of folks learned to sync on AMLL Tool, got used to its interface, and now know their workflow inside out, janky bits and all. They're not lining up to try something new. And I get it, I really do. I stuck with Premiere Pro for way longer than I should have just because I was a fanboy, and it took me ages to finally give DaVinci Resolve a shot.
+
+Some of the loudest feedback on Composer has come from exactly those people. Fair enough! Composer is a _lot_ more complicated than Better Lyrics, and it has its share of rough edges. But it's hard to take notes on polish too seriously from people who are perfectly happy with a tool where this happens when you open the menus:
+
+![Every menu in AMLL Tool open at once, stacked on top of each other](/composer/amll-menus.png)
+_Every menu, all at once. Pick one!_
+
+To be fair to the people building on top of AMLL Tool, they move fast. I once mentioned to a friend that it tags the second singer in a song as "other" instead of a person, which is about as basic as a lyrics file gets (never mind that it only supports _two_ singers in the first place, because apparently that's too much to ask for). That bug had been sitting in the original tool since 2023, and one of the forks had a fix out about _half an hour_ after I brought it up!
+
+I'm all for that kind of speed, and it's a big part of how Composer gets better too. But when the design itself is broken, there's only so much a quick fix can do, and no patch is going to change the fact that you're pressing a few keys on every single word.
+
+The same goes for the loud feedback. Whenever one of their points actually made sense, it got fixed, sometimes within the hour. If something didn't make sense and just felt spiteful, though, I don't really bother arguing about it anymore.
+
+Not everyone's opinion matters equally. When the people actually syncing songs in Composer every day tell me something's broken, I listen, like when they told me the reading lane had broken their workflow. Everyone else? I can live without their approval ;)
+
+## Closing the loop
+
+Composer is one of three tools that work together, and the loop only closes when all of them play nice.
+
+You sync your lyrics in Composer, export the TTML and submit it to **[Unison](https://unison.betterlyrics.org)**, the crowdsourced lyrics API I run for Better Lyrics. Unison publishes it the moment you submit it. Most lyric databases make every submission wait in a review queue, and after seeing what comes out of some of the other tools, I get why. We don't have one, and Composer is a big part of the reason we can get away with that. People vote, bad syncs get reported, and when the Better Lyrics Council finds one it really likes, it gets the BLCA seal, which is our version of an editor's pick. The Council keeps sealing Composer syncs, so if you want somewhere to start, try [Earrings](https://unison.betterlyrics.org/song/BI9HQCzpDgQ), [Touch The Sky](https://unison.betterlyrics.org/song/B95OUKk7alM) or [On My Way](https://unison.betterlyrics.org/song/ZM8rAsTT7yE).
+
+Better Lyrics checks Unison every time someone plays a song, so the next person who plays that track on YouTube Music gets your lyrics scrolling along in karaoke style like the rest of their library.
+
+It started as one extension and somehow turned into three tools, each one built because the one before it couldn't quite finish the job.
+
+I'll write a proper post about Unison soon, just not yet. There are still a few things about it I'm not happy with, and I'd rather sort those out before I tell that story. For now: it's free, the data is open, and anything you submit through Composer ends up there.
+
+If you want to give Composer a go, it's at [composer.betterlyrics.org](https://composer.betterlyrics.org). It's free, AGPL-licensed, and you can even install it as an app. If a song with no lyrics has been quietly annoying you, you can fix it for yourself and a few thousand other people at the same time.
+
+And if you do send lyrics back after using it, thank you! You're the reason I built any of this.

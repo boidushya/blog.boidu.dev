@@ -9,6 +9,7 @@ const nextConfig = {
       "res.cloudinary.com",
       "avatars.githubusercontent.com",
       "api.dicebear.com",
+      "composer.betterlyrics.org",
     ],
   },
   webpack: config => {
