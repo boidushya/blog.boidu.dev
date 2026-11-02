@@ -1,5 +1,6 @@
 import logo from "@/assets/images/logo.jpg";
 import ArticleExtra from "@/components/article-extra";
+import InlineEditor from "@/components/inline-editor";
 import Like from "@/components/like";
 import Sign from "@/components/sign";
 import SignGallery from "@/components/sign-gallery";
@@ -7,6 +8,7 @@ import SignGallery from "@/components/sign-gallery";
 import { getAllPosts, getPostById, isHiddenDraft, rehypePlugins, remarkPlugins } from "@/lib/blogs";
 import { mdxComponents } from "@/lib/mdx-components";
 import { FadeInImage } from "@/utils/components";
+import { IS_DEV } from "@/utils/constants";
 import { getAuthorsData, isYouTubeLink, truncate } from "@/utils/functions";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
@@ -132,6 +134,7 @@ export default async function Post({
         )}
       </article>
       <ArticleExtra id={id} />
+      {IS_DEV && <InlineEditor id={id} />}
     </>
   );
 }
