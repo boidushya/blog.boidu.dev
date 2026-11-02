@@ -41,7 +41,7 @@ const ThemeSwitcher = () => {
   const darkThemes = themes.filter(t => !LIGHT_THEMES.includes(t));
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <button
           className="flex items-center gap-2 px-2 py-2 -mx-2 capitalize rounded-md pressable text-accent-400 hover:text-accent-300 data-[state=open]:text-accent-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-400"
