@@ -181,6 +181,11 @@ circle[id^="react-sketch-canvas__"]{
   text-wrap: pretty;
 }
 
+.blog main > :first-child,
+.blog main > .src-block:first-child > :first-child {
+  @apply mt-0;
+}
+
 .blog main img,
 .blog main video {
   @apply w-full h-auto rounded-md;
@@ -293,12 +298,12 @@ circle[id^="react-sketch-canvas__"]{
 .blog h4,
 .blog h5,
 .blog h6 {
-  @apply mt-12 mb-4 !text-accent-50;
+  @apply mt-10 mb-3 sm:mt-12 sm:mb-4 !text-accent-50;
   text-wrap: balance;
 }
 
 .blog__meta {
-  @apply !text-accent-50/50 !font-normal mt-8 mb-6 text-base;
+  @apply !text-accent-50/50 !font-normal mt-5 mb-6 sm:mt-8 text-base;
 }
 
 .blog pre.shiki {

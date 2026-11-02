@@ -154,7 +154,7 @@ export function View({ data }: { data: any }) {
       initial="hidden"
       animate="visible"
       exit="hidden"
-      className="w-full space-y-8"
+      className="w-full space-y-6 sm:space-y-8"
     >
       <AnimatePresence>
         {data.map(
@@ -222,7 +222,7 @@ export const ViewWithUtils = ({ data }: { data: any }) => {
     "pressable hover:bg-accent-900 text-accent-400 data-[state=on]:bg-accent-800/50 data-[state=on]:text-accent-100 grid w-10 place-items-center bg-accent-900 text-base leading-4 first:rounded-l last:rounded-r ";
 
   return (
-    <div className="flex flex-col w-full gap-8">
+    <div className="flex flex-col w-full gap-6 sm:gap-8">
       <div className="flex flex-row w-full h-10 gap-4">
         <div className="relative flex-grow">
           <input

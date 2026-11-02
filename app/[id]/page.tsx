@@ -26,7 +26,7 @@ function YoutubeEmbed({ url }: { url: string }) {
     <iframe
       width="768"
       height="432"
-      className="mt-4 mb-10"
+      className="mb-8 sm:mt-4 sm:mb-10"
       src={`https://www.youtube.com/embed/${videoId}`}
       title="YouTube Video Embed"
       frameBorder="0"
@@ -55,9 +55,9 @@ export default async function Post({
               Draft
             </span>
           )}
-          <h1 className="!mb-2 !mt-6 text-center">{title}</h1>
-          <div className="flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
-            <div className="flex mr-4 -space-x-2 rtl:space-x-reverse shrink-0">
+          <h1 className="!mt-2 !mb-0 sm:!mt-6 sm:!mb-2 text-center">{title}</h1>
+          <div className="flex items-center justify-start sm:justify-center w-full py-3 border-y blog__meta border-accent-800/50">
+            <div className="flex mr-3 sm:mr-4 -space-x-2 rtl:space-x-reverse shrink-0">
               <Image
                 src={logo}
                 placeholder="blur"
@@ -76,7 +76,7 @@ export default async function Post({
               ))}
             </div>
             <div className="flex flex-wrap items-center min-w-0 text-accent-300">
-              <span className="mr-1 whitespace-nowrap">
+              <span className="mr-1 whitespace-nowrap max-sm:basis-full">
                 Published by <span className="text-accent-50">Boidushya</span>
                 {authors &&
                   authors.map((author, index) => {
@@ -95,8 +95,8 @@ export default async function Post({
                     );
                   })}
               </span>
-              <span className="mx-1 whitespace-nowrap">
-                <span className="whitespace-pre opacity-50"> · </span> {readingTime}
+              <span className="whitespace-nowrap sm:mx-1">
+                <span className="whitespace-pre opacity-50 max-sm:hidden"> · </span> {readingTime}
               </span>
               <span className="ml-1 whitespace-nowrap">
                 <span className="whitespace-pre opacity-50"> · </span> {date}
@@ -113,7 +113,7 @@ export default async function Post({
             height={900}
             width={1600}
             quality={100}
-            className="mt-4 mb-10 rounded-lg"
+            className="mb-8 rounded-lg sm:mt-4 sm:mb-10"
           />
         )}
 
