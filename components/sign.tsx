@@ -4,6 +4,7 @@ import React, { ComponentProps, useEffect } from "react";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 
 import { useSign } from "@/providers/sign";
+import { type StoredSignature, signsQueryKey } from "@/components/sign-gallery";
 import { Tooltip } from "@/utils/components";
 import { ToggleGroup } from "@radix-ui/react-toggle-group";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -35,8 +36,11 @@ const Sign = ({ id }: SignProps) => {
         }
         return response.json();
       }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["signs", id] });
+    onSuccess: ({ id: signId, paths, dots }: StoredSignature) => {
+      queryClient.setQueryData<StoredSignature[]>(signsQueryKey(id), signs => [
+        ...(signs ?? []),
+        { id: signId, paths, dots },
+      ]);
       setOpen(false);
     },
     onError: error => {

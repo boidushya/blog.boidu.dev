@@ -72,6 +72,15 @@ circle[id^="react-sketch-canvas__"]{
 	@apply !stroke-accent-200 !fill-accent-200;
 }
 
+.sign-board--collapsed {
+  mask-image: linear-gradient(black, transparent);
+}
+
+.sign-board__item {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100px;
+}
+
 .sketch-canvas{
 	/* border: none !important; */
 	border-radius: 0.5rem !important;
