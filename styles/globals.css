@@ -25,7 +25,12 @@
 }
 
 * {
-  @apply box-border transition-colors;
+  @apply box-border;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -118,15 +123,15 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .blog h1 {
-  @apply text-4xl font-bold text-accent-50;
+  @apply text-4xl font-bold tracking-tight text-accent-50;
 }
 
 .blog h2 {
-  @apply text-3xl font-bold text-accent-50;
+  @apply text-3xl font-bold tracking-tight text-accent-50;
 }
 
 .blog h3 {
-  @apply text-2xl font-bold text-accent-50;
+  @apply text-2xl font-bold tracking-tight text-accent-50;
 }
 
 .blog h4 {
@@ -145,12 +150,15 @@ circle[id^="react-sketch-canvas__"]{
   @apply text-accent-200 mb-6 tracking-normal;
 }
 
-.blog main img{
-	@apply w-full h-auto rounded-md border border-accent-600/20;
+.blog main {
+  text-wrap: pretty;
 }
 
-.blog main video{
-	@apply w-full h-auto rounded-md border border-accent-600/20;
+.blog main img,
+.blog main video {
+  @apply w-full h-auto rounded-md;
+  outline: 1px solid light-dark(oklch(0 0 0 / 0.1), oklch(1 0 0 / 0.1));
+  outline-offset: -1px;
 }
 
 .blog main img + em{
@@ -179,30 +187,33 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .blog a {
-  @apply text-accent-50 underline underline-offset-4;
+  @apply text-accent-50 underline underline-offset-4 transition-colors;
 }
 
-.blog a:hover {
-  @apply text-accent-50/50;
+@media (hover: hover) {
+  .blog a:hover {
+    @apply text-accent-50/50;
+  }
 }
 
 .blog ul {
-  @apply list-disc list-inside;
+  @apply list-disc pl-6 mb-6 space-y-2;
 }
 
 .blog ol {
-  @apply list-decimal list-inside;
+  @apply list-decimal pl-6 mb-6 space-y-2;
 }
 
 .blog li {
-  @apply text-accent-50;
+  @apply text-accent-200;
 }
 
-.blog ul ul,
-.blog ol ul,
-.blog ul ol,
-.blog ol ol {
-  @apply list-disc list-inside ml-4;
+.blog li::marker {
+  @apply text-accent-500;
+}
+
+.blog li > :is(ul, ol) {
+  @apply mt-2 mb-0;
 }
 
 .blog li p {
@@ -210,7 +221,7 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .blog blockquote {
-  @apply text-lg text-accent-50 border-l-4 border-accent-50 pl-4 border-opacity-50;
+  @apply text-lg text-accent-50 border-l-2 border-accent-50 pl-4 my-6 border-opacity-50;
 }
 
 .blog blockquote p {
@@ -255,11 +266,12 @@ circle[id^="react-sketch-canvas__"]{
 .blog h4,
 .blog h5,
 .blog h6 {
-  @apply mt-8 mb-6 !text-accent-50;
+  @apply mt-12 mb-4 !text-accent-50;
+  text-wrap: balance;
 }
 
 .blog__meta {
-  @apply !text-accent-50/50 !font-normal mt-4 mb-8;
+  @apply !text-accent-50/50 !font-normal mt-8 mb-6 text-base;
 }
 
 .blog pre.shiki {
@@ -283,11 +295,13 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .heading-anchor {
-  @apply mr-2 !no-underline opacity-25 font-normal md:transform-gpu md:-translate-x-full md:pr-3 md:absolute transition-all;
+  @apply mr-2 !no-underline opacity-25 font-normal md:transform-gpu md:-translate-x-full md:pr-3 md:absolute transition-opacity;
 }
 
-.heading-anchor:hover {
-  @apply opacity-100;
+@media (hover: hover) {
+  .heading-anchor:hover {
+    @apply opacity-100;
+  }
 }
 
 .copy {
@@ -302,8 +316,10 @@ circle[id^="react-sketch-canvas__"]{
   @apply absolute w-4 h-4 text-green-400/75 transition-all scale-0;
 }
 
-.copy-icon:hover {
-  @apply text-accent-50/75;
+@media (hover: hover) {
+  .copy-icon:hover {
+    @apply text-accent-50/75;
+  }
 }
 
 .copied .copy-icon {
@@ -430,7 +446,7 @@ circle[id^="react-sketch-canvas__"]{
 .btn-glass {
   @apply select-none touch-manipulation;
 	@apply border-0.5 border-accent-900 bg-accent-900;
-  @apply transition-all origin-center;
+  @apply transition-[transform,box-shadow] duration-150 ease-out origin-center;
   appearance: button;
   background-image: linear-gradient(180deg, rgba(255, 255, 255, .15), rgba(255, 255, 255, 0));
   box-shadow:

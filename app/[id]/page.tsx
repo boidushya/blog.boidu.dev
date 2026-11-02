@@ -109,7 +109,7 @@ export default async function Post({
         )}
 
         {isMDX ? (
-          <main className="text-lg leading-relaxed">
+          <main className="text-lg leading-[1.7]">
             {/* @ts-expect-error Async Server Component */}
             <MDXRemote
               source={html}
@@ -120,7 +120,7 @@ export default async function Post({
             />
           </main>
         ) : (
-          <main className="text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: html as string }} />
+          <main className="text-lg leading-[1.7]" dangerouslySetInnerHTML={{ __html: html as string }} />
         )}
       </article>
       <ArticleExtra id={id} />
