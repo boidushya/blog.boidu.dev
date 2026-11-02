@@ -94,6 +94,7 @@ export async function getPostById(id: string) {
     isMDX,
     labels: data.labels || [],
     authors: authors || [],
+    draft: data.draft === true,
   };
 }
 
@@ -126,7 +127,7 @@ export async function getAllBlogs() {
         image: post.banner,
         link: `/${post.id}`,
         labels: post.labels,
-        draft: post.draft === true,
+        draft: post.draft,
       };
     });
 }

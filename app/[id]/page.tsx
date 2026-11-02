@@ -50,7 +50,7 @@ export default async function Post({
     <>
       <article className="blog">
         <div className="grid place-items-center">
-          {post.draft === true && (
+          {post.draft && (
             <span className="px-2 py-1 mt-6 text-xs border rounded-md bg-accent-800/50 text-accent-50/75 border-accent-800">
               Draft
             </span>
