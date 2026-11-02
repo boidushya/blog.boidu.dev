@@ -128,7 +128,9 @@ export default function Like({ postId }: { postId: string }) {
         <button
           onClick={handleClick}
           ref={contentRef}
-          className="flex items-center justify-center gap-2 px-3 py-2 pr-4 text-sm leading-none text-pink-500"
+          aria-label={liked ? "Unlike this post" : "Like this post"}
+          aria-pressed={liked}
+          className="flex items-center justify-center gap-2 px-3 py-2 pr-4 text-sm leading-none text-pink-500 pressable"
         >
           <AnimatePresence mode="popLayout" initial={false}>
             <div key={likeCount} className="relative w-5 h-5">
@@ -180,7 +182,7 @@ export default function Like({ postId }: { postId: string }) {
               animate="animate"
               exit="exit"
               transition={transition}
-              className="font-mono text-accent-200"
+              className="font-mono tabular-nums text-accent-200"
             >
               {likeCount ?? 0}
             </motion.p>

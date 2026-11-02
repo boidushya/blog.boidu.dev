@@ -6,7 +6,7 @@ import { LIGHT_THEMES } from "@/utils/constants";
 import { isYouTubeLink } from "@/utils/functions";
 import { useWaterMark } from "@/utils/hooks";
 import { ToggleGroup, ToggleGroupItem } from "@radix-ui/react-toggle-group";
-import { AnimatePresence, MotionConfig, motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -149,33 +149,31 @@ export function View({ data }: { data: any }) {
   useWaterMark();
 
   return (
-    <MotionConfig reducedMotion="user">
-      <motion.div
-        variants={projectContainerVariants}
-        initial="hidden"
-        animate="visible"
-        exit="hidden"
-        className="w-full space-y-8"
-      >
-        <AnimatePresence>
-          {data.map(
-            (
-              item: React.JSX.IntrinsicAttributes & {
-                id: number;
-                title: string;
-                description: string;
-                image: string;
-                link: string;
-                labels: string[];
-                draft: boolean;
-              }
-            ) => (
-              <ContentBox length={data.length} key={item.id} {...item} />
-            )
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </MotionConfig>
+    <motion.div
+      variants={projectContainerVariants}
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+      className="w-full space-y-8"
+    >
+      <AnimatePresence>
+        {data.map(
+          (
+            item: React.JSX.IntrinsicAttributes & {
+              id: number;
+              title: string;
+              description: string;
+              image: string;
+              link: string;
+              labels: string[];
+              draft: boolean;
+            }
+          ) => (
+            <ContentBox length={data.length} key={item.id} {...item} />
+          )
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -221,7 +219,7 @@ export const ViewWithUtils = ({ data }: { data: any }) => {
   }, [sort]);
 
   const toggleGroupItemClasses =
-    "hover:bg-accent-900 text-accent-400 data-[state=on]:bg-accent-800/50 data-[state=on]:text-accent-100 grid w-10 place-items-center bg-accent-900 text-base leading-4 first:rounded-l last:rounded-r ";
+    "pressable hover:bg-accent-900 text-accent-400 data-[state=on]:bg-accent-800/50 data-[state=on]:text-accent-100 grid w-10 place-items-center bg-accent-900 text-base leading-4 first:rounded-l last:rounded-r ";
 
   return (
     <div className="flex flex-col w-full gap-8">
@@ -274,7 +272,7 @@ export const ViewWithUtils = ({ data }: { data: any }) => {
           <ToggleGroupItem
             value="dsc"
             className={`${toggleGroupItemClasses} border-l border-accent-800/50`}
-            aria-label="Sort Ascending"
+            aria-label="Sort Descending"
           >
             <Tooltip content="Sort Descending">
               <div className="grid w-full h-full place-items-center">

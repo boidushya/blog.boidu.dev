@@ -82,7 +82,7 @@ const SignGallery = ({ id }: { id: string }) => {
         </Tooltip>
         <button
           onClick={() => setHasMore(!hasMore)}
-          className={`items-center justify-between h-8 gap-3 px-4 pr-5 text-sm rounded-lg bg-accent-900 hover:bg-accent-800/25 select-none ${
+          className={`items-center justify-between h-8 gap-3 px-4 pr-5 text-sm rounded-lg pressable bg-accent-900 hover:bg-accent-800/25 ${
             fetchedSigns.length > 4 ? "flex" : "hidden"
           } `}
         >

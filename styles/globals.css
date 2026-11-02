@@ -33,6 +33,24 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+button,
+[role^="menuitem"] {
+  @apply select-none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pressable {
+  transition-property: scale, color, background-color, border-color, opacity, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: ease-out;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pressable:not(:disabled):active {
+    scale: 0.96;
+  }
+}
+
 body {
   font-family: "ABC Diatype Rounded", system-ui, -apple-system,
     BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
@@ -343,12 +361,23 @@ circle[id^="react-sketch-canvas__"]{
   @apply relative grid place-items-center w-4 h-4;
 }
 
+.copy-icon,
+.checked-icon {
+  @apply absolute w-4 h-4;
+  transition-property: opacity, scale, filter, color;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
 .copy-icon {
-  @apply absolute w-4 h-4 text-accent-50/50 transition-all scale-100;
+  @apply text-accent-50/50;
 }
 
 .checked-icon {
-  @apply absolute w-4 h-4 text-green-400/75 transition-all scale-0;
+  @apply text-green-400/75;
+  opacity: 0;
+  scale: 0.25;
+  filter: blur(4px);
 }
 
 @media (hover: hover) {
@@ -358,63 +387,76 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .copied .copy-icon {
-  animation: fadeOut 0.2s ease forwards;
+  opacity: 0;
+  scale: 0.25;
+  filter: blur(4px);
 }
 
 .copied .checked-icon {
-  animation: fadeIn 0.2s ease forwards;
+  opacity: 1;
+  scale: 1;
+  filter: none;
 }
 
-.copy-complete .copy-icon {
-  animation: fadeIn 0.2s ease forwards;
-}
-
-.copy-complete .checked-icon {
-  animation: fadeOut 0.2s ease forwards;
+@media (prefers-reduced-motion: reduce) {
+  .copy-icon,
+  .checked-icon {
+    scale: 1 !important;
+    filter: none !important;
+  }
 }
 
 .radix-tooltip__content {
   @apply bg-accent-900 text-accent-300 text-sm rounded-md px-3 py-1.5 border border-accent-800/50;
-  animation-duration: 400ms;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform, opacity;
+  transform-origin: var(--radix-tooltip-content-transform-origin);
 }
 
-.radix-tooltip__content[data-state="delayed-open"][data-side="top"] {
-  animation-name: slideDownAndFade;
+.radix-tooltip__content[data-state="delayed-open"] {
+  animation: pop-in 150ms ease-out;
 }
-.radix-tooltip__content[data-state="delayed-open"][data-side="right"] {
-  animation-name: slideLeftAndFade;
-}
-.radix-tooltip__content[data-state="delayed-open"][data-side="bottom"] {
-  animation-name: slideUpAndFade;
-}
-.radix-tooltip__content[data-state="delayed-open"][data-side="left"] {
-  animation-name: slideRightAndFade;
+
+.radix-tooltip__content[data-state="closed"] {
+  animation: pop-out 100ms ease-out forwards;
 }
 
 .radix-dropdown__content,
 .radix-dropdown__subcontent {
-  animation-duration: 400ms;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform, opacity;
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+  animation: pop-in 200ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-.radix-dropdown__content[data-side="top"],
-.radix-dropdown__subcontent[data-side="top"] {
-  animation-name: slideDownAndFade;
+.radix-dropdown__content[data-state="closed"],
+.radix-dropdown__subcontent[data-state="closed"] {
+  animation: pop-out 150ms ease-out forwards;
 }
-.radix-dropdown__content[data-side="right"],
-.radix-dropdown__subcontent[data-side="right"] {
-  animation-name: slideLeftAndFade;
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    scale: 0.96;
+    filter: blur(2px);
+  }
 }
-.radix-dropdown__content[data-side="bottom"],
-.radix-dropdown__subcontent[data-side="bottom"] {
-  animation-name: slideUpAndFade;
+
+@keyframes pop-out {
+  to {
+    opacity: 0;
+    scale: 0.96;
+  }
 }
-.radix-dropdown__content[data-side="left"],
-.radix-dropdown__subcontent[data-side="left"] {
-  animation-name: slideRightAndFade;
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes pop-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes pop-out {
+    to {
+      opacity: 0;
+    }
+  }
 }
 
 .alert {
@@ -499,72 +541,6 @@ circle[id^="react-sketch-canvas__"]{
   @apply opacity-50 pointer-events-none;
   background-image: none;
   box-shadow: none;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(0);
-  }
-}
-
-@keyframes slideUpAndFade {
-  from {
-    opacity: 0;
-    transform: translateY(2px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideRightAndFade {
-  from {
-    opacity: 0;
-    transform: translateX(-2px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideDownAndFade {
-  from {
-    opacity: 0;
-    transform: translateY(-2px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideLeftAndFade {
-  from {
-    opacity: 0;
-    transform: translateX(2px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
 }
 
 .scrollbar-overlay {
