@@ -33,7 +33,7 @@
     "isomorphic-dompurify": "^2.12.0",
     "lodash.debounce": "^4.0.8",
     "next": "13.4.2",
-    "next-mdx-remote": "^5.0.0",
+    "next-mdx-remote": "^6.0.0",
     "nextjs-toploader": "^1.6.6",
     "plaiceholder": "^3.0.0",
     "postcss": "8.4.23",
