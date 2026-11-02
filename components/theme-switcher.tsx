@@ -35,6 +35,7 @@ const ThemeSwitcher = () => {
   const themes = getAllThemes();
 
   const isCurrentThemeLight = LIGHT_THEMES.includes(theme);
+  const closedByPointer = React.useRef(false);
 
   const lightThemes = themes.filter(t => LIGHT_THEMES.includes(t));
   const darkThemes = themes.filter(t => !LIGHT_THEMES.includes(t));
@@ -68,6 +69,19 @@ const ThemeSwitcher = () => {
           className="p-2 border rounded-lg shadow min-w-[10rem] bg-accent-900 border-accent-800/50 radix-dropdown__content"
           sideOffset={10}
           align="end"
+          onPointerDown={() => {
+            closedByPointer.current = true;
+          }}
+          onPointerDownOutside={() => {
+            closedByPointer.current = true;
+          }}
+          onKeyDown={() => {
+            closedByPointer.current = false;
+          }}
+          onCloseAutoFocus={event => {
+            if (closedByPointer.current) event.preventDefault();
+            closedByPointer.current = false;
+          }}
         >
           <DropdownMenuLabel className="flex items-center justify-between gap-1 px-2 py-1 mb-0 text-xs text-accent-600">
             Dark
