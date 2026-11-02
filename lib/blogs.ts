@@ -3,9 +3,11 @@ import { join } from "path";
 import { getAuthorsData } from "@/utils/functions";
 import { rehypeAdmonitions } from "@/utils/rehype-admonitions";
 import rehypeShiki from "@/utils/rehype-shiki";
+import rehypeSourceBlocks from "@/utils/rehype-source-blocks";
 import rehypeVideo from "@/utils/rehype-video";
 import { format } from "date-fns";
 import matter from "gray-matter";
+import type { Element } from "hast";
 import readingTime from "reading-time";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSlug from "rehype-slug";
@@ -13,24 +15,22 @@ import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
-import { unified } from "unified";
+import { type PluggableList, unified } from "unified";
 
 let p: ReturnType<typeof getParserPre> | undefined;
 
-async function getParserPre() {
-  return unified()
-    .use(remarkParse)
-    .use(remarkRehype)
-    .use(remarkGfm)
-    .use(rehypeShiki, {
-      theme: "tokyo-night",
-    })
-    .use(rehypeStringify)
-    .use(rehypeSlug)
-    .use(rehypeAdmonitions as any)
-    .use(rehypeVideo)
-    .use(rehypeAutolinkHeadings, {
-      content: arg => ({
+export const remarkPlugins: PluggableList = [remarkGfm];
+
+export const rehypePlugins: PluggableList = [
+  rehypeSourceBlocks,
+  [rehypeShiki, { theme: "tokyo-night" }],
+  rehypeSlug,
+  rehypeAdmonitions as any,
+  rehypeVideo,
+  [
+    rehypeAutolinkHeadings,
+    {
+      content: (arg: Element) => ({
         type: "element",
         tagName: "a",
         properties: {
@@ -39,7 +39,12 @@ async function getParserPre() {
         },
         children: [{ type: "text", value: "#" }],
       }),
-    });
+    },
+  ],
+];
+
+async function getParserPre() {
+  return unified().use(remarkParse).use(remarkPlugins).use(remarkRehype).use(rehypePlugins).use(rehypeStringify);
 }
 
 function getParser() {
@@ -88,16 +93,25 @@ export async function getPostById(id: string) {
     isMDX,
     labels: data.labels || [],
     authors: authors || [],
+    draft: data.draft === true,
   };
 }
 
-export async function getAllPosts() {
+export const isHiddenDraft = (post: { draft?: unknown }) =>
+  post.draft === true && process.env.NODE_ENV === "production";
+
+async function getVisiblePosts() {
   const posts = await Promise.all(fs.readdirSync("blogs").map(id => getPostById(id)));
+  return posts.filter(post => !isHiddenDraft(post));
+}
+
+export async function getAllPosts() {
+  const posts = await getVisiblePosts();
   return posts.sort((post1, post2) => (post1.date > post2.date ? -1 : 1));
 }
 
 export async function getAllBlogs() {
-  const posts = await Promise.all(fs.readdirSync("blogs").map(id => getPostById(id)));
+  const posts = await getVisiblePosts();
   return posts
     .sort((post1, post2) => {
       const date1 = new Date(post1.date);
@@ -112,6 +126,7 @@ export async function getAllBlogs() {
         image: post.banner,
         link: `/${post.id}`,
         labels: post.labels,
+        draft: post.draft,
       };
     });
 }

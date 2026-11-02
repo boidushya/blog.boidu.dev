@@ -11,6 +11,8 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
+const MotionLink = motion(Link);
+
 const getYouTubeThumbnail = (url: string): string | null => {
   const match = url.match(
     /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
@@ -33,6 +35,7 @@ export function ContentBox({
   link,
   length,
   labels,
+  draft,
 }: {
   id: number;
   title: string;
@@ -41,6 +44,7 @@ export function ContentBox({
   link: string;
   length: number;
   labels: string[];
+  draft: boolean;
 }) {
   const projectVariants = {
     hidden: {
@@ -61,9 +65,11 @@ export function ContentBox({
   const isLight = LIGHT_THEMES.includes(theme);
 
   return (
-    <motion.div
+    <MotionLink
+      href={link}
+      aria-label={title}
       variants={projectVariants}
-      className={`rounded-xl shadow-xl overflow-hidden grid items-start self-start justify-start w-full grid-cols-3 border border-opacity-10 border-accent-400 ${
+      className={`group focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-400 rounded-xl shadow-xl overflow-hidden grid items-start self-start justify-start w-full grid-cols-3 border border-opacity-10 border-accent-400 ${
         id !== length ? `border-b` : ``
       }`}
     >
@@ -80,19 +86,19 @@ export function ContentBox({
         />
       </div>
       <div className="relative flex flex-col items-start justify-between order-1 h-full col-span-3 overflow-hidden tracking-normal sm:col-span-2 isolate">
-        <div className="flex flex-row justify-start w-full gap-4 p-8 pb-0">
-          {labels.map(label => (
+        <div className="flex flex-row flex-wrap justify-start w-full gap-2 p-6 pb-0 sm:p-8 sm:pb-0">
+          {(draft ? ["Draft", ...labels] : labels).map(label => (
             <span
               key={label}
-              className={`bg-accent-800/50 text-accent-50/75 border border-accent-800 px-2 py-1 text-xs text-accent-0 rounded-md`}
+              className={`bg-accent-800/50 text-accent-50/75 border border-accent-800 px-2 py-1 text-xs rounded-md`}
             >
               {label}
             </span>
           ))}
         </div>
-        <div className="flex flex-col justify-center h-full p-8 pb-12">
-          <h3 className="mb-4 text-2xl font-semibold tracking-tight text-accent-50">{title}</h3>
-          <p className="text-sm tracking-normal text-accent-50/60">{description}</p>
+        <div className="flex flex-col justify-center h-full p-6 pb-10 sm:p-8 sm:pb-12">
+          <h3 className="mb-4 text-2xl font-semibold tracking-tight text-accent-50 [text-wrap:balance]">{title}</h3>
+          <p className="text-sm tracking-normal text-accent-50/70 [text-wrap:pretty]">{description}</p>
         </div>
         <div className="absolute inset-0 z-[-1] isolate">
           <div className="absolute inset-0 z-10 bg-accent-900/50" />
@@ -106,9 +112,9 @@ export function ContentBox({
             />
           )}
         </div>
-        <Link
-          href={link}
-          className="flex items-center justify-start w-full gap-1 px-8 py-4 text-sm font-semibold tracking-wide transition-colors border-t select-none border-accent-400 border-opacity-5 bg-opacity-30 group text-accent-400 bg-accent-800 hover:bg-opacity-50 hover:text-accent-300 hover:border-transparent"
+        <div
+          aria-hidden="true"
+          className="flex items-center justify-start w-full gap-1 px-6 py-4 sm:px-8 text-sm font-semibold tracking-wide transition-colors border-t select-none border-accent-400 border-opacity-5 bg-opacity-30 text-accent-400 bg-accent-800 group-hover:bg-opacity-50 group-hover:text-accent-300 group-hover:border-transparent"
         >
           Read More
           <svg
@@ -117,13 +123,13 @@ export function ContentBox({
             viewBox="0 0 24 24"
             strokeWidth={3}
             stroke="currentColor"
-            className="w-3 h-3 transition-transform group-hover:translate-x-2"
+            className="w-3 h-3 transition-transform motion-safe:group-hover:translate-x-2"
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
           </svg>
-        </Link>
+        </div>
       </div>
-    </motion.div>
+    </MotionLink>
   );
 }
 
@@ -148,7 +154,7 @@ export function View({ data }: { data: any }) {
       initial="hidden"
       animate="visible"
       exit="hidden"
-      className="w-full space-y-8"
+      className="w-full space-y-6 sm:space-y-8"
     >
       <AnimatePresence>
         {data.map(
@@ -160,6 +166,7 @@ export function View({ data }: { data: any }) {
               image: string;
               link: string;
               labels: string[];
+              draft: boolean;
             }
           ) => (
             <ContentBox length={data.length} key={item.id} {...item} />
@@ -212,10 +219,10 @@ export const ViewWithUtils = ({ data }: { data: any }) => {
   }, [sort]);
 
   const toggleGroupItemClasses =
-    "hover:bg-accent-900 text-accent-400 data-[state=on]:bg-accent-800/50 data-[state=on]:text-accent-100 grid w-10 place-items-center bg-accent-900 text-base leading-4 first:rounded-l last:rounded-r ";
+    "pressable hover:bg-accent-900 text-accent-400 data-[state=on]:bg-accent-800/50 data-[state=on]:text-accent-100 grid w-10 place-items-center bg-accent-900 text-base leading-4 first:rounded-l last:rounded-r ";
 
   return (
-    <div className="flex flex-col w-full gap-8">
+    <div className="flex flex-col w-full gap-6 sm:gap-8">
       <div className="flex flex-row w-full h-10 gap-4">
         <div className="relative flex-grow">
           <input
@@ -223,7 +230,7 @@ export const ViewWithUtils = ({ data }: { data: any }) => {
             placeholder="e.g. Understanding React Hooks"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full p-2 px-3 transition-colors border rounded-md pl-9 border-accent-800/50 bg-accent-900 focus:outline-0 focus:border-accent-800 focus:ring-transparent placeholder:text-accent-400/50"
+            className="w-full p-2 px-3 transition-colors border rounded-md pl-9 border-accent-800/50 bg-accent-900 focus:outline-0 focus:border-accent-600 focus:ring-transparent placeholder:text-accent-400/50"
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -265,7 +272,7 @@ export const ViewWithUtils = ({ data }: { data: any }) => {
           <ToggleGroupItem
             value="dsc"
             className={`${toggleGroupItemClasses} border-l border-accent-800/50`}
-            aria-label="Sort Ascending"
+            aria-label="Sort Descending"
           >
             <Tooltip content="Sort Descending">
               <div className="grid w-full h-full place-items-center">

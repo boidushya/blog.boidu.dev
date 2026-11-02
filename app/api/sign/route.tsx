@@ -1,4 +1,5 @@
 import cors from "@/lib/cors";
+import { parseSignature, toSvg } from "@/lib/signature";
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../lib/supabaseClient";
 
@@ -17,7 +18,16 @@ const corsOptions = {
 
 export async function POST(request: NextRequest) {
   const body = (await request.json()) as CreateRequestBody;
-  const { data, error } = await supabase.from("signs").insert({ svg_text: body.svgText, post_id: body.id }).select();
+  const signature = typeof body.svgText === "string" ? parseSignature(body.svgText) : null;
+
+  if (!signature || typeof body.id !== "string") {
+    return cors(request, NextResponse.json({ error: "Invalid signature" }, { status: 400 }), corsOptions);
+  }
+
+  const { data, error } = await supabase
+    .from("signs")
+    .insert({ svg_text: toSvg(signature), post_id: body.id })
+    .select();
 
   if (error) {
     return cors(request, NextResponse.json({ error: error.message }, { status: 500 }), corsOptions);
@@ -29,6 +39,7 @@ export async function POST(request: NextRequest) {
       {
         message: "Successfully added sign",
         id: data[0].id,
+        ...signature,
       },
       { status: 200 }
     ),
@@ -50,11 +61,17 @@ export async function GET(request: NextRequest) {
     return cors(request, NextResponse.json({ error: error.message }, { status: 500 }), corsOptions);
   }
 
-  if (!data || data.length === 0) {
-    return cors(request, NextResponse.json({ error: "No signs found for this post ID" }, { status: 404 }), corsOptions);
-  }
+  const signs = (data ?? []).flatMap(item => {
+    const signature = parseSignature(item.svg_text);
+    return signature ? [{ id: item.id, ...signature }] : [];
+  });
 
-  const svgTexts = data.map(item => ({ svgText: item.svg_text, id: item.id }));
-
-  return cors(request, NextResponse.json(svgTexts, { status: 200 }), corsOptions);
+  return cors(
+    request,
+    NextResponse.json(signs, {
+      status: 200,
+      headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=600" },
+    }),
+    corsOptions
+  );
 }

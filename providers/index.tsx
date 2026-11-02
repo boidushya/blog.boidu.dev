@@ -1,4 +1,7 @@
+"use client";
+
 import { TooltipProvider } from "@radix-ui/react-tooltip";
+import { MotionConfig } from "framer-motion";
 import dynamic from "next/dynamic";
 
 const ThemeProvider = dynamic(() => import("../providers/theme"), {
@@ -8,7 +11,9 @@ const ThemeProvider = dynamic(() => import("../providers/theme"), {
 const Providers = ({ children }: React.PropsWithChildren) => {
   return (
     <ThemeProvider>
-      <TooltipProvider>{children}</TooltipProvider>
+      <MotionConfig reducedMotion="user">
+        <TooltipProvider>{children}</TooltipProvider>
+      </MotionConfig>
     </ThemeProvider>
   );
 };

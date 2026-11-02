@@ -15,6 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
+import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
 
 const SunIcon = () => (
@@ -34,19 +35,33 @@ const ThemeSwitcher = () => {
   const themes = getAllThemes();
 
   const isCurrentThemeLight = LIGHT_THEMES.includes(theme);
+  const closedByPointer = React.useRef(false);
 
   const lightThemes = themes.filter(t => LIGHT_THEMES.includes(t));
   const darkThemes = themes.filter(t => !LIGHT_THEMES.includes(t));
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <button
-          className="flex items-center gap-2 capitalize focus-visible:outline-none text-accent-400"
+          className="flex items-center gap-2 px-2 py-2 -mx-2 capitalize rounded-md pressable text-accent-400 hover:text-accent-300 data-[state=open]:text-accent-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-400"
           aria-label="Select Theme"
         >
           <span className="pt-[1.5px]">{theme}</span>
-          {isCurrentThemeLight ? <SunIcon /> : <MoonIcon />}
+          <span className="relative grid w-3 h-3 place-items-center">
+            <AnimatePresence initial={false} mode="popLayout">
+              <motion.span
+                key={isCurrentThemeLight ? "light" : "dark"}
+                initial={{ opacity: 0, scale: 0.25, filter: "blur(4px)" }}
+                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, scale: 0.25, filter: "blur(4px)" }}
+                transition={{ type: "spring", duration: 0.3, bounce: 0 }}
+                className="absolute"
+              >
+                {isCurrentThemeLight ? <SunIcon /> : <MoonIcon />}
+              </motion.span>
+            </AnimatePresence>
+          </span>
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuPortal>
@@ -54,6 +69,19 @@ const ThemeSwitcher = () => {
           className="p-2 border rounded-lg shadow min-w-[10rem] bg-accent-900 border-accent-800/50 radix-dropdown__content"
           sideOffset={10}
           align="end"
+          onPointerDown={() => {
+            closedByPointer.current = true;
+          }}
+          onPointerDownOutside={() => {
+            closedByPointer.current = true;
+          }}
+          onKeyDown={() => {
+            closedByPointer.current = false;
+          }}
+          onCloseAutoFocus={event => {
+            if (closedByPointer.current) event.preventDefault();
+            closedByPointer.current = false;
+          }}
         >
           <DropdownMenuLabel className="flex items-center justify-between gap-1 px-2 py-1 mb-0 text-xs text-accent-600">
             Dark

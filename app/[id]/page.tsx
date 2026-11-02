@@ -1,22 +1,19 @@
 import logo from "@/assets/images/logo.jpg";
 import ArticleExtra from "@/components/article-extra";
+import InlineEditor from "@/components/inline-editor";
 import Like from "@/components/like";
 import Sign from "@/components/sign";
 import SignGallery from "@/components/sign-gallery";
 /* eslint-disable @next/next/no-img-element */
-import { getAllPosts, getPostById } from "@/lib/blogs";
+import { getAllPosts, getPostById, isHiddenDraft, rehypePlugins, remarkPlugins } from "@/lib/blogs";
 import { mdxComponents } from "@/lib/mdx-components";
 import { FadeInImage } from "@/utils/components";
+import { IS_DEV } from "@/utils/constants";
 import { getAuthorsData, isYouTubeLink, truncate } from "@/utils/functions";
-import { rehypeAdmonitions } from "@/utils/rehype-admonitions";
-import rehypeShiki from "@/utils/rehype-shiki";
-import rehypeVideo from "@/utils/rehype-video";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 import React from "react";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypeSlug from "rehype-slug";
-import remarkGfm from "remark-gfm";
 
 function YoutubeEmbed({ url }: { url: string }) {
   const matchResult = url.match(
@@ -29,7 +26,7 @@ function YoutubeEmbed({ url }: { url: string }) {
     <iframe
       width="768"
       height="432"
-      className="mt-4 mb-10"
+      className="mb-8 sm:mt-4 sm:mb-10"
       src={`https://www.youtube.com/embed/${videoId}`}
       title="YouTube Video Embed"
       frameBorder="0"
@@ -44,6 +41,7 @@ export default async function Post({
   params: { id: string };
 }) {
   const post = await getPostById(id);
+  if (isHiddenDraft(post)) notFound();
   const { html, title, date, readingTime, banner, authors, isMDX } = post;
 
   const isYoutubeVideo = isYouTubeLink(banner);
@@ -52,9 +50,14 @@ export default async function Post({
     <>
       <article className="blog">
         <div className="grid place-items-center">
-          <h1 className="!mb-2 !mt-6 text-center">{title}</h1>
-          <h6 className="flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
-            <div className="flex mr-4 -space-x-2 rtl:space-x-reverse shrink-0">
+          {post.draft && (
+            <span className="px-2 py-1 mt-6 text-xs border rounded-md bg-accent-800/50 text-accent-50/75 border-accent-800">
+              Draft
+            </span>
+          )}
+          <h1 className="!mt-2 !mb-0 sm:!mt-6 sm:!mb-2 text-center">{title}</h1>
+          <div className="flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
+            <div className="flex mr-3 sm:mr-4 -space-x-2 rtl:space-x-reverse shrink-0">
               <Image
                 src={logo}
                 placeholder="blur"
@@ -72,8 +75,8 @@ export default async function Post({
                 />
               ))}
             </div>
-            <div className="text-accent-300">
-              <span className="mr-1">
+            <div className="flex flex-col min-w-0 sm:flex-row sm:flex-wrap sm:items-center text-accent-300">
+              <span className="whitespace-nowrap">
                 Published by <span className="text-accent-50">Boidushya</span>
                 {authors &&
                   authors.map((author, index) => {
@@ -92,14 +95,18 @@ export default async function Post({
                     );
                   })}
               </span>
-              <span className="mx-1">
-                <span className="whitespace-pre opacity-50"> • </span> {readingTime}
-              </span>
-              <span className="ml-1">
-                <span className="whitespace-pre opacity-50"> • </span> {date}
+              <span className="whitespace-nowrap">
+                <span aria-hidden="true" className="mx-1.5 opacity-50 max-sm:hidden">
+                  ·
+                </span>
+                {readingTime}
+                <span aria-hidden="true" className="mx-1.5 opacity-50">
+                  ·
+                </span>
+                {date}
               </span>
             </div>
-          </h6>
+          </div>
         </div>
         {isYoutubeVideo ? (
           <YoutubeEmbed url={banner} />
@@ -110,48 +117,30 @@ export default async function Post({
             height={900}
             width={1600}
             quality={100}
-            className="mt-4 mb-10 rounded-lg"
+            className="mb-8 rounded-lg sm:mt-4 sm:mb-10"
           />
         )}
 
         {isMDX ? (
-          <main className="text-lg leading-relaxed">
+          <main className="text-[1.0625rem] sm:text-lg leading-[1.7]">
             {/* @ts-expect-error Async Server Component */}
             <MDXRemote
               source={html}
               components={mdxComponents}
               options={{
-                mdxOptions: {
-                  remarkPlugins: [remarkGfm],
-                  rehypePlugins: [
-                    [rehypeShiki, { theme: "tokyo-night" }],
-                    rehypeSlug,
-                    rehypeAdmonitions as any,
-                    rehypeVideo,
-                    [
-                      rehypeAutolinkHeadings,
-                      {
-                        content: (arg: any) => ({
-                          type: "element",
-                          tagName: "a",
-                          properties: {
-                            href: "#" + arg.properties?.id,
-                            className: "heading-anchor",
-                          },
-                          children: [{ type: "text", value: "#" }],
-                        }),
-                      },
-                    ],
-                  ],
-                },
+                mdxOptions: { remarkPlugins, rehypePlugins },
               }}
             />
           </main>
         ) : (
-          <main className="text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: html as string }} />
+          <main
+            className="text-[1.0625rem] sm:text-lg leading-[1.7]"
+            dangerouslySetInnerHTML={{ __html: html as string }}
+          />
         )}
       </article>
       <ArticleExtra id={id} />
+      {IS_DEV && <InlineEditor id={id} />}
     </>
   );
 }

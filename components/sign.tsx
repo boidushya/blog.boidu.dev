@@ -3,6 +3,7 @@
 import React, { ComponentProps, useEffect } from "react";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 
+import { type StoredSignature, signsQueryKey } from "@/components/sign-gallery";
 import { useSign } from "@/providers/sign";
 import { Tooltip } from "@/utils/components";
 import { ToggleGroup } from "@radix-ui/react-toggle-group";
@@ -35,8 +36,11 @@ const Sign = ({ id }: SignProps) => {
         }
         return response.json();
       }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["signs", id] });
+    onSuccess: ({ id: signId, paths, dots }: StoredSignature) => {
+      queryClient.setQueryData<StoredSignature[]>(signsQueryKey(id), signs => [
+        ...(signs ?? []),
+        { id: signId, paths, dots },
+      ]);
       setOpen(false);
     },
     onError: error => {
@@ -72,19 +76,26 @@ const Sign = ({ id }: SignProps) => {
 
   useEffect(() => {
     containerRef.current?.focus();
-  }, []);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [setOpen]);
 
   return (
     <motion.div
       ref={containerRef}
-      initial={{ opacity: 0, y: 8, scale: 0.75 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 8, scale: 0.75 }}
-      transition={{ type: "spring", mass: 0.05, damping: 15, stiffness: 500 }}
+      initial={{ opacity: 0, y: 8, scale: 0.9, filter: "blur(4px)" }}
+      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+      exit={{ opacity: 0, y: 4, scale: 0.96, filter: "blur(4px)", transition: { duration: 0.15, ease: "easeOut" } }}
+      transition={{ type: "spring", duration: 0.35, bounce: 0 }}
+      style={{ originX: 1, originY: 1 }}
     >
       <div className="absolute right-0 z-10 p-4 origin-bottom-right -translate-y-full border rounded-lg -top-4 bg-accent-900/90 border-accent-600/50 backdrop-blur shadow-deep">
         <button
-          className="absolute grid w-6 h-6 text-sm bg-transparent border rounded-full top-3 right-3 border-accent-600/50 place-items-center text-accent-400 hover:bg-accent-800/50 "
+          aria-label="Close"
+          className="absolute grid w-6 h-6 text-sm bg-transparent border rounded-full pressable top-3 right-3 border-accent-600/50 place-items-center text-accent-400 hover:bg-accent-800/50 after:absolute after:-inset-2 after:content-['']"
           onClick={handleClose}
         >
           <svg
@@ -112,7 +123,8 @@ const Sign = ({ id }: SignProps) => {
           <div className="flex items-center gap-2">
             <Tooltip content="Clear">
               <button
-                className="p-2 text-sm rounded-lg h-9 w-9 bg-red-500/50 hover:bg-red-500/75"
+                aria-label="Clear"
+                className="p-2 text-sm rounded-lg pressable h-9 w-9 bg-red-500/50 hover:bg-red-500/75"
                 onClick={handleClear}
               >
                 <svg
@@ -133,7 +145,8 @@ const Sign = ({ id }: SignProps) => {
             </Tooltip>
             <Tooltip content="Undo">
               <button
-                className="p-2 text-sm rounded-lg h-9 w-9 bg-accent-500/50 hover:bg-accent-500/75"
+                aria-label="Undo"
+                className="p-2 text-sm rounded-lg pressable h-9 w-9 bg-accent-500/50 hover:bg-accent-500/75"
                 onClick={handleUndo}
               >
                 <svg
@@ -153,7 +166,7 @@ const Sign = ({ id }: SignProps) => {
             </Tooltip>
           </div>
           <button
-            className="flex items-center justify-between gap-3 px-4 pr-5 text-sm rounded-lg h-9 bg-accent-800/50 hover:bg-accent-800/75 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center justify-between gap-3 px-4 pr-5 text-sm rounded-lg pressable h-9 bg-accent-800/50 hover:bg-accent-800/75 disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={handleAddSignature}
             disabled={mutation.isPending}
           >
@@ -171,7 +184,7 @@ const Sign = ({ id }: SignProps) => {
                 d="M7.864 4.243A7.5 7.5 0 0 1 19.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 0 0 4.5 10.5a7.464 7.464 0 0 1-1.15 3.993m1.989 3.559A11.209 11.209 0 0 0 8.25 10.5a3.75 3.75 0 1 1 7.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 0 1-3.6 9.75m6.633-4.596a18.666 18.666 0 0 1-2.485 5.33"
               />
             </svg>
-            {mutation.isPending ? "Adding..." : "Add Signature"}
+            {mutation.isPending ? "Adding…" : "Add Signature"}
           </button>
         </div>
       </div>

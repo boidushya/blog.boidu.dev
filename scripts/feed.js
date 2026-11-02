@@ -63,6 +63,7 @@ async function generate() {
 
       const content = await fs.readFile(path.join(__dirname, "..", "blogs", name));
       const frontmatter = matter(content);
+      if (frontmatter.data.draft === true) return;
 
       const url = `https://blog.boidu.dev/posts/${name.replace(/\.mdx?/, "")}`;
 

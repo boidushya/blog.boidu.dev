@@ -161,3 +161,5 @@ export const THEMES = {
 export const LIGHT_THEMES = ["daybreak", "frost", "aurora", "dawn", "pastel"];
 
 export type TThemeName = keyof typeof THEMES;
+
+export const IS_DEV = process.env.NODE_ENV === "development";

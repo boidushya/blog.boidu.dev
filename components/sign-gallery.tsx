@@ -1,66 +1,72 @@
 "use client";
 
+import { SIGNATURE_VIEWBOX, type Signature } from "@/lib/signature";
 import { Tooltip } from "@/utils/components";
 import { useQuery } from "@tanstack/react-query";
-import { AnimatePresence, motion, useAnimate, useMotionTemplate, useMotionValue } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import React from "react";
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.125 },
-  },
+export type StoredSignature = Signature & { id: string };
+
+const COLLAPSED_COUNT = 4;
+
+export const signsQueryKey = (id: string) => ["signs", id];
+
+const fetchSigns = async (id: string): Promise<StoredSignature[]> => {
+  const response = await fetch(`/api/sign?id=${encodeURIComponent(id)}`);
+  if (!response.ok) throw new Error(`Unexpected status ${response.status}`);
+  return response.json();
 };
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
-
-const fetchSigns = async (id: string) => {
-  const response = await fetch(`/api/sign?id=${id}`);
-  const data = await response.json();
-  return data as { svgText: string; id: string }[];
-};
+const SignatureArt = React.memo(function SignatureArt({ paths, dots }: Signature) {
+  return (
+    <svg
+      viewBox={SIGNATURE_VIEWBOX}
+      aria-hidden="true"
+      className="w-full h-auto text-accent-200"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {paths.map((d, index) => (
+        <path key={index} d={d} />
+      ))}
+      {dots.map(({ cx, cy, r }, index) => (
+        <circle key={index} cx={cx} cy={cy} r={r} fill="currentColor" stroke="none" />
+      ))}
+    </svg>
+  );
+});
 
 const SignGallery = ({ id }: { id: string }) => {
-  const [hasMore, setHasMore] = React.useState(true);
-
-  const maskAlpha = useMotionValue(0);
-  const maskImage = useMotionTemplate`linear-gradient(rgba(0,0,0,1), rgba(0,0,0,${maskAlpha}))`;
+  const [expanded, setExpanded] = React.useState(false);
+  const boardRef = React.useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
 
   const {
-    data: fetchedSigns = [],
+    data: signs = [],
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["signs", id],
+    queryKey: signsQueryKey(id),
     queryFn: () => fetchSigns(id),
-    select: data => {
-      const uniqueSigns = Array.from(new Set(data));
-      return uniqueSigns;
-    },
   });
 
-  const isEmpty = fetchedSigns.length === 0;
+  const isEmpty = signs.length === 0;
+  const collapsible = signs.length > COLLAPSED_COUNT;
 
-  React.useEffect(() => {
-    setHasMore(fetchedSigns.length > 4);
-  }, [fetchedSigns]);
-
-  React.useEffect(() => {
-    if (hasMore && fetchedSigns.length > 4) {
-      setTimeout(() => {
-        maskAlpha.set(0);
-      }, 250);
-    } else {
-      maskAlpha.set(1);
-    }
-  }, [hasMore]);
+  const onGridTransitionEnd = (event: React.TransitionEvent<HTMLDivElement>) => {
+    if (!expanded || event.propertyName !== "max-height" || event.target !== event.currentTarget) return;
+    boardRef.current?.scrollIntoView({ block: "nearest", behavior: reduceMotion ? "auto" : "smooth" });
+  };
 
   return (
-    <div className="p-4 border border-dashed border-accent-600/50 bg-accent-800/25 rounded-xl">
+    <div
+      ref={boardRef}
+      className="p-4 border border-dashed scroll-my-6 border-accent-600/50 bg-accent-800/25 rounded-xl"
+    >
       <h3 className="flex items-center justify-between gap-2 mb-4 text-lg font-semibold cursor-help text-accent-400">
         <Tooltip
           content={
@@ -81,32 +87,23 @@ const SignGallery = ({ id }: { id: string }) => {
           </span>
         </Tooltip>
         <button
-          onClick={() => setHasMore(!hasMore)}
-          className={`items-center justify-between h-8 gap-3 px-4 pr-5 text-sm rounded-lg bg-accent-900 hover:bg-accent-800/25 select-none ${
-            fetchedSigns.length > 4 ? "flex" : "hidden"
+          onClick={() => setExpanded(!expanded)}
+          aria-expanded={expanded}
+          className={`items-center justify-between h-8 gap-3 px-4 pr-5 text-sm rounded-lg pressable bg-accent-900 hover:bg-accent-800/25 ${
+            collapsible ? "flex" : "hidden"
           } `}
         >
-          Show {hasMore ? "More" : "Less"}
+          Show {expanded ? "Less" : "More"}
         </button>
       </h3>
       <hr className="mb-4 border-dashed border-accent-600/50" />
       {isLoading ? (
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
-          className="grid grid-cols-4 gap-4"
-        >
+        <div className="grid grid-cols-4 gap-4">
           {[...Array(4)].map((_, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              className="h-20 border rounded-lg border-accent-600/50 bg-accent-900/50 animate-pulse"
-            />
+            <div key={index} className="h-20 border rounded-lg border-accent-600/50 bg-accent-900/50 animate-pulse" />
           ))}
-        </motion.div>
-      ) : isError && !isEmpty ? (
+        </div>
+      ) : isError ? (
         <p className="flex items-center justify-center w-full h-10 gap-2 mt-4 text-accent-400/50">
           Error fetching signs. Please try again later.
         </p>
@@ -122,28 +119,25 @@ const SignGallery = ({ id }: { id: string }) => {
         </p>
       ) : (
         <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
-          style={{
-            maskImage,
-          }}
-          className={`grid grid-cols-2 sm:grid-cols-4 pt-2 gap-4 overflow-hidden transition-[max-height] duration-500 ${
-            hasMore ? "max-h-24" : "max-h-[1000px] overflow-y-auto scrollbar-overlay"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          onTransitionEnd={onGridTransitionEnd}
+          className={`grid grid-cols-2 sm:grid-cols-4 pt-2 gap-4 transition-[max-height] duration-500 ease-out motion-reduce:transition-none ${
+            collapsible && !expanded
+              ? "max-h-24 overflow-hidden sign-board--collapsed"
+              : "max-h-[1000px] overflow-y-auto scrollbar-overlay"
           }`}
         >
-          <AnimatePresence>
-            {fetchedSigns.map((sign, index: number) => (
-              <motion.div
-                key={sign.svgText + index}
-                data-id={sign.id}
-                variants={itemVariants}
-                className="border rounded-lg border-accent-600/50 bg-accent-900/50"
-                dangerouslySetInnerHTML={{ __html: sign.svgText }}
-              />
-            ))}
-          </AnimatePresence>
+          {signs.map(sign => (
+            <div
+              key={sign.id}
+              data-id={sign.id}
+              className="border rounded-lg sign-board__item border-accent-600/50 bg-accent-900/50"
+            >
+              <SignatureArt paths={sign.paths} dots={sign.dots} />
+            </div>
+          ))}
         </motion.div>
       )}
     </div>

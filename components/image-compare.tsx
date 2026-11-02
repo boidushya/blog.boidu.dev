@@ -123,7 +123,7 @@ export function ImageCompare({
           onTouchStart={handleMouseDown}
         >
           {/* Handle */}
-          <div className="absolute flex items-center justify-center w-10 h-10 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-lg top-1/2 left-1/2 bg-accent-900 text-accent-50 btn-glass active:scale-95">
+          <div className="absolute flex items-center justify-center w-10 h-10 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-lg top-1/2 left-1/2 bg-accent-900 text-accent-50 btn-glass active:scale-[0.96]">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
