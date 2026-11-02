@@ -9,8 +9,11 @@ type Block = {
   el: HTMLElement;
   start: number;
   mono: boolean;
+  caret: number;
   style: React.CSSProperties;
 };
+
+type CaretHint = { word: string; nth: number };
 
 type Status = "saved" | "saving" | "conflict" | "error";
 
@@ -33,9 +36,31 @@ const FORMATS: Record<string, Format> = {
 
 const findArticle = () => document.querySelector<HTMLElement>("article.blog");
 
+const takeCaretHint = (el: HTMLElement): CaretHint | null => {
+  const selection = window.getSelection();
+  const word = selection?.toString().trim();
+  if (!selection || !word || selection.rangeCount === 0) return null;
+  const { startContainer, startOffset } = selection.getRangeAt(0);
+  const before = document.createRange();
+  before.selectNodeContents(el);
+  before.setEnd(startContainer, startOffset);
+  selection.removeAllRanges();
+  return { word, nth: before.toString().split(word).length - 1 };
+};
+
+const findCaret = (source: string, hint: CaretHint | null) => {
+  if (!hint) return source.length;
+  let index = -1;
+  for (let n = 0; n <= hint.nth; n++) {
+    const next = source.indexOf(hint.word, index + 1);
+    if (next === -1) break;
+    index = next;
+  }
+  return index === -1 ? source.length : index;
+};
+
 export default function InlineEditor({ id }: { id: string }) {
   const router = useRouter();
-  const [enabled, setEnabled] = React.useState(false);
   const [block, setBlock] = React.useState<Block | null>(null);
   const [text, setText] = React.useState("");
   const [status, setStatus] = React.useState<Status>("saved");
@@ -83,7 +108,7 @@ export default function InlineEditor({ id }: { id: string }) {
   }, [save, router]);
 
   const open = React.useCallback(
-    async (el: HTMLElement) => {
+    async (el: HTMLElement, hint: CaretHint | null) => {
       await close();
       const request = openRequest.current;
       const start = Number(el.dataset.srcStart);
@@ -100,6 +125,7 @@ export default function InlineEditor({ id }: { id: string }) {
           el,
           start,
           mono,
+          caret: findCaret(source, hint),
           style: {
             ...(mono ? {} : { fontSize: computed.fontSize, lineHeight: computed.lineHeight }),
             fontWeight: computed.fontWeight,
@@ -122,28 +148,27 @@ export default function InlineEditor({ id }: { id: string }) {
 
   React.useEffect(() => {
     const article = findArticle();
-    if (!enabled || !article) return;
-    article.setAttribute("data-inline-edit", "");
+    if (!article) return;
+
+    const onDoubleClick = (event: MouseEvent) => {
+      if (!(event.target instanceof Element) || event.target.closest(".src-editor")) return;
+      const el = event.target.closest(".src-block");
+      if (!(el instanceof HTMLElement) || el.hasAttribute("data-editing")) return;
+      open(el, takeCaretHint(el));
+    };
 
     const onClick = (event: MouseEvent) => {
-      if (event.metaKey || event.ctrlKey || !(event.target instanceof Element)) return;
-      if (event.target.closest(".src-editor")) return;
-      const el = event.target.closest(".src-block");
-      if (!(el instanceof HTMLElement)) {
-        close();
-        return;
-      }
-      if (el.hasAttribute("data-editing")) return;
-      event.preventDefault();
-      open(el);
+      if (!blockRef.current || !(event.target instanceof Element)) return;
+      if (!event.target.closest(".src-editor")) close();
     };
 
+    article.addEventListener("dblclick", onDoubleClick);
     article.addEventListener("click", onClick);
     return () => {
+      article.removeEventListener("dblclick", onDoubleClick);
       article.removeEventListener("click", onClick);
-      article.removeAttribute("data-inline-edit");
     };
-  }, [enabled, open, close]);
+  }, [open, close]);
 
   React.useLayoutEffect(() => {
     const textarea = textareaRef.current;
@@ -152,10 +177,12 @@ export default function InlineEditor({ id }: { id: string }) {
     textarea.style.height = `${textarea.scrollHeight}px`;
   }, [text, block]);
 
-  const toggle = () => {
-    if (enabled) close();
-    setEnabled(!enabled);
-  };
+  React.useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea || !block) return;
+    textarea.focus();
+    textarea.setSelectionRange(block.caret, block.caret);
+  }, [block]);
 
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!block) return;
@@ -194,20 +221,6 @@ export default function InlineEditor({ id }: { id: string }) {
 
   return (
     <>
-      <div className="fixed bottom-4 left-4 sm:bottom-12 sm:left-12">
-        <button
-          type="button"
-          onClick={toggle}
-          aria-pressed={enabled}
-          className={`flex items-center gap-2 px-4 py-2 text-sm leading-none rounded-full btn-glass shadow-deep active:scale-[0.96] ${enabled ? "text-accent-50" : "text-accent-300"}`}
-        >
-          <span
-            aria-hidden="true"
-            className={`w-1.5 h-1.5 rounded-full transition-colors ${enabled ? "bg-accent-50" : "bg-accent-600"}`}
-          />
-          Edit
-        </button>
-      </div>
       {block &&
         createPortal(
           <div className="my-4 src-editor">
@@ -233,7 +246,6 @@ export default function InlineEditor({ id }: { id: string }) {
             </div>
             <textarea
               ref={textareaRef}
-              autoFocus
               aria-label="Edit block source"
               value={text}
               onChange={onChange}

@@ -579,12 +579,3 @@ circle[id^="react-sketch-canvas__"]{
 .src-block[data-editing] > :not(.src-editor) {
   display: none;
 }
-
-@media (hover: hover) {
-  [data-inline-edit] .src-block:not([data-editing]) > :hover {
-    cursor: text;
-    outline: 1px dashed rgb(var(--color-accent-50) / 0.2);
-    outline-offset: 6px;
-    border-radius: 0.25rem;
-  }
-}
