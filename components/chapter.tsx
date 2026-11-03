@@ -1,6 +1,7 @@
 "use client";
 
 import { Handwriting } from "@/components/handwriting";
+import { playWalkNote } from "@/utils/sounds";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 
@@ -13,7 +14,10 @@ const MIN_RISE_MS = 320;
 
 // The sweep's mask is 260% wide with its soft edge between 42% and 58%, so its leading edge
 // touches x (0 to 1 across the word) at progress (x + 0.092) / 1.6 and fully lights it at (x + 0.508) / 1.6.
-function timeSweep(heading: HTMLElement) {
+type SungWord = { startMs: number; letters: number };
+
+function timeSweep(heading: HTMLElement): SungWord[] {
+  const words: SungWord[] = [];
   let start = SWEEP_START_MS;
   for (const word of Array.from(heading.querySelectorAll<HTMLElement>(".sung-word"))) {
     const box = word.getBoundingClientRect();
@@ -34,8 +38,10 @@ function timeSweep(heading: HTMLElement) {
         el.style.setProperty("--wave-duration", `${Math.round(wave)}ms`);
       }
     });
+    words.push({ startMs: start, letters: base.length });
     start += duration - WORD_OVERLAP_MS;
   }
+  return words;
 }
 
 export function Chapter({ n, children }: { n: string; children: React.ReactNode }) {
@@ -47,21 +53,30 @@ export function Chapter({ n, children }: { n: string; children: React.ReactNode 
     const chapter = ref.current;
     if (!chapter) return;
     let observer: IntersectionObserver | undefined;
+    const notes: ReturnType<typeof setTimeout>[] = [];
+    let cancelled = false;
     document.fonts.ready.then(() => {
+      if (cancelled) return;
       const heading = chapter.querySelector("h2");
-      if (heading) timeSweep(heading);
+      const words = heading ? timeSweep(heading) : [];
       setArmed(true);
       observer = new IntersectionObserver(
         ([entry]) => {
           if (!entry.isIntersecting) return;
           setShown(true);
           observer?.disconnect();
+          if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+          for (const word of words) notes.push(setTimeout(() => playWalkNote(word.letters), word.startMs));
         },
         { threshold: 0.8 }
       );
       observer.observe(chapter);
     });
-    return () => observer?.disconnect();
+    return () => {
+      cancelled = true;
+      observer?.disconnect();
+      notes.forEach(clearTimeout);
+    };
   }, []);
 
   return (

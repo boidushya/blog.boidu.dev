@@ -1,6 +1,8 @@
 "use client";
 
 import { Handwriting } from "@/components/handwriting";
+import { REVEAL } from "@/utils/sounds";
+import { play } from "cuelume";
 import { motion, useReducedMotion } from "motion/react";
 import type React from "react";
 
@@ -17,6 +19,7 @@ export function MarginNote({ note, children }: { note: string; children: React.R
       initial={draw ? "hidden" : false}
       whileInView="shown"
       viewport={{ once: true, amount: 0.6 }}
+      onViewportEnter={() => draw && play("open", REVEAL)}
     >
       {children}
       <motion.svg
