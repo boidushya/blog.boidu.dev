@@ -8,6 +8,8 @@ export const dynamic = "force-dynamic";
 
 const notFound = () => new NextResponse(null, { status: 404 });
 
+const BLOGS = join(process.cwd(), "blogs");
+
 const writes = new Map<string, Promise<unknown>>();
 
 function oneAtATime<T>(path: string, task: () => Promise<T>) {
@@ -21,8 +23,8 @@ function oneAtATime<T>(path: string, task: () => Promise<T>) {
 
 function postPath(id: unknown) {
   if (!IS_DEV || typeof id !== "string") return null;
-  const file = fs.readdirSync("blogs").find(name => name.replace(/\.mdx?$/, "") === id);
-  return file ? join("blogs", file) : null;
+  const file = fs.readdirSync(BLOGS).find(name => name.replace(/\.mdx?$/, "") === id);
+  return file ? join(BLOGS, file) : null;
 }
 
 export async function GET(request: NextRequest) {
