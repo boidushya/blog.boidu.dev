@@ -14,8 +14,8 @@ const _NavLink = ({ title, href }: { title: string; href: string }) => {
   return (
     <Link
       href={href}
-      className={`text-base tracking-normal transition-colors hover:text-accent-100/80 ${
-        isActive ? "text-accent-100/100" : "text-accent-100/50"
+      className={`text-base tracking-normal transition-colors hover:text-fg-muted ${
+        isActive ? "text-accent-100" : "text-fg-subtle"
       }`}
     >
       {title}

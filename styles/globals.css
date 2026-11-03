@@ -14,6 +14,9 @@
 
 
 :root {
+  --color-fg-muted: color-mix(in oklab, rgb(var(--color-accent-50)) 55%, rgb(var(--color-accent-400)));
+  --color-fg-subtle: color-mix(in oklab, rgb(var(--color-accent-300)), rgb(var(--color-accent-400)));
+  --color-fg-faint: rgb(var(--color-accent-500));
   --alert-default-color-stops: 220, 20%;
   --alert-note-color-stops: 196, 50%;
   --alert-tip-color-stops: 135, 50%;
@@ -225,7 +228,7 @@ circle[id^="react-sketch-canvas__"]{
 
 @media (hover: hover) {
   .blog a:hover {
-    @apply text-accent-50/50;
+    @apply text-fg-subtle;
   }
 }
 
@@ -254,7 +257,7 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .blog blockquote {
-  @apply text-lg text-accent-50 border-l-2 border-accent-50 pl-4 my-6 border-opacity-50;
+  @apply text-lg text-accent-50 border-l-2 border-accent-500 pl-4 my-6;
 }
 
 .blog blockquote p {
@@ -266,7 +269,7 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .blog hr {
-  @apply border-accent-50 my-8 border-opacity-30  mx-auto w-16;
+  @apply border-accent-700 my-8 mx-auto w-16;
 }
 
 .blog table {
@@ -304,7 +307,7 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .blog__meta {
-  @apply !text-accent-50/50 !font-normal mt-5 mb-6 sm:mt-8 text-base;
+  @apply !text-fg-subtle !font-normal mt-5 mb-6 sm:mt-8 text-base;
 }
 
 .blog pre.shiki {
@@ -316,7 +319,7 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .highlight__before {
-  @apply bg-accent-800 text-sm px-4 py-2 rounded-t-md uppercase text-accent-50/75 flex items-center justify-between;
+  @apply bg-accent-800 text-sm px-4 py-2 rounded-t-md uppercase text-fg-muted flex items-center justify-between;
 }
 
 [id]::before {
@@ -327,13 +330,13 @@ circle[id^="react-sketch-canvas__"]{
   visibility: hidden;
 }
 
-.heading-anchor {
-  @apply max-md:hidden mr-2 !no-underline opacity-25 font-normal md:transform-gpu md:-translate-x-full md:pr-3 md:absolute transition-opacity;
+.blog .heading-anchor {
+  @apply max-md:hidden mr-2 !no-underline text-fg-faint font-normal md:transform-gpu md:-translate-x-full md:pr-3 md:absolute transition-colors;
 }
 
 @media (hover: hover) {
-  .heading-anchor:hover {
-    @apply opacity-100;
+  .blog .heading-anchor:hover {
+    @apply text-accent-50;
   }
 }
 
@@ -350,7 +353,7 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .copy-icon {
-  @apply text-accent-50/50;
+  @apply text-fg-subtle;
 }
 
 .checked-icon {
@@ -362,7 +365,7 @@ circle[id^="react-sketch-canvas__"]{
 
 @media (hover: hover) {
   .copy-icon:hover {
-    @apply text-accent-50/75;
+    @apply text-fg-muted;
   }
 }
 

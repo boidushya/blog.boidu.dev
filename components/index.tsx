@@ -90,7 +90,7 @@ export function ContentBox({
           {(draft ? ["Draft", ...labels] : labels).map(label => (
             <span
               key={label}
-              className={`bg-accent-800/50 text-accent-50/75 border border-accent-800 px-2 py-1 text-xs rounded-md`}
+              className={`bg-accent-800/50 text-fg-muted border border-accent-800 px-2 py-1 text-xs rounded-md`}
             >
               {label}
             </span>
@@ -103,7 +103,7 @@ export function ContentBox({
           >
             {title}
           </h3>
-          <p className="text-sm tracking-normal text-accent-50/70 [text-wrap:pretty]">{description}</p>
+          <p className="text-sm tracking-normal text-fg-muted [text-wrap:pretty]">{description}</p>
         </div>
         <div className="absolute inset-0 z-[-1] isolate">
           <div className="absolute inset-0 z-10 bg-accent-900/50" />

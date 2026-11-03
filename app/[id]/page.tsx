@@ -48,7 +48,7 @@ export default async function Post({ params }: { params: Promise<{ id: string }>
       <article className="blog">
         <div className="grid place-items-center">
           {post.draft && (
-            <span className="px-2 py-1 mt-6 text-xs border rounded-md bg-accent-800/50 text-accent-50/75 border-accent-800">
+            <span className="px-2 py-1 mt-6 text-xs border rounded-md bg-accent-800/50 text-fg-muted border-accent-800">
               Draft
             </span>
           )}
@@ -93,11 +93,11 @@ export default async function Post({ params }: { params: Promise<{ id: string }>
                   })}
               </span>
               <span className="whitespace-nowrap">
-                <span aria-hidden="true" className="mx-1.5 opacity-50 max-sm:hidden">
+                <span aria-hidden="true" className="mx-1.5 text-fg-faint max-sm:hidden">
                   ·
                 </span>
                 {readingTime}
-                <span aria-hidden="true" className="mx-1.5 opacity-50">
+                <span aria-hidden="true" className="mx-1.5 text-fg-faint">
                   ·
                 </span>
                 {date}

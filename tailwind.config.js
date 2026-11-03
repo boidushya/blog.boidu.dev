@@ -27,6 +27,11 @@ module.exports = {
           850: "rgb(var(--color-accent-850) / <alpha-value>)",
           900: "rgb(var(--color-accent-900) / <alpha-value>)",
         },
+        fg: {
+          muted: "var(--color-fg-muted)",
+          subtle: "var(--color-fg-subtle)",
+          faint: "var(--color-fg-faint)",
+        },
       },
       boxShadow: {
         deep: "rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px",

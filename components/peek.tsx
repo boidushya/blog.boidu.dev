@@ -187,7 +187,7 @@ export function Peek({ src, alt, children }: Props) {
                   playsInline
                   preload={near ? "auto" : "none"}
                   onLoadedMetadata={e => setRatio(e.currentTarget.videoWidth / e.currentTarget.videoHeight)}
-                  className="block w-full h-full object-cover rounded-lg outline outline-1 -outline-offset-1 outline-white/10"
+                  className="block w-full h-full object-cover rounded-lg outline outline-1 -outline-offset-1 outline-accent-50/10"
                 />
               ) : (
                 <img
@@ -195,7 +195,7 @@ export function Peek({ src, alt, children }: Props) {
                   alt={alt}
                   onLoad={e => setRatio(e.currentTarget.naturalWidth / e.currentTarget.naturalHeight)}
                   decoding="async"
-                  className="block w-full h-full object-cover rounded-lg outline outline-1 -outline-offset-1 outline-white/10"
+                  className="block w-full h-full object-cover rounded-lg outline outline-1 -outline-offset-1 outline-accent-50/10"
                 />
               )}
             </motion.div>
