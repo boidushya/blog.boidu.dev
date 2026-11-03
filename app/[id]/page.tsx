@@ -56,8 +56,8 @@ export default async function Post({ params }: { params: Promise<{ id: string }>
               Draft
             </span>
           )}
-          <h1 className="!mt-2 !mb-0 sm:!mt-6 sm:!mb-2 text-center">{title}</h1>
-          <div className="flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
+          <h1 className="enter !mt-2 !mb-0 sm:!mt-6 sm:!mb-2 text-center">{title}</h1>
+          <div className="enter [--i:1] flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
             <div className="flex mr-3 sm:mr-4 -space-x-2 rtl:space-x-reverse shrink-0">
               <GreetingAvatar />
               {authors.map(item => (
@@ -104,18 +104,20 @@ export default async function Post({ params }: { params: Promise<{ id: string }>
             </div>
           </div>
         </div>
-        {isYoutubeVideo ? (
-          <YoutubeEmbed url={banner} />
-        ) : (
-          <FadeInImage
-            src={banner}
-            alt="Banner"
-            height={900}
-            width={1600}
-            quality={100}
-            className="mb-8 rounded-lg sm:mt-4 sm:mb-10"
-          />
-        )}
+        <div className="enter [--i:2]">
+          {isYoutubeVideo ? (
+            <YoutubeEmbed url={banner} />
+          ) : (
+            <FadeInImage
+              src={banner}
+              alt="Banner"
+              height={900}
+              width={1600}
+              quality={100}
+              className="mb-8 rounded-lg sm:mt-4 sm:mb-10"
+            />
+          )}
+        </div>
 
         <PostVideos />
         {isMDX ? (

@@ -1034,3 +1034,55 @@ html {
 .image-compare:has(.image-compare__range:focus-visible) .image-compare__handle {
   @apply outline outline-2 outline-offset-2 outline-accent-400;
 }
+
+/* A page's first screen enters in chunks 100ms apart: set --i on each chunk. */
+@keyframes enter-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes enter-rise {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+    filter: blur(4px);
+  }
+}
+
+.enter,
+:is(.post-body, .post-body > .src-block) > :not(.src-block) {
+  animation: enter-fade 300ms ease-out calc(var(--i, 0) * 100ms) both;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .enter,
+  :is(.post-body, .post-body > .src-block) > :not(.src-block) {
+    animation-name: enter-rise;
+  }
+}
+
+/* Body blocks sit one level deeper in dev, where each is wrapped in a display: contents .src-block. */
+:is(.post-body, .post-body > .src-block) > :not(.src-block) {
+  --i: 4;
+}
+
+:is(.post-body > :first-child:not(.src-block), .post-body > .src-block:first-child > :first-child) {
+  --i: 3;
+}
+
+.card-list > :nth-child(1) {
+  --i: 2;
+}
+
+.card-list > :nth-child(2) {
+  --i: 3;
+}
+
+.card-list > :nth-child(3) {
+  --i: 4;
+}
+
+.card-list > :nth-child(n + 4) {
+  --i: 5;
+}

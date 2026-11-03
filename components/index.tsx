@@ -7,12 +7,10 @@ import { LIGHT_THEMES } from "@/utils/constants";
 import { useWaterMark } from "@/utils/hooks";
 import { Kawarp, type KawarpRef } from "@kawarp/react";
 import { ToggleGroup, ToggleGroupItem } from "@radix-ui/react-toggle-group";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useReducedMotion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
-
-const MotionLink = motion(Link);
 
 function Wash({ src, scrim, isLight }: { src: string; scrim: number; isLight: boolean }) {
   const boxRef = useRef<HTMLDivElement>(null);
@@ -56,22 +54,16 @@ function Wash({ src, scrim, isLight }: { src: string; scrim: number; isLight: bo
   );
 }
 
-const cardVariants = {
-  hidden: { opacity: 0, y: -20 },
-  visible: { opacity: 1, y: 0 },
-};
-
 export function ContentBox({ post, feature }: { post: BlogCard; feature: boolean }) {
   const { theme } = useTheme();
   const isLight = LIGHT_THEMES.includes(theme);
 
   return (
-    <MotionLink
+    <Link
       href={post.link}
       data-cuelume-navigate
       aria-labelledby={`post-${post.id}-title`}
-      variants={cardVariants}
-      className={`relative grid grid-rows-[auto_1fr] overflow-hidden isolate shadow-[0_1px_2px_oklch(0_0_0/0.3),0_12px_32px_oklch(0_0_0/0.28)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-400 ${
+      className={`enter relative grid grid-rows-[auto_1fr] overflow-hidden isolate shadow-[0_1px_2px_oklch(0_0_0/0.3),0_12px_32px_oklch(0_0_0/0.28)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-400 ${
         feature ? "rounded-3xl sm:col-span-2" : "rounded-[20px]"
       }`}
     >
@@ -133,41 +125,21 @@ export function ContentBox({ post, feature }: { post: BlogCard; feature: boolean
           <span>{post.readingTime}</span>
         </div>
       </div>
-    </MotionLink>
+    </Link>
   );
 }
-
-const projectContainerVariants = {
-  hidden: {
-    opacity: 0,
-  },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.125,
-    },
-  },
-};
 
 export function View({ data }: { data: BlogCard[] }) {
   useWaterMark();
   const [first, ...rest] = data;
 
   return (
-    <motion.div
-      variants={projectContainerVariants}
-      initial="hidden"
-      animate="visible"
-      exit="hidden"
-      className="grid w-full gap-5 sm:grid-cols-2"
-    >
-      <AnimatePresence>
-        {first && <ContentBox key={first.link} post={first} feature />}
-        {rest.map(post => (
-          <ContentBox key={post.link} post={post} feature={false} />
-        ))}
-      </AnimatePresence>
-    </motion.div>
+    <div className="grid w-full gap-5 card-list sm:grid-cols-2">
+      {first && <ContentBox key={first.link} post={first} feature />}
+      {rest.map(post => (
+        <ContentBox key={post.link} post={post} feature={false} />
+      ))}
+    </div>
   );
 }
 
@@ -217,7 +189,7 @@ export const ViewWithUtils = ({ data }: { data: BlogCard[] }) => {
 
   return (
     <div className="flex flex-col w-full gap-6">
-      <div className="flex flex-row w-full h-10 gap-4">
+      <div className="enter [--i:1] flex flex-row w-full h-10 gap-4">
         <div className="relative flex-grow">
           <input
             type="search"
