@@ -101,7 +101,8 @@ export const isHiddenDraft = (post: { draft?: unknown }) =>
   post.draft === true && process.env.NODE_ENV === "production";
 
 async function getVisiblePosts() {
-  const posts = await Promise.all(fs.readdirSync("blogs").map(id => getPostById(id)));
+  const files = fs.readdirSync("blogs").filter(name => /\.mdx?$/.test(name));
+  const posts = await Promise.all(files.map(id => getPostById(id)));
   return posts.filter(post => !isHiddenDraft(post));
 }
 

@@ -1,5 +1,5 @@
 import fs from "fs";
-import { join } from "path";
+import { basename, dirname, join } from "path";
 import { applyBlockEdit, readBody } from "@/lib/source-edit";
 import { IS_DEV } from "@/utils/constants";
 import { type NextRequest, NextResponse } from "next/server";
@@ -7,6 +7,17 @@ import { type NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
 const notFound = () => new NextResponse(null, { status: 404 });
+
+const writes = new Map<string, Promise<unknown>>();
+
+function oneAtATime<T>(path: string, task: () => Promise<T>) {
+  const run = (writes.get(path) ?? Promise.resolve()).then(task, task);
+  writes.set(
+    path,
+    run.catch(() => undefined)
+  );
+  return run;
+}
 
 function postPath(id: unknown) {
   if (!IS_DEV || typeof id !== "string") return null;
@@ -27,8 +38,12 @@ export async function PUT(request: NextRequest) {
   if (![start, end].every(Number.isInteger) || typeof expected !== "string" || typeof replacement !== "string") {
     return new NextResponse(null, { status: 400 });
   }
-  const next = applyBlockEdit(await fs.promises.readFile(path, "utf8"), { start, end, expected, replacement });
-  if (next === null) return new NextResponse(null, { status: 409 });
-  await fs.promises.writeFile(path, next);
-  return new NextResponse(null, { status: 204 });
+  return oneAtATime(path, async () => {
+    const next = applyBlockEdit(await fs.promises.readFile(path, "utf8"), { start, end, expected, replacement });
+    if (next === null) return new NextResponse(null, { status: 409 });
+    const temp = join(dirname(path), `.${basename(path)}.tmp`);
+    await fs.promises.writeFile(temp, next);
+    await fs.promises.rename(temp, path);
+    return new NextResponse(null, { status: 204 });
+  });
 }

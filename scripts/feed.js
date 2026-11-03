@@ -59,7 +59,7 @@ async function generate() {
 
   await Promise.all(
     posts.map(async name => {
-      if (name.startsWith("index.")) return;
+      if (name.startsWith("index.") || !/\.mdx?$/.test(name)) return;
 
       const content = await fs.readFile(path.join(__dirname, "..", "blogs", name));
       const frontmatter = matter(content);
