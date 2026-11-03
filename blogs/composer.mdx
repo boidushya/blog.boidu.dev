@@ -86,7 +86,11 @@ Composer also notices when you're fighting it. If you're on the default keys and
 
 We do this kind of thing a lot. Turn on the pitch line before separating the vocals and Composer tells you that's what it needs. Try to auto-align without a synced line and it tells you what to select first. Whenever someone gets stuck, I'd rather Composer hold their hand through it if it can, instead of leaving them guessing.
 
-If your fingers already know another editor's keys, there are more presets for that (muscle memory is hard to unlearn, I get it, no judgement... mostly), and there's even one for osu! players. Click circles, sync lyrics! All of the almost 100 shortcuts can be remapped, and you can share your setup as a code.
+<MarginNote note="muscle memory is hard to unlearn, no judgement… mostly">
+
+If your fingers already know another editor's keys, there are more presets for that, and there's even one for osu! players. Click circles, sync lyrics! All of the almost 100 shortcuts can be remapped, and you can share your setup as a code.
+
+</MarginNote>
 
 Miss a tap and the arrow keys will nudge it. Really miss a tap? Time for the Timeline!
 
@@ -107,7 +111,11 @@ On top of that, the tap mode they'd gotten used to looked completely different. 
   afterLabel="Reading lane"
 />
 
-The classic look was progressive disclosure at its most basic: show the line you're on, keep its neighbours quietly in view, and don't overload anyone. (The classic screenshot is on the first line of the song, so there's nothing above it yet.) I'd traded that for something busier, and a couple of people told me they couldn't even tell which word they were syncing anymore, because the tinted next word looked like the one being sung.
+<MarginNote note="the classic one is on the first line, so nothing above it yet">
+
+The classic look was progressive disclosure at its most basic: show the line you're on, keep its neighbours quietly in view, and don't overload anyone. I'd traded that for something busier, and a couple of people told me they couldn't even tell which word they were syncing anymore, because the tinted next word looked like the one being sung.
+
+</MarginNote>
 
 They were right. People had built up muscle memory for the old Sync tab over months, and I'd broken it to make something prettier. So within an hour I put the classic view back. The small fixes that came along with the redesign stayed, like long lines no longer overlapping and split syllables staying joined, but everything people actually touched went back to exactly how it was. If it ain't broke, don't fix it. Less really is more sometimes, and apparently I need to keep relearning that.
 
@@ -123,6 +131,8 @@ It's the part of Composer I spent the most time on, and most of that time went i
 ### Scrubbing you can hear
 
 Drag the playhead or scroll over the waveform and Composer plays a tiny snippet of audio right under the cursor, with the pitch kept intact. It's a lot like running your finger over a vinyl record. Once you're used to it, a silent scrubber feels broken, which is a polite way of describing every other lyrics tool I've tried.
+
+Getting it to sound right took three tries. The first version just played a snippet under the playhead. Months later someone reported it sounded choppy, so I rewrote it to blend tiny slices of audio together, and threw that out the same day because scrubbing through short bits sounded weirdly mechanical. Varispeed came up too, and that was a hard no. We're a lyrics editor, so the song has to keep sounding like the song. The version that stuck stretches the audio in time instead.
 
 ### Snapping
 
@@ -192,7 +202,11 @@ It's the same thinking as Better Lyrics, really. Beginners never have to see any
 
 ## Auto-align
 
-This is the newest big feature, it changes the job quite a bit, and it's also Adalie's. (Yes, again. I told you she's good.)
+<MarginNote note="yes, again. told you she's good">
+
+This is the newest big feature, it changes the job quite a bit, and it's also Adalie's.
+
+</MarginNote>
 
 You tap the rough timing of each line, same as you would in the Sync tab, and Composer lines every word up against the separated vocals. Under the hood it's a heavily fine-tuned version of [HubertFA](https://github.com/wolfgitpr/HubertFA), a forced alignment model, running right in your browser, plus a pronunciation step so it knows what each word should sound like. That step uses the CMU dictionary for English, kuromoji for Japanese and pinyin for Chinese, so those are the three languages it works with for now.
 
@@ -219,7 +233,53 @@ YouTube blocks cloud IP ranges pretty aggressively. Public yt-dlp servers get th
 
 Yes, that means a little Go binary living on your laptop _forever_. I looked at rotating proxies, paying for a hosted yt-dlp service and doing the extraction in the browser, and every one of them was either more expensive, more fragile or flat out impossible.
 
+The browser route got the furthest, and that's what made it so annoying. A browser extension made it past eight of YouTube's defences, bot detection and signature deciphering included, only to run into a ninth it had no way around. At that point a little app on your own machine started looking pretty reasonable.
+
 The installer is unsigned, because Apple and Microsoft code signing costs more than this project earns (which is **zero**, if you were curious). You'll get a scary warning the first time you run it, and after that you'll forget it's there.
+
+## How it got here
+
+Everything above is Composer as it is today. It took a while to get there, so here's the short version.
+
+### Composer is kil
+
+Composer's first commit went in at 2:48 AM on the 9th of January. All the tabs were there from that first night, and the Timeline was always the big one. I wanted it to feel like a proper DAW, not something janky you put up with.
+
+My first go at it was a single waveform with the words sitting on top as regions. It lasted a day. Just after midnight I scrapped the whole thing and started over with the layout it still has today, every line stacked under the waveform as its own track.
+
+That evening I told the contributors in our Discord I was almost done and asked them to start testing. Two and a half hours later I told them to ignore that, because Composer was kil. Then the commit that got it working again went in at 12:16 AM, and it's literally called "fix: FINALLY". The Timeline was merged at 2:16 AM, and a minute later the link was in Discord.
+
+![Discord reply: "its not kil" with the link to Composer](/composer/not-kil.png)
+_From kil to not kil in about six hours_
+
+![Composer's Timeline in January](/composer/composer-january.png)
+_Composer in January. The bones haven't changed much._
+
+And then I didn't touch it for two months.
+
+### Getting it ready for people
+
+In March it got ready for people who weren't me. The Preview moved over to Braccato and the tour showed up, along with settings and keys you could remap. The first issue from someone outside the team came in a few days later. The LRC and SRT to TTML converters showed up a month after that, and fun fact, they started out as SEO pages in a commit called "fix: SEO". They only became real tools later.
+
+May was the busiest month by a mile, with **204** commits. Linked groups, snapping and scrub audio all landed, and Adalie started on Composer too. She filed six issues in one day (one of them asking for scrubbing like Premiere's) and opened the vocal separation PR the same day.
+
+It's also when the agents finally got their guardrails. One breaking refactor touched **243** files just to give every piece of logic a single owner, and added the checks I talk about further down.
+
+### The merge that lasted 11 minutes
+
+In June I tried to change how every line stores its timing, so background vocals could be synced line by line. It was over 10,000 lines of changes. I merged it while I was still chasing a bug in it, decided that was a bad idea, and reverted it 11 minutes later. The PR to bring it back has been open ever since.
+
+That one wasn't alone. The first project library got closed without merging in June too, and came back in October as a rebuild of almost **57,000** lines.
+
+### Composer 2.0
+
+After Better Lyrics got its redesign, Composer started to look old next to it. It felt more like Ableton than FL Studio, and I wanted FL Studio. So in October I redid every screen.
+
+I went through two rounds of mockups and picked a direction I called Lit Console, with keys that physically stick out instead of floating on drop shadows, and a transport deck with real level meters. Then the second round came back with a bunch of details I'd already approved quietly undone, and I came really close to dropping the whole redesign. What saved it was going painfully slow: small batches, with before and after screenshots of everything.
+
+2.0 shipped on the 23rd of October. Eleven days later it was on 2.33.
+
+A week later, people on another Discord server said Composer was laggy. I tried it with my CPU slowed down 4x, and production was borderline unusable. That turned into a dozen performance PRs over three days, and at one point I seriously asked whether the whole Timeline should be rewritten as a canvas. It didn't come to that.
 
 ## How I actually built it
 
