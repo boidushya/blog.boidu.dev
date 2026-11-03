@@ -70,7 +70,7 @@ export function Handwriting({
 
   const driven = shown !== undefined && {
     initial: reduceMotion ? false : ("hidden" as const),
-    animate: shown || reduceMotion ? "shown" : "hidden",
+    animate: reduceMotion || (shown && timings.length > 0) ? "shown" : "hidden",
   };
 
   return (

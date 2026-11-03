@@ -1,0 +1,202 @@
+"use client";
+
+import logo from "@/assets/images/logo.jpg";
+import { Handwriting } from "@/components/handwriting";
+import { play } from "cuelume";
+import Image from "next/image";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+
+const WAVE_AT_MS = [600, 7000, 14000];
+const LINGER_MS = 4500;
+const FAINT_MS = 2600;
+// Each click adds one to the annoyance; a calm stretch drains it one step every CALM_MS.
+const CALM_MS = 700;
+const CHAT = ["the post is down there, fyi", "sup?", "i'm flattered, really", "quit lollygagging"];
+const IDLE = ["boop", "hehe", "yes?", "still here", "you again?"];
+
+function hello() {
+  const hour = new Date().getHours();
+  if (hour < 5) return "isn't it, like, way past your bedtime?";
+  if (hour < 12) return "top of the mornin'";
+  if (hour < 18) return "hi :)";
+  return "evening!";
+}
+
+type Side = "left" | "right";
+
+const EDGE_PX = 8;
+
+// Shrinks the note to its widest wrapped line, so the bubble hugs the words instead of the max width.
+function fitToWords(note: HTMLElement) {
+  note.style.width = "";
+  const words = Array.from(note.querySelectorAll<HTMLElement>(".inline-block"));
+  if (!words.length) return;
+  const left = Math.min(...words.map(w => w.offsetLeft));
+  const right = Math.max(...words.map(w => w.offsetLeft + w.offsetWidth));
+  const style = getComputedStyle(note);
+  const wordPadding = Number.parseFloat(style.fontSize) * 0.5;
+  const padding = Number.parseFloat(style.paddingLeft) + Number.parseFloat(style.paddingRight);
+  note.style.width = `${Math.ceil(right - left - wordPadding + padding) + 1}px`;
+}
+
+// One line to the left of the avatar when it fits, then wrapped, then to the right over the byline.
+function place(note: HTMLElement): Side {
+  const attempts = [
+    ["left", true],
+    ["left", false],
+    ["right", false],
+  ] as const;
+  for (const [side, oneLine] of attempts) {
+    note.dataset.side = side;
+    note.toggleAttribute("data-one-line", oneLine);
+    fitToWords(note);
+    const box = note.getBoundingClientRect();
+    if (side === "left" ? box.left >= EDGE_PX : box.right <= window.innerWidth - EDGE_PX) return side;
+  }
+  return "right";
+}
+
+// A hand-drawn speech bubble around a w by h box, its tail on the side facing the avatar. Coordinates
+// are relative to the tail tip, so a change of size grows the bubble away from the avatar. The stroke
+// closes a little past where it began, the way a pen loop does.
+function bubblePath(w: number, h: number, side: Side) {
+  const r = h * 0.45;
+  const mid = h / 2;
+  const points: [string, ...number[]][] = [
+    ["M", r + 2, 1.5],
+    ["C", w * 0.4, 0.6, w * 0.7, 2, w - 9 - r, 1.4],
+    ["Q", w - 8.4, 1, w - 8.6, mid - 4],
+    ["L", w - 0.5, mid + 1],
+    ["L", w - 8.8, mid + 4],
+    ["Q", w - 8.6, h - 1, w - 9 - r, h - 1.4],
+    ["C", w * 0.6, h - 0.4, w * 0.3, h - 2, r, h - 1.2],
+    ["Q", 0.8, h - 1, 1, mid],
+    ["Q", 1.2, 1.6, r + 7, 2.6],
+  ];
+  const x = side === "left" ? (v: number) => v - w : (v: number) => w - v;
+  return points
+    .map(([command, ...xy]) => `${command} ${xy.map((v, i) => (i % 2 ? v - mid : x(v)).toFixed(1)).join(" ")}`)
+    .join(" ");
+}
+
+function restart(el: HTMLElement | null, attribute: string, value = "") {
+  if (!el) return;
+  el.removeAttribute(attribute);
+  void el.offsetWidth;
+  el.setAttribute(attribute, value);
+}
+
+/** The author's avatar on a post: it waves at new readers and talks back when poked. */
+export function GreetingAvatar() {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const noteRef = useRef<HTMLSpanElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [message, setMessage] = useState<{ text: string; id: number; fresh: boolean } | null>(null);
+  const state = useRef({ chat: -1, idle: 0, annoyance: 0, lastClick: 0, fainted: false, current: "" });
+  const timers = useRef<{ waves: ReturnType<typeof setTimeout>[]; hide?: ReturnType<typeof setTimeout> }>({
+    waves: [],
+  });
+
+  const act = (name: "wave" | "spin" | "getup") => restart(buttonRef.current, "data-act", name);
+
+  const say = (text: string, linger = LINGER_MS) => {
+    clearTimeout(timers.current.hide);
+    noteRef.current?.removeAttribute("data-off");
+    if (text !== state.current.current) {
+      const fresh = state.current.current === "";
+      state.current.current = text;
+      setMessage(previous => ({ text, id: (previous?.id ?? 0) + 1, fresh }));
+    }
+    if (linger)
+      timers.current.hide = setTimeout(() => {
+        noteRef.current?.setAttribute("data-off", "");
+        state.current.current = "";
+      }, linger);
+  };
+
+  useLayoutEffect(() => {
+    const note = noteRef.current;
+    const svg = svgRef.current;
+    if (!message || !note || !svg) return;
+    const side = place(note);
+    const d = `path("${bubblePath(note.offsetWidth, note.offsetHeight, side)}")`;
+    for (const path of Array.from(svg.children) as SVGPathElement[]) path.style.setProperty("d", d);
+    if (message.fresh) restart(note, "data-drawn");
+  }, [message]);
+
+  useEffect(() => {
+    const t = timers.current;
+    t.waves = WAVE_AT_MS.map((at, i) =>
+      setTimeout(() => {
+        act("wave");
+        if (i === 0) say("wave back?", 0);
+      }, at)
+    );
+    return () => {
+      t.waves.forEach(clearTimeout);
+      clearTimeout(t.hide);
+    };
+  }, []);
+
+  const faint = () => {
+    const s = state.current;
+    s.fainted = true;
+    s.annoyance = 0;
+    buttonRef.current?.removeAttribute("data-act");
+    buttonRef.current?.setAttribute("data-fainted", "");
+    say("x_x", 0);
+    play("close", { theme: "bubble", emphasis: "strong" });
+    setTimeout(() => {
+      buttonRef.current?.removeAttribute("data-fainted");
+      s.fainted = false;
+      act("getup");
+      say("...what happened?");
+      play("open", { theme: "bubble" });
+    }, FAINT_MS);
+  };
+
+  const onClick = () => {
+    const s = state.current;
+    timers.current.waves.forEach(clearTimeout);
+    if (s.fainted) return play("tap", { theme: "bubble", emphasis: "subtle" });
+    const now = performance.now();
+    s.annoyance = Math.max(0, s.annoyance - (now - s.lastClick) / CALM_MS) + 1;
+    s.lastClick = now;
+    play("tap", { theme: "bubble" });
+    if (s.annoyance >= 9) return faint();
+    if (s.annoyance >= 3.5) {
+      act("spin");
+      return say(s.annoyance >= 7 ? "getting dizzy @_@" : s.annoyance >= 5 ? "hey, stop that" : "whoa whoa");
+    }
+    act("wave");
+    s.chat += 1;
+    say(s.chat === 0 ? hello() : s.chat <= CHAT.length ? CHAT[s.chat - 1] : IDLE[s.idle++ % IDLE.length]);
+  };
+
+  return (
+    <button
+      ref={buttonRef}
+      type="button"
+      aria-label="Say hi to Boidushya"
+      onClick={onClick}
+      className="greeting-avatar relative z-10 rounded-full pressable focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-400"
+    >
+      <Image src={logo} placeholder="blur" alt="" className="w-8 h-8 border rounded-full border-accent-600" />
+      <span ref={noteRef} aria-live="polite" className="greeting-avatar__note">
+        <svg ref={svgRef} aria-hidden="true">
+          <path className="greeting-avatar__fill" />
+          <path className="greeting-avatar__stroke" pathLength={1} />
+        </svg>
+        {message && (
+          <Handwriting
+            key={message.id}
+            text={message.text}
+            shown
+            delay={message.fresh ? 0.42 : 0.06}
+            className="relative"
+          />
+        )}
+      </span>
+    </button>
+  );
+}

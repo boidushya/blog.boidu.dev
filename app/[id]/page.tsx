@@ -1,5 +1,5 @@
-import logo from "@/assets/images/logo.jpg";
 import ArticleExtra from "@/components/article-extra";
+import { GreetingAvatar } from "@/components/greeting-avatar";
 import { ChapterRail } from "@/components/chapter-rail";
 import InlineEditor from "@/components/inline-editor";
 import Like from "@/components/like";
@@ -58,12 +58,7 @@ export default async function Post({ params }: { params: Promise<{ id: string }>
           <h1 className="!mt-2 !mb-0 sm:!mt-6 sm:!mb-2 text-center">{title}</h1>
           <div className="flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
             <div className="flex mr-3 sm:mr-4 -space-x-2 rtl:space-x-reverse shrink-0">
-              <Image
-                src={logo}
-                placeholder="blur"
-                alt="Boidu's Logo"
-                className="w-8 h-8 border rounded-full border-accent-600"
-              />
+              <GreetingAvatar />
               {authors.map(item => (
                 <Image
                   key={item.name}
