@@ -237,7 +237,7 @@ Yes, that means a little Go binary living on your laptop _forever_. I looked at 
 
 The browser route got the furthest, and that's what made it so annoying. A browser extension made it past eight of YouTube's defences, bot detection and signature deciphering included, only to run into a ninth it had no way around. At that point a little app on your own machine started looking pretty reasonable.
 
-The installer is unsigned, because Apple and Microsoft code signing costs more than this project earns (which is **zero**, if you were curious). You'll get a scary warning the first time you run it, and after that you'll forget it's there.
+The installer is unsigned, because Apple and Microsoft code signing costs more than this project earns. You'll get a scary warning the first time you run it, and after that you'll forget it's there.
 
 ## How it got here
 
@@ -249,7 +249,7 @@ Composer's first commit went in at 2:48 AM on the 9th of January. All the tabs w
 
 My first go at it was a single waveform with the words sitting on top as regions. It lasted a day. Just after midnight I scrapped the whole thing and started over with the layout it still has today, every line stacked under the waveform as its own track.
 
-That evening I told the contributors in our Discord I was almost done and asked them to start testing. Two and a half hours later I told them to ignore that, because Composer was kil. Then the commit that got it working again went in at 12:16 AM, and it's literally called "fix: FINALLY". The Timeline was merged at 2:16 AM, and a minute later the link was in Discord.
+That evening I told the contributors in our Discord I was almost done and asked them to start testing. @@something nicer here, start testing sounds condescending@@ Two and a half hours later I told them to ignore that, because Composer was kil. Then the commit that got it working again went in at 12:16 AM, and it's literally called "fix: FINALLY". The Timeline was merged at 2:16 AM, and a minute later the link was in Discord.
 
 ![Discord reply: "its not kil" with the link to Composer](/composer/not-kil.png)
 _From kil to not kil in about six hours_
@@ -261,15 +261,18 @@ And then I didn't touch it for two months.
 
 ### Getting it ready for people
 
-In March it got ready for people who weren't me. The Preview moved over to Braccato and the tour showed up, along with settings and keys you could remap. The first issue from someone outside the team came in a few days later. The LRC and SRT to TTML converters showed up a month after that, and fun fact, they started out as SEO pages in a commit called "fix: SEO". They only became real tools later.
+In March it got ready for people who weren't me. The Preview moved over to Braccato and the tour showed up, along with settings and keys you could remap. The first issue from someone outside the team came in a few days later. The LRC and SRT to TTML converters showed up a month after that, and fun fact, they started out as SEO pages in a commit called "fix: SEO". They only became real tools later. @@ no need to mention the seo part at all lol, i dont think we need to talk about the converters either
 
 May was the busiest month by a mile, with **204** commits. Linked groups, snapping and scrub audio all landed, and Adalie started on Composer too. She filed six issues in one day (one of them asking for scrubbing like Premiere's) and opened the vocal separation PR the same day.
 
-It's also when the agents finally got their guardrails. One breaking refactor touched **243** files just to give every piece of logic a single owner, and added the checks I talk about further down.
+@@ ok in general i dont think things need a hard number here or in the next para. readers dont care about things like this imo, atleast i dont. 
+
+It's also when the agents finally got their guardrails. One breaking refactor touched **243** files just to give every piece of logic a single owner, and added the checks I talk about further down. 
 
 ### The merge that lasted 11 minutes
 
-In June I tried to change how every line stores its timing, so background vocals could be synced line by line. It was over 10,000 lines of changes. I merged it while I was still chasing a bug in it, decided that was a bad idea, and reverted it 11 minutes later. The PR to bring it back has been open ever since.
+In June I tried to change how every line stores its timing, so background vocals could be synced line by line. It was over 10,000 lines of changes. I merged it while I was still chasing a bug in it, decided that was a bad idea, and reverted it 11 minutes later. The PR to bring it back has been open ever since. @@ again lets not talk about commit sizes, number of lines changing etc. we can just keep the feel here, not the hard numbers at all
+
 
 That one wasn't alone. The first project library got closed without merging in June too, and came back in October as a rebuild of almost **57,000** lines.
 
@@ -281,11 +284,11 @@ I went through two rounds of mockups and picked a direction I called Lit Console
 
 2.0 shipped on the 23rd of October. Eleven days later it was on 2.33.
 
-A week later, people on another Discord server said Composer was laggy. I tried it with my CPU slowed down 4x, and production was borderline unusable. That turned into a dozen performance PRs over three days, and at one point I seriously asked whether the whole Timeline should be rewritten as a canvas. It didn't come to that.
+A week later, people on another Discord server said Composer was laggy. I tried it with my CPU slowed down 4x, and production was borderline unusable. That turned into a dozen performance PRs over three days, and at one point I seriously asked whether the whole Timeline should be rewritten as a canvas. It didn't come to that. @@ well this makes it sound like the redesign did all this, it wasnt it, it was pre-existing issues mostly. so i dont know how to frame it 
 
 ## How I actually built it
 
-Unlike Better Lyrics, Composer has been heavily AI assisted from the very beginning. That still meant a lot of work on my end, though.
+Unlike Better Lyrics, Composer has been heavily AI assisted from the very beginning. That still meant a lot of work on my end, though. @@ that meant more time I have to spend deciding UX . even though shipping speed has gone up exponentially, the time I have to take to think about every small thing, every tiny interaction has gone up since implementation is no longer the step which takes the longest
 
 At the start my whole focus was getting the architecture and UX exactly how I wanted them. I don't believe in nits at that stage (I love to nitpick). Every view got its own spec and design doc, some with a lot more back and forth than others. I'd sketch a rough mockup in HTML, pull it into Figma, build a design system around it, and only then let the agent build the design system, the views and finally the logic, in that order. A good chunk of the early architecture I still wrote by hand, because the agents kept making the same mistakes and it was easier to just take the wheel.
 
@@ -296,6 +299,8 @@ The other reason Composer feels the way I want it to is boring: I use it. A lot.
 My worst fear is Composer slowly turning into AMLL Tool. I don't think it will, though, because I actually use the thing and I care about how every interaction feels.
 
 Oh, and the animated demos in this post were built with [Stageshow](https://benji.org/stageshow), which draws product UI in code.
+
+@@ this whole section reads weirdly, repeating others, and just things not arranged properly, theres no proper flow here
 
 ## Not everyone was a fan
 
@@ -310,15 +315,24 @@ To be fair to the people building on top of AMLL Tool, they move fast. I once me
 
 I'm all for that kind of speed, and it's a big part of how Composer gets better too. But when the design itself is broken, there's only so much a quick fix can do, and no patch is going to change the fact that you're pressing a few keys on every single word.
 
+@@ owning the design of a product from the ground up helps avoid architectural issues like this. 
+
+
 The same goes for the loud feedback. Whenever one of their points actually made sense, it got fixed, sometimes within the hour. If something didn't make sense and just felt spiteful, though, I don't really bother arguing about it anymore.
 
 Not everyone's opinion matters equally. When the people actually syncing songs in Composer every day tell me something's broken, I listen, like when they told me the reading lane had broken their workflow. Everyone else? I can live without their approval ;)
+
+@@ maybe this needs a redo, reads weird
+
 
 ## Closing the loop
 
 Composer is one of three tools that work together, and the loop only closes when all of them play nice.
 
 You sync your lyrics in Composer, export the TTML and submit it to **[Unison](https://unison.betterlyrics.org)**, the crowdsourced lyrics API I run for Better Lyrics. Unison publishes it the moment you submit it. Most lyric databases make every submission wait in a review queue, and after seeing what comes out of some of the other tools, I get why. We don't have one, and Composer is a big part of the reason we can get away with that. People vote, bad syncs get reported, and when the Better Lyrics Council finds one it really likes, it gets the BLCA seal, which is our version of an editor's pick. The Council keeps sealing Composer syncs, so if you want somewhere to start, try [Earrings](https://unison.betterlyrics.org/song/BI9HQCzpDgQ), [Touch The Sky](https://unison.betterlyrics.org/song/B95OUKk7alM) or [On My Way](https://unison.betterlyrics.org/song/ZM8rAsTT7yE).
+
+
+@@ okay this is again repeating exactly what composer's readme does. we can trim this part by a lot and we can also hint at a future unification layer on composer where you can submit and keep track of submissions from unison
 
 Better Lyrics checks Unison every time someone plays a song, so the next person who plays that track on YouTube Music gets your lyrics scrolling along in karaoke style like the rest of their library.
 
@@ -328,4 +342,6 @@ I'll write a proper post about Unison soon, just not yet. There are still a few 
 
 If you want to give Composer a go, it's at [composer.betterlyrics.org](https://composer.betterlyrics.org). It's free, AGPL-licensed, and you can even install it as an app. If a song with no lyrics has been quietly annoying you, you can fix it for yourself and a few thousand other people at the same time.
 
-And if you do send lyrics back after using it, thank you! You're the reason I built any of this.
+@@ also maybe mention something about if you liked reading this blog, you might wanna checkout.. etc etc..
+
+And if you do send lyrics back after using it, thank you! You're the reason I built any of this @@:heart:
