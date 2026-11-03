@@ -67,7 +67,7 @@ async function generate() {
 
       const url = `https://blog.boidu.dev/posts/${name.replace(/\.mdx?/, "")}`;
 
-      const image = escapeXmlAttr(frontmatter.data.banner);
+      const image = escapeXmlAttr(new URL(frontmatter.data.banner, "https://blog.boidu.dev").href);
 
       feed.addItem({
         title: frontmatter.data.title,
