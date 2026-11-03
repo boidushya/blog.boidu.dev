@@ -10,7 +10,7 @@ description: >
 
 ## How it started
 
-If you've read the [Better Lyrics post](/better-lyrics), you already know the setup. YouTube Music's lyrics were either missing or just plain ugly, so I built an extension to fix it. A couple of years and a lot of users later, my inbox stopped being "this is great" and started being "song X has no lyrics, can you add them?" @@ last line reads weirdly, has an odd cadence. might have to switch it up
+If you've read the [Better Lyrics post](/better-lyrics), you already know the setup. YouTube Music's lyrics were either missing or just plain ugly, so I built an extension to fix it. A couple of years and a lot of users later, most of my inbox had turned into some version of "song X has no lyrics, can you add them?"
 
 I'd always reply with some version of the same thing. Better Lyrics isn't a lyrics database, it just shows whatever is out there, and if nobody has made synced lyrics for your song then nobody is going to, me included.
 
@@ -75,20 +75,20 @@ The Sync tab does what you'd expect, with one detail that took me forever to set
 
 That sounds dumb written out, but it makes a huge difference. Space alone is enough for most songs. Add F and you can handle rap, staccato, or Japanese and Korean lyrics where every character needs its own timing. It also works with touch, so yes, you can sync on a tablet!
 
-Why Enter to play and Space to tap? I took it from Cubase, where Enter starts playback. That left Space free, and older versions of Cubase even had you tap a song's tempo on the space bar while it played, which is exactly the feeling I wanted for syncing: the song plays, you tap. @@ 'and from my naive intuition, space felt much nicer for something as important as, well, syncing your lyrics since that was the whole flow in the early days. infact, food for thought! if you are syncing something, which button makes more sense? the big & wide one where both your thumbs are always resting, or the button thats tucked to the right? oh or nightmare fuel here: G _* shudders *_
+Why Enter to play and Space to tap? I took it from Cubase, where Enter starts playback. That left Space free, and older versions of Cubase even had you tap a song's tempo on the space bar while it played, which is exactly the feeling I wanted for syncing: the song plays, you tap.
 
-This was my thought process when composer initially became a thing. What i failed to consider back then in my callowness was space is also the button people are most familiar with for playing or pausing! '
-i do say more on that later so maybe a segue is needed here...
-@@
+Going by my naive intuition, Space also just felt right for the most important thing you do in Composer, which back in the early days was pretty much the whole app. Food for thought: if you're syncing something, which key makes more sense? The big wide one both your thumbs are already resting on, or the one tucked away on the right? Or, nightmare fuel, G. _\*shudders\*_
 
-Somewhere down the line, I realised I'd been shipping a garbage default this whole time! Pretty much every other editor uses Space to play and pause, and that's the first thing anyone opening Composer reaches for. So newer versions come with a "Remastered" shortcuts preset where Space plays, Enter taps, and the arrow keys seek.
+What I failed to consider in my callowness was that Space is also the key everyone already knows for play and pause.
+
+Somewhere down the line, it hit me that I'd been shipping a garbage default this whole time! Pretty much every other editor uses Space to play and pause, and that's the first thing anyone opening Composer reaches for. So newer versions come with a "Remastered" shortcuts preset where Space plays, Enter taps, and the arrow keys seek.
 
 ![The Remastered shortcuts preset in Composer's settings](/composer/remastered-preset.png)
 _Six keys I got wrong, fixed in one click_
 
 Composer also notices when you're fighting it. If you're on the default keys and hit Space expecting the song to play, or hit Space and then reach for the real play key a second later, a toast pops up asking if you want Space to play. One click swaps you over, and it points you to Remastered if you want the arrow keys to seek too.
 
-We do this kind of thing a lot. Turn on the pitch line before separating the vocals and Composer tells you that's what it needs. Try to auto-align without a synced line and it tells you what to select first. Whenever someone gets stuck, I'd rather Composer hold their hand through it if it can, instead of leaving them guessing. @@ also callback to the smart defaults in intentional design thing.
+We do this kind of thing a lot. Turn on the pitch line before separating the vocals and Composer tells you that's what it needs. Try to auto-align without a synced line and it tells you what to select first. Whenever someone gets stuck, I'd rather Composer hold their hand through it if it can, instead of leaving them guessing. It's the same "guess what they want" idea from [Intentional Design](/intentional-design), just with a lot more buttons to guess about.
 
 <MarginNote note="muscle memory is hard to unlearn, no judgement… mostly">
 
@@ -249,7 +249,7 @@ Composer's first commit went in at 2:48 AM on the 9th of January. All the tabs w
 
 My first go at it was a single waveform with the words sitting on top as regions. It lasted a day. Just after midnight I scrapped the whole thing and started over with the layout it still has today, every line stacked under the waveform as its own track.
 
-That evening I told the contributors in our Discord I was almost done and asked them to start testing. @@something nicer here, start testing sounds condescending@@ Two and a half hours later I told them to ignore that, because Composer was kil. Then the commit that got it working again went in at 12:16 AM, and it's literally called "fix: FINALLY". The Timeline was merged at 2:16 AM, and a minute later the link was in Discord.
+That evening I told the contributors in our Discord I was almost done, and asked if they'd take it for a spin and tell me everything that annoyed them. Two and a half hours later I told them to ignore that, because Composer was kil. Then the commit that got it working again went in at 12:16 AM, and it's literally called "fix: FINALLY". The Timeline was merged at 2:16 AM, and a minute later the link was in Discord.
 
 ![Discord reply: "its not kil" with the link to Composer](/composer/not-kil.png)
 _From kil to not kil in about six hours_
@@ -261,20 +261,17 @@ And then I didn't touch it for two months.
 
 ### Getting it ready for people
 
-In March it got ready for people who weren't me. The Preview moved over to Braccato and the tour showed up, along with settings and keys you could remap. The first issue from someone outside the team came in a few days later. The LRC and SRT to TTML converters showed up a month after that, and fun fact, they started out as SEO pages in a commit called "fix: SEO". They only became real tools later. @@ no need to mention the seo part at all lol, i dont think we need to talk about the converters either
+In March it got ready for people who weren't me. The Preview moved over to Braccato and the tour showed up, along with settings and keys you could remap. The first issue from someone outside the team came in a few days later.
 
-May was the busiest month by a mile, with **204** commits. Linked groups, snapping and scrub audio all landed, and Adalie started on Composer too. She filed six issues in one day (one of them asking for scrubbing like Premiere's) and opened the vocal separation PR the same day.
+May was the busiest month by a mile. Linked groups, snapping and scrub audio all landed, and Adalie started on Composer too. She filed six issues in one day (one of them asking for scrubbing like Premiere's) and opened the vocal separation PR the same day.
 
-@@ ok in general i dont think things need a hard number here or in the next para. readers dont care about things like this imo, atleast i dont. 
-
-It's also when the agents finally got their guardrails. One breaking refactor touched **243** files just to give every piece of logic a single owner, and added the checks I talk about further down. 
+It's also when the agents finally got their guardrails: one big, breaking refactor to give every piece of logic a single owner, plus the checks I talk about further down.
 
 ### The merge that lasted 11 minutes
 
-In June I tried to change how every line stores its timing, so background vocals could be synced line by line. It was over 10,000 lines of changes. I merged it while I was still chasing a bug in it, decided that was a bad idea, and reverted it 11 minutes later. The PR to bring it back has been open ever since. @@ again lets not talk about commit sizes, number of lines changing etc. we can just keep the feel here, not the hard numbers at all
+In June I tried to change how every line stores its timing, so background vocals could be synced line by line. It touched pretty much everything. I merged it while I was still chasing a bug in it, decided that was a bad idea, and reverted it 11 minutes later. The PR to bring it back has been open ever since.
 
-
-That one wasn't alone. The first project library got closed without merging in June too, and came back in October as a rebuild of almost **57,000** lines.
+That one wasn't alone. The first project library got closed without merging in June too, and only came back in October after a complete rebuild.
 
 ### Composer 2.0
 
@@ -284,23 +281,19 @@ I went through two rounds of mockups and picked a direction I called Lit Console
 
 2.0 shipped on the 23rd of October. Eleven days later it was on 2.33.
 
-A week later, people on another Discord server said Composer was laggy. I tried it with my CPU slowed down 4x, and production was borderline unusable. That turned into a dozen performance PRs over three days, and at one point I seriously asked whether the whole Timeline should be rewritten as a canvas. It didn't come to that. @@ well this makes it sound like the redesign did all this, it wasnt it, it was pre-existing issues mostly. so i dont know how to frame it 
+Not long after, people on another Discord server told me Composer was laggy. That wasn't the redesign's fault, most of it was older stuff that had been piling up for a while. I slowed my CPU down 4x to see it for myself, and production was borderline unusable. That turned into a few days of nothing but performance work, and at one point I seriously asked whether the whole Timeline should be rewritten as a canvas. Thankfully it didn't come to that.
 
 ## How I actually built it
 
-Unlike Better Lyrics, Composer has been heavily AI assisted from the very beginning. That still meant a lot of work on my end, though. @@ that meant more time I have to spend deciding UX . even though shipping speed has gone up exponentially, the time I have to take to think about every small thing, every tiny interaction has gone up since implementation is no longer the step which takes the longest
+Unlike Better Lyrics, Composer has been heavily AI assisted from the very beginning. That made me ship a whole lot faster, but it didn't save me any time. Writing the code is no longer the slow part, so the slow part is now deciding how every small thing should look and feel, and I spend way more time on that than I ever did before.
 
-At the start my whole focus was getting the architecture and UX exactly how I wanted them. I don't believe in nits at that stage (I love to nitpick). Every view got its own spec and design doc, some with a lot more back and forth than others. I'd sketch a rough mockup in HTML, pull it into Figma, build a design system around it, and only then let the agent build the design system, the views and finally the logic, in that order. A good chunk of the early architecture I still wrote by hand, because the agents kept making the same mistakes and it was easier to just take the wheel.
+At the start my whole focus was getting the architecture and UX exactly how I wanted them. I don't believe in nits at that stage (I love to nitpick). Every view got its own spec and design doc. I'd sketch a rough mockup in HTML, pull it into Figma, build a design system around it, and only then let the agent build the design system, then the views, then the logic. A good chunk of the early architecture I still wrote by hand, because the agents kept making the same mistakes and it was easier to just take the wheel.
 
-The other thing I learned the hard way is that telling an agent not to do something is never enough. You need guardrails in the code itself, so rules like "one owner per piece of logic" are enforced by checks that fail the build. That made the first few weeks painfully slow, but these days I barely worry about the core of the codebase changing behind my back, and I get to spend my time on the UX instead.
+I also learned the hard way that telling an agent not to do something is never enough. Rules like "one owner per piece of logic" only stuck once checks in the code failed the build when they were broken. That made the first few weeks painfully slow, but these days I barely worry about the core of the codebase changing behind my back.
 
-The other reason Composer feels the way I want it to is boring: I use it. A lot. And like I said, I love to nitpick. The big features still get the full spec and mockup treatment, but for the small stuff, when something looks or feels even slightly off, I don't brainstorm, open Figma or sketch mocks about it. I just fix it, right then.
-
-My worst fear is Composer slowly turning into AMLL Tool. I don't think it will, though, because I actually use the thing and I care about how every interaction feels.
+The big features still get the full spec and mockup treatment. The small stuff doesn't, because I use Composer a lot, and when something looks or feels even slightly off I just fix it right then. My worst fear is Composer slowly turning into AMLL Tool, and using it as much as I do is the best protection against that I've found.
 
 Oh, and the animated demos in this post were built with [Stageshow](https://benji.org/stageshow), which draws product UI in code.
-
-@@ this whole section reads weirdly, repeating others, and just things not arranged properly, theres no proper flow here
 
 ## Not everyone was a fan
 
@@ -313,35 +306,22 @@ _Every menu, all at once. Pick one!_
 
 To be fair to the people building on top of AMLL Tool, they move fast. I once mentioned to a friend that it tags the second singer in a song as "other" instead of a person, which is about as basic as a lyrics file gets (never mind that it only supports _two_ singers in the first place, because apparently that's too much to ask for). That bug had been sitting in the original tool since 2023, and one of the forks had a fix out about _half an hour_ after I brought it up!
 
-I'm all for that kind of speed, and it's a big part of how Composer gets better too. But when the design itself is broken, there's only so much a quick fix can do, and no patch is going to change the fact that you're pressing a few keys on every single word.
-
-@@ owning the design of a product from the ground up helps avoid architectural issues like this. 
-
+I'm all for that kind of speed, and it's a big part of how Composer gets better too. But when the design itself is broken, there's only so much a quick fix can do, and no patch is going to change the fact that you're pressing a few keys on every single word. Owning the design from the ground up is what keeps that kind of problem from getting baked in to begin with.
 
 The same goes for the loud feedback. Whenever one of their points actually made sense, it got fixed, sometimes within the hour. If something didn't make sense and just felt spiteful, though, I don't really bother arguing about it anymore.
 
-Not everyone's opinion matters equally. When the people actually syncing songs in Composer every day tell me something's broken, I listen, like when they told me the reading lane had broken their workflow. Everyone else? I can live without their approval ;)
-
-@@ maybe this needs a redo, reads weird
-
+The people I listen to hardest are the ones syncing songs in Composer every day. When they told me the reading lane broke their workflow, it was gone the same day. Someone who'd never use Composer either way doesn't get that kind of pull, and I can live without their approval ;)
 
 ## Closing the loop
 
-Composer is one of three tools that work together, and the loop only closes when all of them play nice.
+Composer is one part of a loop. You sync a song in Composer and submit the TTML to [Unison](https://unison.betterlyrics.org), the crowdsourced lyrics API behind Better Lyrics. From then on, anyone who plays that track on YouTube Music with Better Lyrics gets your lyrics scrolling along in karaoke style.
 
-You sync your lyrics in Composer, export the TTML and submit it to **[Unison](https://unison.betterlyrics.org)**, the crowdsourced lyrics API I run for Better Lyrics. Unison publishes it the moment you submit it. Most lyric databases make every submission wait in a review queue, and after seeing what comes out of some of the other tools, I get why. We don't have one, and Composer is a big part of the reason we can get away with that. People vote, bad syncs get reported, and when the Better Lyrics Council finds one it really likes, it gets the BLCA seal, which is our version of an editor's pick. The Council keeps sealing Composer syncs, so if you want somewhere to start, try [Earrings](https://unison.betterlyrics.org/song/BI9HQCzpDgQ), [Touch The Sky](https://unison.betterlyrics.org/song/B95OUKk7alM) or [On My Way](https://unison.betterlyrics.org/song/ZM8rAsTT7yE).
+Right now that means exporting a file and uploading it yourself. Next up, I want Composer to talk to Unison directly, so you can submit from right where you synced and keep track of how your submissions are doing.
 
+It started as one extension and somehow turned into three tools, each one built because the one before it couldn't quite finish the job. I'll write a proper post about Unison soon, once a few things about it stop bugging me.
 
-@@ okay this is again repeating exactly what composer's readme does. we can trim this part by a lot and we can also hint at a future unification layer on composer where you can submit and keep track of submissions from unison
+If you want to give Composer a go, it's at [composer.betterlyrics.org](https://composer.betterlyrics.org). It's free, open source, and you can even install it as an app. If a song with no lyrics has been quietly annoying you, you can fix it for yourself and everyone else who listens to it at the same time.
 
-Better Lyrics checks Unison every time someone plays a song, so the next person who plays that track on YouTube Music gets your lyrics scrolling along in karaoke style like the rest of their library.
+If you liked this one, the [Better Lyrics post](/better-lyrics) is where all of this started, and [Intentional Design](/intentional-design) is the thinking behind most of the decisions above.
 
-It started as one extension and somehow turned into three tools, each one built because the one before it couldn't quite finish the job.
-
-I'll write a proper post about Unison soon, just not yet. There are still a few things about it I'm not happy with, and I'd rather sort those out before I tell that story. For now: it's free, the data is open, and anything you submit through Composer ends up there.
-
-If you want to give Composer a go, it's at [composer.betterlyrics.org](https://composer.betterlyrics.org). It's free, AGPL-licensed, and you can even install it as an app. If a song with no lyrics has been quietly annoying you, you can fix it for yourself and a few thousand other people at the same time.
-
-@@ also maybe mention something about if you liked reading this blog, you might wanna checkout.. etc etc..
-
-And if you do send lyrics back after using it, thank you! You're the reason I built any of this @@:heart:
+And if you do send lyrics back after using it, thank you! You're the reason I built any of this ❤️
