@@ -564,7 +564,7 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .blog .chapter {
-  @apply mt-20 sm:mt-28;
+  @apply mt-16 sm:mt-20;
 }
 
 .blog .chapter h2 {
