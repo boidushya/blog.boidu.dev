@@ -175,7 +175,7 @@ I always wanted a kid to be able to use Composer, but I didn't want it to be a t
 
 Composer can pull the vocals out of a song right in your browser. Click a button, wait a minute, and you can sync against the voice on its own without the drums and bass getting in the way. Not long ago you'd have needed a desktop app for that. If you already have the stems, you can import those instead.
 
-This one is almost entirely [Adalie's](https://github.com/adaliea) work. She got the model running in the browser, figured out how to cut the audio into chunks and stitch them back together without the seams popping, set it up to use WebGPU with a WASM fallback, and shipped the whole thing while I was busy yelling at the Timeline. The model itself is [HTDemucs](https://github.com/facebookresearch/demucs) from Facebook AI Research, but everything between "model file on a server" and "vocals playing in your browser tab" is hers.
+This one is almost entirely [Adalie's](https://github.com/adaliea) work. She got the model running in the browser, figured out how to cut the audio into chunks and stitch them back together without the seams popping, set it up to use WebGPU with a WASM fallback, and shipped the whole thing while I was busy <Peek src="/composer/old-man-yells.mp4" alt="Newspaper headline from The Simpsons: Old man yells at cloud, with Grandpa Simpson shaking his fist at the sky">yelling at the Timeline</Peek>. The model itself is [HTDemucs](https://github.com/facebookresearch/demucs) from Facebook AI Research, but everything between "model file on a server" and "vocals playing in your browser tab" is hers.
 
 If you've read the [Intentional Design](/intentional-design) post, you've already seen her work. We each take the parts of the ecosystem that suit us best, and somehow it still ends up feeling like one project.
 
@@ -300,7 +300,7 @@ In the [Intentional Design](/intentional-design) post, I wrote about getting so 
 
 Composer doesn't have nightlies or a beta channel. I ship something, people use it that same day, and I hear about it that same day too, which is great right up until it isn't. A little while ago I spent a ton of time redesigning the Sync tab into what I called a reading lane. The current line sat a third of the way down, the next few lines filled the rest of the panel, singers sat on their own side like they do in Preview, and the next word got a little tint so you'd know what was coming. I was really happy with it.
 
-Users lost their shit, and almost instantly. The update had taken away something they relied on: once a song was fully synced, they couldn't go back and re-sync a line the way they used to, and pausing the song no longer dropped them back into the list they knew.
+<Peek src="/composer/lost-it.webp" alt="A man with glowing eyes under a caption that reads FUCK">Users lost their shit</Peek>, and almost instantly. The update had taken away something they relied on: once a song was fully synced, they couldn't go back and re-sync a line the way they used to, and pausing the song no longer dropped them back into the list they knew.
 
 On top of that, the tap mode they'd gotten used to looked completely different. Drag the slider to see what I did to it:
 
@@ -322,9 +322,9 @@ Getting people to switch hasn't exactly been smooth. A lot of folks learned to s
 Some of the loudest feedback on Composer has come from exactly those people. Fair enough! Composer is a _lot_ more complicated than Better Lyrics, and it has its share of rough edges. But it's hard to take notes on polish too seriously from people who are perfectly happy with a tool where this happens when you open the menus:
 
 ![Every menu in AMLL Tool open at once, stacked on top of each other](/composer/amll-menus.png)
-_Every menu, all at once. Pick one!_
+_Every menu, all at once. <Peek src="/composer/wall-of-glyphs.mp4" alt="A streamer staring up at a wall covered in hieroglyphs, completely lost">Pick one!</Peek>_
 
-To be fair to the people building on top of AMLL Tool, they move fast. I once mentioned to a friend that it tags the second singer in a song as "other" instead of a person, which is about as basic as a lyrics file gets (never mind that it only supports _two_ singers in the first place, because apparently that's too much to ask for). That bug had been sitting in the original tool since 2023, and one of the forks had a fix out about _half an hour_ after I brought it up!
+To be fair to the people building on top of AMLL Tool, they move fast. I once mentioned to a friend that it tags the second singer in a song as "other" instead of a person, which is about as basic as a lyrics file gets (never mind that it only supports _two_ singers in the first place, because apparently that's too much to ask for). That bug had been sitting in the original tool since 2023, and one of the forks had a fix out about <Peek src="/composer/ohio-impressed.mp4" alt="A streamer gasping and then clapping, captioned Ohio impressed">_half an hour_ after I brought it up</Peek>!
 
 I'm all for that kind of speed, and it's a big part of how Composer gets better too. But when the design itself is broken, there's only so much a quick fix can do, and no patch is going to change the fact that you're pressing a few keys on every single word. Owning the design from the ground up is what keeps that kind of problem from getting baked in to begin with.
 
