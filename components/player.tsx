@@ -4,7 +4,7 @@ import { SungTitle } from "@/components/sung-title";
 import { Wash } from "@/components/wash";
 import type { BlogCard } from "@/lib/blogs";
 import { handwriting } from "@/utils/fonts";
-import { useWaterMark } from "@/utils/hooks";
+import { useResizeObserver, useWaterMark } from "@/utils/hooks";
 import { matchesSearch, usePostSearch } from "@/utils/post-search";
 import { clock, getProgress, pickShuffle } from "@/utils/reading-progress";
 import { timeSweep } from "@/utils/sweep";
@@ -61,10 +61,6 @@ function falloff(distance: number) {
   };
 }
 
-function centre(scroller: HTMLElement | null, line: HTMLElement | undefined) {
-  if (scroller && line && isDesktop()) scroller.style.translate = `0 ${-line.offsetTop - line.offsetHeight / 2}px`;
-}
-
 function fitTitle(heading: HTMLElement) {
   const widest = () => Math.max(...Array.from(heading.querySelectorAll<HTMLElement>(".sung-word"), w => w.offsetWidth));
   let size = Number.parseFloat(getComputedStyle(heading).fontSize);
@@ -86,11 +82,18 @@ function tipIn(side: NoteSide, inkWidth: number): [number, number] {
   return [6, 5];
 }
 
-function placeNote(line: HTMLElement, lyrics: HTMLElement, scroller: HTMLElement, note: HTMLElement, ink: HTMLElement) {
+function placeNote(
+  line: HTMLElement,
+  lyrics: HTMLElement,
+  scroller: HTMLElement,
+  scrollOffset: number,
+  note: HTMLElement,
+  ink: HTMLElement
+) {
   const words = Array.from(line.querySelectorAll<HTMLElement>(".sung-word"));
   const width = lyrics.clientWidth;
   const lineTop = line.offsetTop;
-  const lineCentre = lineTop + Number.parseFloat(scroller.style.translate.split(" ")[1] || "0") + scroller.offsetTop;
+  const lineCentre = lineTop + scrollOffset + scroller.offsetTop;
   const last = words[words.length - 1];
   const inkWidth = ink.offsetWidth;
   const wide = inkWidth + 34;
@@ -247,13 +250,12 @@ function Control({
       onClick={e => {
         const button = e.currentTarget;
         if (disabled) {
-          if (!nudge) return;
-          retrigger(button, `player-wall-${nudge}`, 380);
-        } else {
-          if (layer.current) ripple(button, layer.current, e);
-          if (nudge) retrigger(button, `player-nudge-${nudge}`, 320);
-          retrigger(button, "player-pop", 320);
+          if (nudge) retrigger(button, `player-wall-${nudge}`, 380);
+          return;
         }
+        if (layer.current) ripple(button, layer.current, e);
+        if (nudge) retrigger(button, `player-nudge-${nudge}`, 320);
+        retrigger(button, "player-pop", 320);
         onPress();
       }}
       {...rest}
@@ -288,7 +290,6 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const [measured, setMeasured] = useState<BlogCard[] | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const lyricsRef = useRef<HTMLElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLOListElement>(null);
   const noteRef = useRef<HTMLDivElement>(null);
@@ -298,18 +299,42 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const hoverTimer = useRef<Timer>(undefined);
   const drawTimer = useRef<Timer>(undefined);
   const copyTimer = useRef<Timer>(undefined);
+  const scrollOffset = useRef(0);
 
-  const select = useCallback((target: number, move = true) => {
-    const lines = linesIn(listRef.current);
-    if (!lines.length) return;
-    const i = Math.max(0, Math.min(lines.length - 1, target));
-    if (move) centre(scrollerRef.current, lines[i]);
-    indexRef.current = i;
-    setIndex(i);
+  const centre = useCallback((i: number) => {
+    const line = linesIn(listRef.current)[i];
+    const scroller = scrollerRef.current;
+    if (!line || !scroller) return;
+    scrollOffset.current = isDesktop() ? -line.offsetTop - line.offsetHeight / 2 : 0;
+    if (isDesktop()) scroller.style.translate = `0 ${scrollOffset.current}px`;
   }, []);
+
+  const measure = useCallback(() => {
+    for (const heading of Array.from(listRef.current?.querySelectorAll<HTMLElement>("h2") ?? [])) {
+      heading.style.fontSize = "";
+      fitTitle(heading);
+      timeSweep(heading, PLAYER_SWEEP);
+    }
+    centre(indexRef.current);
+  }, [centre]);
+
+  const lyricsRef = useResizeObserver<HTMLElement>(measure);
+
+  const select = useCallback(
+    (target: number, move = true) => {
+      const count = linesIn(listRef.current).length;
+      if (!count) return;
+      const i = Math.max(0, Math.min(count - 1, target));
+      if (move) centre(i);
+      indexRef.current = i;
+      setIndex(i);
+    },
+    [centre]
+  );
 
   const hover = useCallback(
     (i: number, e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
       if (e.clientX === pointer.current.x && e.clientY === pointer.current.y) return;
       pointer.current = { x: e.clientX, y: e.clientY };
       clearTimeout(hoverTimer.current);
@@ -341,20 +366,20 @@ export function Player({ posts }: { posts: BlogCard[] }) {
     let cancelled = false;
     document.fonts.ready.then(() => {
       if (cancelled) return;
-      for (const heading of Array.from(listRef.current?.querySelectorAll<HTMLElement>("h2") ?? [])) {
-        fitTitle(heading);
-        timeSweep(heading, PLAYER_SWEEP);
-      }
-      centre(scrollerRef.current, linesIn(listRef.current)[indexRef.current]);
+      measure();
       setMeasured(visible);
     });
     return () => {
       cancelled = true;
     };
-  }, [visible]);
+  }, [visible, measure]);
 
   useLayoutEffect(() => {
     indexRef.current = index;
+    const note = noteRef.current;
+    clearTimeout(drawTimer.current);
+    const wasOn = note?.hasAttribute("data-on") ?? false;
+    note?.removeAttribute("data-on");
     if (measured !== visible) return;
     const lines = linesIn(listRef.current);
     lines.forEach((line, j) => {
@@ -365,22 +390,17 @@ export function Player({ posts }: { posts: BlogCard[] }) {
       line.style.visibility = hidden ? "hidden" : "";
     });
 
-    const note = noteRef.current;
     const ink = inkRef.current;
     const lyrics = lyricsRef.current;
     const scroller = scrollerRef.current;
     const line = lines[index];
-    if (!note || !ink || !lyrics || !scroller) return;
-    clearTimeout(drawTimer.current);
-    const wasOn = note.hasAttribute("data-on");
-    note.removeAttribute("data-on");
-    if (!line) return;
+    if (!note || !ink || !lyrics || !scroller || !line) return;
     drawTimer.current = setTimeout(
       () => {
         note.removeAttribute("data-drawn");
         note.removeAttribute("data-writing");
         ink.textContent = visible[index].note;
-        placeNote(line, lyrics, scroller, note, ink);
+        placeNote(line, lyrics, scroller, scrollOffset.current, note, ink);
         void note.offsetWidth;
         note.setAttribute("data-on", "");
         note.setAttribute("data-drawn", "");
@@ -388,10 +408,11 @@ export function Player({ posts }: { posts: BlogCard[] }) {
       },
       wasOn ? NOTE_FADE_MS : 0
     );
-  }, [index, measured, visible]);
+  }, [index, measured, visible, lyricsRef]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (!isDesktop()) return;
       if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
       const target = e.target;
       if (target instanceof HTMLElement && (target.isContentEditable || target.matches("input, textarea, select")))
@@ -460,28 +481,23 @@ export function Player({ posts }: { posts: BlogCard[] }) {
 
   const lines = useMemo(
     () =>
-      visible.map((post, i) => {
-        const { opacity, blur, hidden } = falloff(i);
-        return (
-          <li key={post.id}>
-            <Link
-              href={post.link}
-              className="player-line"
-              aria-label={post.title}
-              data-cuelume-navigate
-              data-active={i === 0 || undefined}
-              style={{ ...cssVars({ "--o": opacity, "--b": `${blur}px` }), visibility: hidden ? "hidden" : undefined }}
-              onPointerMove={e => hover(i, e)}
-              onPointerLeave={unhover}
-              onFocus={() => select(i)}
-            >
-              <h2>
-                <SungTitle title={post.title} />
-              </h2>
-            </Link>
-          </li>
-        );
-      }),
+      visible.map((post, i) => (
+        <li key={post.id}>
+          <Link
+            href={post.link}
+            className="player-line"
+            aria-label={post.title}
+            data-cuelume-navigate
+            onPointerMove={e => hover(i, e)}
+            onPointerLeave={unhover}
+            onFocus={e => select(i, e.currentTarget.matches(":focus-visible"))}
+          >
+            <h2>
+              <SungTitle title={post.title} />
+            </h2>
+          </Link>
+        </li>
+      )),
     [visible, hover, unhover, select]
   );
 
@@ -677,7 +693,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
           aria-label="Posts"
           onPointerLeave={() => {
             clearTimeout(hoverTimer.current);
-            centre(scrollerRef.current, linesIn(listRef.current)[indexRef.current]);
+            centre(indexRef.current);
           }}
         >
           {empty && <p className={`player-empty ${handwriting.className}`}>nothing matches</p>}
