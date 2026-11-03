@@ -37,10 +37,11 @@ const Sign = ({ id }: SignProps) => {
         return response.json();
       }),
     onSuccess: ({ id: signId, paths, dots }: StoredSignature) => {
-      queryClient.setQueryData<StoredSignature[]>(signsQueryKey(id), signs => [
-        ...(signs ?? []),
-        { id: signId, paths, dots },
-      ]);
+      const key = signsQueryKey(id);
+      if (queryClient.getQueryData(key)) {
+        queryClient.setQueryData<StoredSignature[]>(key, signs => [...(signs ?? []), { id: signId, paths, dots }]);
+      }
+      queryClient.invalidateQueries({ queryKey: key });
       setOpen(false);
     },
     onError: error => {
@@ -111,6 +112,11 @@ const Sign = ({ id }: SignProps) => {
         </button>
         <h3 className="mb-2 text-accent-200">Thanks for liking this post!</h3>
         <p className="mb-4 text-sm text-accent-400">Sketch your signature below to add it to the post.</p>
+        {mutation.isError && (
+          <p role="alert" className="mb-3 text-sm text-red-400">
+            That signature could not be saved. Try drawing it again.
+          </p>
+        )}
         <ReactSketchCanvas
           className="sketch-canvas"
           ref={canvasRef}

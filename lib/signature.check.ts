@@ -31,4 +31,11 @@ assert.ok(
 const huge = `<path d="M 0,0 ${"L 1,1 ".repeat(25000)}"></path>`;
 assert.equal(parseSignature(canvasSvg(huge)), null);
 
+const spaced = `<path d="M 0 0 ${"L 1 1 ".repeat(20001)}"></path>`;
+assert.equal(parseSignature(canvasSvg(spaced)), null);
+assert.equal(parseSignature("x".repeat(400_001)), null);
+
+assert.equal(parseSignature(canvasSvg('<path d="M 1e-5,2 L 3E1,4"></path>'))?.paths[0], "M0,2L30,4");
+assert.equal(parseSignature(canvasSvg('<path d="M 1e400,2 L 3,4"></path>')), null);
+
 console.log("signature: all checks passed");

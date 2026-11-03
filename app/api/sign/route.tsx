@@ -66,12 +66,5 @@ export async function GET(request: NextRequest) {
     return signature ? [{ id: item.id, ...signature }] : [];
   });
 
-  return cors(
-    request,
-    NextResponse.json(signs, {
-      status: 200,
-      headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=600" },
-    }),
-    corsOptions
-  );
+  return cors(request, NextResponse.json(signs, { status: 200 }), corsOptions);
 }
