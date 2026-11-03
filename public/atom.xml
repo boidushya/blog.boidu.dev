@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.boidu.dev</id>
     <title>Boidu's Blog</title>
-    <updated>2024-07-13T20:19:31.050Z</updated>
+    <updated>2026-11-03T15:33:09.592Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>Boidushya Bhattacharyay</name>
@@ -14,49 +14,27 @@
     <subtitle>A blog where I write about my thoughts and experiences.</subtitle>
     <logo>https://blog.boidu.dev/static/logo.jpg</logo>
     <icon>https://blog.boidu.dev/static/logo.jpg</icon>
-    <rights>All Rights Reserved 2024 Boidushya Bhattacharyay</rights>
+    <rights>All Rights Reserved 2026 Boidushya Bhattacharyay</rights>
     <entry>
-        <title type="html"><![CDATA[How I Fixed YouTube Music's Biggest Flaw - Better Lyrics]]></title>
-        <id>https://blog.boidu.dev/posts/better-lyrics</id>
-        <link href="https://blog.boidu.dev/posts/better-lyrics"/>
+        <title type="html"><![CDATA[How I Fixed YouTube Music's Biggest Flaw: Better Lyrics]]></title>
+        <id>https://blog.boidu.dev/better-lyrics</id>
+        <link href="https://blog.boidu.dev/better-lyrics"/>
         <updated>2024-07-12T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[From fixing lyrics to features Google missed - how my side project became 1500+ users' must-have extension for YouTube Music.
+        <summary type="html"><![CDATA[How a weekend fix for YouTube Music's lyrics picked up 1500+ users.
 ]]></summary>
         <category label="Story"/>
         <category label="Extension"/>
         <category label="Javascript"/>
     </entry>
     <entry>
-        <title type="html"><![CDATA[Shiki and why its Excellent]]></title>
-        <id>https://blog.boidu.dev/posts/shiki-and-why-its-excellent</id>
-        <link href="https://blog.boidu.dev/posts/shiki-and-why-its-excellent"/>
-        <updated>2024-07-01T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Shiki is a fantastic library that provides a fast and feature-rich syntax highlighting experience for code snippets in your applications. But why Shiki?
+        <title type="html"><![CDATA[Intentional Design]]></title>
+        <id>https://blog.boidu.dev/intentional-design</id>
+        <link href="https://blog.boidu.dev/intentional-design"/>
+        <updated>2025-10-04T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[The design philosophy behind Better Lyrics
 ]]></summary>
-        <category label="Tutorial"/>
-        <category label="React"/>
-        <category label="Shiki"/>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Next.js and its Paradigm Shift]]></title>
-        <id>https://blog.boidu.dev/posts/nextjs-and-its-paradigm-shift</id>
-        <link href="https://blog.boidu.dev/posts/nextjs-and-its-paradigm-shift"/>
-        <updated>2024-07-04T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Next.js is excellent for building websites with a ton of complexities - and the best part? You can do all that with your existing React knowledge! Right? Nah, not really..
-]]></summary>
-        <category label="Tutorial"/>
-        <category label="Next.js"/>
-        <category label="React"/>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Understanding useMemo in React]]></title>
-        <id>https://blog.boidu.dev/posts/usememo</id>
-        <link href="https://blog.boidu.dev/posts/usememo"/>
-        <updated>2020-01-06T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[React provides a powerful hook called useMemo that can be a game-changer when it comes to optimizing performance in your applications. Wait but where do you use it? Do you even need it?
-]]></summary>
-        <category label="Tutorial"/>
-        <category label="React"/>
-        <category label="hooks"/>
+        <category label="Design"/>
+        <category label="Case Study"/>
+        <category label="Extension"/>
     </entry>
 </feed>

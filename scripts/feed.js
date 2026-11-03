@@ -65,7 +65,7 @@ async function generate() {
       const frontmatter = matter(content);
       if (frontmatter.data.draft === true) return;
 
-      const url = `https://blog.boidu.dev/posts/${name.replace(/\.mdx?/, "")}`;
+      const url = `https://blog.boidu.dev/${name.replace(/\.mdx?/, "")}`;
 
       const image = escapeXmlAttr(
         new URL(frontmatter.data.cover ?? frontmatter.data.banner, "https://blog.boidu.dev").href
