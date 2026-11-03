@@ -67,7 +67,7 @@ export function ContentBox({
   return (
     <MotionLink
       href={link}
-      aria-label={title}
+      aria-labelledby={`post-${id}-title`}
       variants={projectVariants}
       className={`group focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-400 rounded-xl shadow-xl overflow-hidden grid items-start self-start justify-start w-full grid-cols-3 border border-opacity-10 border-accent-400 ${
         id !== length ? `border-b` : ``
@@ -97,7 +97,12 @@ export function ContentBox({
           ))}
         </div>
         <div className="flex flex-col justify-center h-full p-6 pb-10 sm:p-8 sm:pb-12">
-          <h3 className="mb-4 text-2xl font-semibold tracking-tight text-accent-50 [text-wrap:balance]">{title}</h3>
+          <h3
+            id={`post-${id}-title`}
+            className="mb-4 text-2xl font-semibold tracking-tight text-accent-50 [text-wrap:balance]"
+          >
+            {title}
+          </h3>
           <p className="text-sm tracking-normal text-accent-50/70 [text-wrap:pretty]">{description}</p>
         </div>
         <div className="absolute inset-0 z-[-1] isolate">
