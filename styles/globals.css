@@ -802,16 +802,6 @@ circle[id^="react-sketch-canvas__"]{
   @apply max-w-none;
 }
 
-.pill > span {
-  text-box: trim-both cap alphabetic;
-}
-
-@supports not (text-box: trim-both cap alphabetic) {
-  .pill {
-    padding-top: 2.5px;
-  }
-}
-
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .sound-toggle[aria-pressed="true"]:hover .sound-toggle__wave {
     animation: sound-wave 600ms ease-in-out infinite alternate;
@@ -1069,22 +1059,6 @@ html {
 
 :is(.post-body > :first-child:not(.src-block), .post-body > .src-block:first-child > :first-child) {
   --i: 3;
-}
-
-.card-list > :nth-child(1) {
-  --i: 2;
-}
-
-.card-list > :nth-child(2) {
-  --i: 3;
-}
-
-.card-list > :nth-child(3) {
-  --i: 4;
-}
-
-.card-list > :nth-child(n + 4) {
-  --i: 5;
 }
 
 .player {
