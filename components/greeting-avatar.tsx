@@ -9,10 +9,15 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 const WAVE_AT_MS = [600, 7000, 14000];
 const LINGER_MS = 4500;
 const FAINT_MS = 2600;
+const SULK_MS = 10000;
 // Each click adds one to the annoyance; a calm stretch drains it one step every CALM_MS.
-const CALM_MS = 700;
+const CALM_MS = 1250;
 const CHAT = ["the post is down there, fyi", "sup?", "i'm flattered, really", "quit lollygagging"];
-const IDLE = ["boop", "hehe", "yes?", "still here", "you again?"];
+const IDLE = ["boop", "hehe", "yes?", "still here"];
+const GRUDGE = ["you again?", "that wasn't nice, y'know?"];
+const FED_UP = ["this is a hostile workplace", "okay, i'm telling my mom", "wait till HR hears about this"];
+
+const pick = (lines: string[]) => lines[Math.floor(Math.random() * lines.length)];
 
 function hello() {
   const hour = new Date().getHours();
@@ -92,7 +97,17 @@ export function GreetingAvatar() {
   const noteRef = useRef<HTMLSpanElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const [message, setMessage] = useState<{ text: string; id: number; fresh: boolean } | null>(null);
-  const state = useRef({ chat: -1, idle: 0, annoyance: 0, lastClick: 0, fainted: false, current: "" });
+  const state = useRef({
+    chat: -1,
+    idle: 0,
+    annoyance: 0,
+    lastClick: 0,
+    fainted: false,
+    grudge: false,
+    faints: 0,
+    sulking: false,
+    current: "",
+  });
   const timers = useRef<{ waves: ReturnType<typeof setTimeout>[]; hide?: ReturnType<typeof setTimeout> }>({
     waves: [],
   });
@@ -149,8 +164,18 @@ export function GreetingAvatar() {
     setTimeout(() => {
       buttonRef.current?.removeAttribute("data-fainted");
       s.fainted = false;
+      s.grudge = true;
+      s.faints += 1;
       act("getup");
-      say("...what happened?");
+      if (s.faints % 3 === 0) {
+        s.sulking = true;
+        setTimeout(() => {
+          s.sulking = false;
+        }, SULK_MS);
+        say(pick(FED_UP));
+      } else {
+        say("...what happened?");
+      }
       play("open", { theme: "bubble" });
     }, FAINT_MS);
   };
@@ -158,7 +183,7 @@ export function GreetingAvatar() {
   const onClick = () => {
     const s = state.current;
     timers.current.waves.forEach(clearTimeout);
-    if (s.fainted) return play("tap", { theme: "bubble", emphasis: "subtle" });
+    if (s.fainted || s.sulking) return play("tap", { theme: "bubble", emphasis: "subtle" });
     const now = performance.now();
     s.annoyance = Math.max(0, s.annoyance - (now - s.lastClick) / CALM_MS) + 1;
     s.lastClick = now;
@@ -169,6 +194,10 @@ export function GreetingAvatar() {
       return say(s.annoyance >= 7 ? "getting dizzy @_@" : s.annoyance >= 5 ? "hey, stop that" : "whoa whoa");
     }
     act("wave");
+    if (s.grudge) {
+      s.grudge = false;
+      return say(pick(GRUDGE));
+    }
     s.chat += 1;
     say(s.chat === 0 ? hello() : s.chat <= CHAT.length ? CHAT[s.chat - 1] : IDLE[s.idle++ % IDLE.length]);
   };

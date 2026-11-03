@@ -74,7 +74,7 @@ export function Handwriting({
   };
 
   return (
-    <motion.span className={`${handwriting.className} ${className}`} {...driven}>
+    <motion.span className={`${handwriting.className} select-none ${className}`} {...driven}>
       {words.map((word, i) => (
         <React.Fragment key={`${word}-${i}`}>
           {i > 0 && " "}

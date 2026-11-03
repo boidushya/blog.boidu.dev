@@ -622,7 +622,7 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .chapter-rule {
-  @apply flex items-center gap-4 min-h-[2rem];
+  @apply flex items-center gap-4 min-h-[2rem] select-none;
 }
 
 .chapter-rule::after {

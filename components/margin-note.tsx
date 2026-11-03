@@ -19,9 +19,9 @@ export function MarginNote({ note, children }: { note: string; children: React.R
 
   useEffect(() => {
     if (!ref.current) return;
-    return observeReveal(ref.current, 0.6, () => {
+    return observeReveal(ref.current, 0.6, quiet => {
       setShown(true);
-      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) play("open", REVEAL);
+      if (!quiet && !matchMedia("(prefers-reduced-motion: reduce)").matches) play("open", REVEAL);
     });
   }, []);
 

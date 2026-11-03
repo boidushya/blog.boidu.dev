@@ -61,9 +61,9 @@ export function Chapter({ n, children }: { n: string; children: React.ReactNode 
       const heading = chapter.querySelector("h2");
       const words = heading ? timeSweep(heading) : [];
       setArmed(true);
-      stopObserving = observeReveal(chapter, 0.8, () => {
+      stopObserving = observeReveal(chapter, 0.8, quiet => {
         setShown(true);
-        if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        if (quiet || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
         const melody = walkMelody(words.map(word => word.letters));
         words.forEach((word, i) => notes.push(setTimeout(() => playWalkNote(melody[i]), word.startMs)));
       });
