@@ -121,7 +121,7 @@ export default async function Post({ params }: { params: Promise<{ id: string }>
 
         {isMDX ? (
           <ChapterRail>
-            <main className="text-[1.0625rem] sm:text-lg leading-[1.7]">
+            <main className="text-[1.0625rem]/[1.65] sm:text-lg/[1.65]">
               <MDXRemote
                 source={html}
                 components={mdxComponents}
@@ -133,7 +133,7 @@ export default async function Post({ params }: { params: Promise<{ id: string }>
           </ChapterRail>
         ) : (
           <main
-            className="text-[1.0625rem] sm:text-lg leading-[1.7]"
+            className="text-[1.0625rem]/[1.65] sm:text-lg/[1.65]"
             dangerouslySetInnerHTML={{ __html: html as string }}
           />
         )}

@@ -28,6 +28,7 @@ module.exports = {
           900: "rgb(var(--color-accent-900) / <alpha-value>)",
         },
         fg: {
+          body: "var(--color-fg-body)",
           muted: "var(--color-fg-muted)",
           subtle: "var(--color-fg-subtle)",
           faint: "var(--color-fg-faint)",

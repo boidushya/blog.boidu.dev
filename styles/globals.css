@@ -14,6 +14,7 @@
 
 
 :root {
+  --color-fg-body: color-mix(in oklab, rgb(var(--color-accent-200)) 85%, rgb(var(--color-accent-400)));
   --color-fg-muted: color-mix(in oklab, rgb(var(--color-accent-50)) 55%, rgb(var(--color-accent-400)));
   --color-fg-subtle: color-mix(in oklab, rgb(var(--color-accent-300)), rgb(var(--color-accent-400)));
   --color-fg-faint: color-mix(in oklab, rgb(var(--color-accent-600)), rgb(var(--color-accent-700)));
@@ -178,7 +179,7 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .blog p {
-  @apply text-accent-200 mb-6 tracking-normal;
+  @apply text-fg-body mb-6 tracking-normal;
 }
 
 .blog main {
@@ -198,20 +199,20 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .blog main img + em{
-	@apply block text-center text-accent-400 font-normal text-sm not-italic mt-4;
+	@apply block text-center text-fg-subtle font-normal text-sm not-italic mt-4;
 }
 
 .blog main video + em{
-	@apply block text-center text-accent-400 font-normal text-sm not-italic mt-4;
+	@apply block text-center text-fg-subtle font-normal text-sm not-italic mt-4;
 }
 
 .blog main img + em a{
-	@apply text-accent-400 no-underline hover:underline hover:text-accent-300;
+	@apply text-fg-subtle no-underline hover:underline hover:text-accent-50;
 }
 
 .blog code:not(pre.shiki code) {
 	font-family: 'JetBrains Mono', monospace;
-	@apply rounded-md py-0.5 px-1.5 text-sm border bg-accent-800/50 text-accent-200 border-accent-800;
+	@apply rounded-md py-0.5 px-1.5 text-sm border bg-accent-800/50 text-accent-100 border-accent-800;
 }
 
 .blog iframe{
@@ -223,12 +224,12 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .blog a {
-  @apply text-accent-50 underline underline-offset-4 transition-colors;
+  @apply text-accent-100 underline decoration-accent-600 decoration-1 underline-offset-[0.22em] transition-colors;
 }
 
 @media (hover: hover) {
   .blog a:hover {
-    @apply text-fg-subtle;
+    @apply text-accent-50 decoration-accent-50;
   }
 }
 
@@ -241,11 +242,11 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .blog li {
-  @apply text-accent-200;
+  @apply text-fg-body;
 }
 
 .blog li::marker {
-  @apply text-accent-500;
+  @apply text-accent-600;
 }
 
 .blog li > :is(ul, ol) {
@@ -257,11 +258,11 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .blog blockquote {
-  @apply text-lg text-accent-50 border-l-2 border-accent-500 pl-4 my-6;
+  @apply text-accent-100 border-l-2 border-accent-700 pl-4 my-6;
 }
 
 .blog blockquote p {
-  @apply text-lg text-accent-50;
+  @apply text-accent-100;
 }
 
 .blog pre {
@@ -331,7 +332,12 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .blog .heading-anchor {
-  @apply max-md:hidden mr-2 !no-underline text-fg-faint font-normal md:transform-gpu md:-translate-x-full md:pr-3 md:absolute transition-colors;
+  @apply max-md:hidden mr-2 !no-underline text-fg-faint font-normal md:transform-gpu md:-translate-x-full md:pr-3 md:absolute opacity-0 transition-[opacity,color];
+}
+
+.blog :is(h2, h3, h4, h5, h6):hover .heading-anchor,
+.blog .heading-anchor:focus-visible {
+  @apply opacity-100;
 }
 
 @media (hover: hover) {
