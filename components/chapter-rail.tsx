@@ -5,6 +5,22 @@ import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+const CHAPTER_SCROLL_OFFSET = 96;
+
+// Lazy media above the target can grow mid-scroll, so re-aim until it lands.
+function scrollToChapter(el: HTMLElement, behavior: ScrollBehavior, attempts = 3) {
+  const offset = () => el.getBoundingClientRect().top - CHAPTER_SCROLL_OFFSET;
+  window.scrollTo({ top: window.scrollY + offset(), behavior });
+  if (attempts <= 1) return;
+  window.addEventListener(
+    "scrollend",
+    () => {
+      if (Math.abs(offset()) > 2) scrollToChapter(el, behavior, attempts - 1);
+    },
+    { once: true }
+  );
+}
+
 type ChapterEntry = { id: string; n: string; title: string; el: HTMLElement };
 
 export function ChapterRail({ children }: { children: React.ReactNode }) {
@@ -83,6 +99,11 @@ export function ChapterRail({ children }: { children: React.ReactNode }) {
                     <a
                       href={`#${chapter.id}`}
                       aria-current={i === active ? "location" : undefined}
+                      onClick={event => {
+                        event.preventDefault();
+                        history.replaceState(null, "", `#${chapter.id}`);
+                        scrollToChapter(chapter.el, reduceMotion ? "auto" : "smooth");
+                      }}
                       className={`flex gap-3 py-2 pl-5 text-sm leading-snug transition-colors ${
                         i === active ? "text-accent-50" : "text-fg-subtle hover:text-fg-muted"
                       }`}
