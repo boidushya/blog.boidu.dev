@@ -300,6 +300,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const drawTimer = useRef<Timer>(undefined);
   const copyTimer = useRef<Timer>(undefined);
   const scrollOffset = useRef(0);
+  const lyricsWidth = useRef(-1);
 
   const centre = useCallback((i: number) => {
     const line = linesIn(listRef.current)[i];
@@ -318,7 +319,22 @@ export function Player({ posts }: { posts: BlogCard[] }) {
     centre(indexRef.current);
   }, [centre]);
 
-  const lyricsRef = useResizeObserver<HTMLElement>(measure);
+  const onLyricsResize = useCallback(
+    (lyrics: HTMLElement, entry: ResizeObserverEntry) => {
+      if (entry.contentRect.width === lyricsWidth.current) return;
+      lyricsWidth.current = entry.contentRect.width;
+      measure();
+      const note = noteRef.current;
+      const ink = inkRef.current;
+      const scroller = scrollerRef.current;
+      const line = linesIn(listRef.current)[indexRef.current];
+      if (note?.hasAttribute("data-on") && ink && scroller && line)
+        placeNote(line, lyrics, scroller, scrollOffset.current, note, ink);
+    },
+    [measure]
+  );
+
+  const lyricsRef = useResizeObserver<HTMLElement>(onLyricsResize);
 
   const select = useCallback(
     (target: number, move = true) => {
@@ -381,19 +397,10 @@ export function Player({ posts }: { posts: BlogCard[] }) {
     const wasOn = note?.hasAttribute("data-on") ?? false;
     note?.removeAttribute("data-on");
     if (measured !== visible) return;
-    const lines = linesIn(listRef.current);
-    lines.forEach((line, j) => {
-      const { opacity, blur, hidden } = falloff(Math.abs(j - index));
-      line.toggleAttribute("data-active", j === index);
-      line.style.setProperty("--o", String(opacity));
-      line.style.setProperty("--b", `${blur}px`);
-      line.style.visibility = hidden ? "hidden" : "";
-    });
-
     const ink = inkRef.current;
     const lyrics = lyricsRef.current;
     const scroller = scrollerRef.current;
-    const line = lines[index];
+    const line = linesIn(listRef.current)[index];
     if (!note || !ink || !lyrics || !scroller || !line) return;
     drawTimer.current = setTimeout(
       () => {
@@ -481,24 +488,29 @@ export function Player({ posts }: { posts: BlogCard[] }) {
 
   const lines = useMemo(
     () =>
-      visible.map((post, i) => (
-        <li key={post.id}>
-          <Link
-            href={post.link}
-            className="player-line"
-            aria-label={post.title}
-            data-cuelume-navigate
-            onPointerMove={e => hover(i, e)}
-            onPointerLeave={unhover}
-            onFocus={e => select(i, e.currentTarget.matches(":focus-visible"))}
-          >
-            <h2>
-              <SungTitle title={post.title} />
-            </h2>
-          </Link>
-        </li>
-      )),
-    [visible, hover, unhover, select]
+      visible.map((post, i) => {
+        const { opacity, blur, hidden } = falloff(Math.abs(i - index));
+        return (
+          <li key={post.id}>
+            <Link
+              href={post.link}
+              className="player-line"
+              aria-label={post.title}
+              data-cuelume-navigate
+              data-active={i === index || undefined}
+              style={{ ...cssVars({ "--o": opacity, "--b": `${blur}px` }), visibility: hidden ? "hidden" : undefined }}
+              onPointerMove={e => hover(i, e)}
+              onPointerLeave={unhover}
+              onFocus={e => select(i, e.currentTarget.matches(":focus-visible"))}
+            >
+              <h2>
+                <SungTitle title={post.title} />
+              </h2>
+            </Link>
+          </li>
+        );
+      }),
+    [visible, index, hover, unhover, select]
   );
 
   if (!active) return null;
@@ -691,6 +703,9 @@ export function Player({ posts }: { posts: BlogCard[] }) {
           ref={lyricsRef}
           className="player-lyrics enter [--i:2]"
           aria-label="Posts"
+          onScroll={e => {
+            e.currentTarget.scrollTop = 0;
+          }}
           onPointerLeave={() => {
             clearTimeout(hoverTimer.current);
             centre(indexRef.current);
