@@ -7,7 +7,6 @@ import rehypeSourceBlocks from "@/utils/rehype-source-blocks";
 import rehypeVideo from "@/utils/rehype-video";
 import { format } from "date-fns";
 import matter from "gray-matter";
-import type { Element } from "hast";
 import readingTime from "reading-time";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSlug from "rehype-slug";
@@ -30,15 +29,8 @@ export const rehypePlugins: PluggableList = [
   [
     rehypeAutolinkHeadings,
     {
-      content: (arg: Element) => ({
-        type: "element",
-        tagName: "a",
-        properties: {
-          href: "#" + arg.properties?.id,
-          className: "heading-anchor",
-        },
-        children: [{ type: "text", value: "#" }],
-      }),
+      properties: { ariaHidden: "true", tabIndex: -1, className: "heading-anchor" },
+      content: { type: "text", value: "#" },
     },
   ],
 ];
