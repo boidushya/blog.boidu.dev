@@ -86,7 +86,7 @@ Enough backstory. Here's Composer itself, tab by tab, and then the tools for beg
 ## The Sync tab
 
 ![Syncing lyrics in Composer](/composer/sync.mp4)
-_Tap along, and the words land on the timeline as you go_
+_Tap along and watch the timeline fill itself in_
 
 The Sync tab does what you'd expect, with one detail that took me forever to settle on. Tapping Space gives the current word a start time, and holding F gives it a start and an end. Tap Space while holding F and you get gapless syllable boundaries without having to think about it.
 
@@ -128,7 +128,7 @@ It's the part of Composer I spent the most time on, and most of that time went i
 
 ### Scrubbing you can hear
 
-Drag the playhead or scroll over the waveform and Composer plays a tiny snippet of audio right under the cursor, with the pitch kept intact. It's a lot like running your finger over a vinyl record. Once you're used to it, a silent scrubber feels broken.
+Drag the playhead or scroll over the waveform and you'll hear a tiny snippet of whatever's right under the cursor, pitch intact, kind of like running your finger over a vinyl record. I've gotten so used to it that going back to a silent scrubber feels broken to me.
 
 Getting it to sound right took three tries, and the first two came out either choppy or weirdly mechanical. Varispeed came up too, and that was a hard no. We're a lyrics editor, so the song has to keep sounding like the song. The version that stuck stretches the audio in time instead.
 
@@ -145,7 +145,7 @@ _Both choruses are linked, so fixing one fixes the other, magic!_
 
 ### Dragging across lines
 
-You can grab a word and drop it on a completely different line. Composer works out whether that should move the word, add a syllable, send it to the background vocals, or refuse because there's no room, and the cursor changes shape so you know which one is about to happen.
+You can also grab a word and drop it on a completely different line. Depending on where it lands, Composer does all the heavy lifting for you, with cues and ghost states so you're not lost.
 
 There's a lot more in there, like looping a region, marquee selection, rolling edits, stretching a whole selection at once, and splitting and merging words. The help inside the app is searchable and covers all of it.
 
@@ -156,7 +156,7 @@ _Exactly what Better Lyrics will show, minus the eye candy_
 
 The Preview tab runs Braccato, the same rendering engine Better Lyrics uses, so the timing you see here is 1:1 with what people will see on YouTube Music.
 
-What it doesn't do is try to blow you away. I stripped out the fluff and the visual niceties on purpose, because a preview's job is to help you catch mistakes, and it's a lot easier to notice a word lighting up 80 ms late when there isn't a gorgeous blurred album cover pulling your eye away. Some editors make their preview the prettiest screen in the app. It looks great in a screenshot, and it does absolutely nothing for your timing.
+Oh, and it's plain on purpose. I stripped out the fluff and the visual niceties, because a preview's job is to help you catch mistakes, and it's a lot easier to notice a word lighting up 80 ms late without a gorgeous blurred album cover pulling your eye away. Some editors make their preview the prettiest screen in the app. It looks great in a screenshot, and it does absolutely nothing for your timing.
 
 It also follows the playhead while you drag on the Timeline, so there's no more exporting a file, loading it into the extension, finding the right song and hoping it looks alright.
 
@@ -166,7 +166,7 @@ I always wanted a kid to be able to use Composer, but I didn't want it to be a t
 
 ### Vocal separation, and the person behind it
 
-Composer can pull the vocals out of a song right in your browser. Click a button, wait a minute, and you can sync against the voice on its own without the instrumentals getting in the way. Not long ago you'd have needed a desktop app for that. If you already have the stems though, you can import those instead.
+Composer can pull the vocals out of a song right in your browser. Click a button, give it about a minute and voila! Just the vocals to sync against, with the instrumentals out of the way. Not long ago you'd have needed a desktop app for that. (If you already have the stems, you can import those instead.)
 
 This one is almost entirely [Adalie's](https://github.com/adaliea) work. She got the model running in the browser, figured out how to cut the audio into chunks and stitch them back together without the seams popping, set it up to use WebGPU with a WASM fallback, and shipped the whole thing while I was busy <Peek src="/composer/old-man-yells.mp4" alt="Newspaper headline from The Simpsons: Old man yells at cloud, with Grandpa Simpson shaking his fist at the sky">yelling at the Timeline</Peek>. The model itself is [HTDemucs](https://github.com/facebookresearch/demucs) from Facebook AI Research, but everything between "model file on a server" and "vocals playing in your browser tab" is hers.
 
@@ -190,10 +190,10 @@ One key swaps the waveform for a spectrum. A sung vowel shows up as a stack of b
 
 That's something they told me early on: you can read vowels and consonants straight off a spectrogram. After daily driving this version of Composer for a while, I can do it now too, which is pretty cool!
 
-Turn on the pitch line and you get a line under each word that follows the melody. When it turns amber, the voice is still going past the end of the word. That doesn't automatically mean you messed up (a lot of the time it's fine), but seeing exactly where the pitch moves makes it way easier to line syllables up with where the note changes. It sounds like a small thing, but it catches stuff I'd never hear on my own.
+Turn on the pitch line and you get a line under each word that follows the melody. When it turns amber, the voice is still going past the end of the word. That's not always a mistake, but seeing where the pitch moves makes it way easier to line syllables up with the note changes. It sounds like a small thing, but it catches stuff I'd never hear on my own.
 
 ![Spectrum and pitch line in Composer](/composer/pitch.mp4)
-_Amber isn't always a mistake, but here the edge is worth dragging out to meet it._
+_Here the note keeps going, so drag the word edge out to meet it_
 
 Drag a word edge and a little magnifier shows the spectrum around it, so you don't have to zoom in and lose your place.
 
