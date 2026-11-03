@@ -24,6 +24,7 @@
     "@types/react-canvas-draw": "^1.2.3",
     "@types/react-dom": "^19.3.0",
     "autoprefixer": "10.4.14",
+    "cuelume": "^0.2.8",
     "date-fns": "^3.0.6",
     "feed": "^4.2.2",
     "gray-matter": "^4.0.3",

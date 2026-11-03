@@ -159,6 +159,8 @@ function rehypeShikiFromHighlighter(
                 properties: {
                   class: "copy",
                   "data-code": escapedCode,
+                  "data-cuelume-tap": "success",
+                  "data-cuelume-emphasis": "subtle",
                   onClick: `copyText(this)`,
                 },
                 children: [

@@ -68,6 +68,7 @@ export function ContentBox({ post, feature }: { post: BlogCard; feature: boolean
   return (
     <MotionLink
       href={post.link}
+      data-cuelume-navigate
       aria-labelledby={`post-${post.id}-title`}
       variants={cardVariants}
       className={`relative grid grid-rows-[auto_1fr] overflow-hidden isolate shadow-[0_1px_2px_oklch(0_0_0/0.3),0_12px_32px_oklch(0_0_0/0.28)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-400 ${
@@ -223,6 +224,8 @@ export const ViewWithUtils = ({ data }: { data: BlogCard[] }) => {
             placeholder="e.g. Understanding React Hooks"
             value={search}
             onChange={e => setSearch(e.target.value)}
+            data-cuelume-type
+            data-cuelume-emphasis="subtle"
             className="w-full h-full px-3 transition-colors border rounded-md pl-9 border-accent-800/50 bg-accent-900 focus:outline-0 focus:border-accent-600 focus:ring-transparent placeholder:text-accent-400/50"
           />
           <svg
@@ -246,6 +249,7 @@ export const ViewWithUtils = ({ data }: { data: BlogCard[] }) => {
           onValueChange={setSort}
           className="inline-flex border rounded-md w-fit border-accent-800/50"
           aria-label="Alphabetical Sort"
+          data-cuelume-select
         >
           <ToggleGroupItem value="asc" className={toggleGroupItemClasses} aria-label="Sort Ascending">
             <Tooltip content="Sort Ascending">

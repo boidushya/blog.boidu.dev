@@ -3,9 +3,11 @@
 import { useTheme } from "@/providers/theme";
 import { TThemeName } from "@/utils/constants";
 import { LIGHT_THEMES } from "@/utils/constants";
+import { getSoundsEnabled, setSoundsEnabled } from "@/utils/sounds";
 import { getAllThemes, getThemeHint } from "@/utils/themeConfig";
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItemIndicator,
   DropdownMenuLabel,
@@ -15,6 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
+import { play } from "cuelume";
 import { AnimatePresence, motion } from "motion/react";
 import React from "react";
 
@@ -36,12 +39,13 @@ const ThemeSwitcher = () => {
 
   const isCurrentThemeLight = LIGHT_THEMES.includes(theme);
   const closedByPointer = React.useRef(false);
+  const [sounds, setSounds] = React.useState(getSoundsEnabled);
 
   const lightThemes = themes.filter(t => LIGHT_THEMES.includes(t));
   const darkThemes = themes.filter(t => !LIGHT_THEMES.includes(t));
 
   return (
-    <DropdownMenu modal={false}>
+    <DropdownMenu modal={false} onOpenChange={open => open && play("open", { emphasis: "subtle" })}>
       <DropdownMenuTrigger asChild>
         <button
           className="flex items-center gap-2 px-2 py-2 -mx-2 capitalize rounded-md pressable text-accent-400 hover:text-accent-300 data-[state=open]:text-accent-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-400"
@@ -100,6 +104,7 @@ const ThemeSwitcher = () => {
                 key={t}
                 className="p-2 px-3 flex items-center justify-between rounded-md text-sm capitalize data-[highlighted]:bg-accent-800/25 data-[highlighted]:text-accent-200 data-[state='checked']:bg-accent-800/50 data-[state='checked']:text-accent-100 cursor-pointer relative focus-visible:outline-none"
                 value={t}
+                data-cuelume-select
               >
                 {t}
                 <div
@@ -130,6 +135,7 @@ const ThemeSwitcher = () => {
                 key={t}
                 className="p-2 px-3 flex items-center justify-between rounded-md text-sm capitalize data-[highlighted]:bg-accent-800/25 data-[highlighted]:text-accent-200 data-[state='checked']:bg-accent-800/50 data-[state='checked']:text-accent-100 cursor-pointer relative focus-visible:outline-none"
                 value={t}
+                data-cuelume-select
               >
                 {t}
                 <div
@@ -141,6 +147,22 @@ const ThemeSwitcher = () => {
               </DropdownMenuRadioItem>
             ))}
           </DropdownMenuRadioGroup>
+
+          <DropdownMenuSeparator className="h-px my-2 bg-accent-800/50" />
+
+          <DropdownMenuCheckboxItem
+            checked={sounds}
+            onCheckedChange={checked => {
+              setSoundsEnabled(checked);
+              setSounds(checked);
+              if (checked) play("toggle");
+            }}
+            onSelect={event => event.preventDefault()}
+            className="p-2 px-3 flex items-center justify-between rounded-md text-sm text-accent-300 data-[highlighted]:bg-accent-800/25 data-[highlighted]:text-accent-200 cursor-pointer focus-visible:outline-none"
+          >
+            Sounds
+            <span className="text-xs text-accent-600">{sounds ? "On" : "Off"}</span>
+          </DropdownMenuCheckboxItem>
         </DropdownMenuContent>
       </DropdownMenuPortal>
     </DropdownMenu>

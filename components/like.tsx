@@ -130,6 +130,7 @@ export default function Like({ postId }: { postId: string }) {
           ref={contentRef}
           aria-label={liked ? "Unlike this post" : "Like this post"}
           aria-pressed={liked}
+          data-cuelume-toggle
           className="flex items-center justify-center gap-2 px-3 py-2 pr-4 text-sm leading-none text-pink-500 pressable"
         >
           <AnimatePresence mode="popLayout" initial={false}>

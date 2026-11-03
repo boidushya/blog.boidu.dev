@@ -59,14 +59,22 @@ const Footer: React.FC = () => {
     <footer className="flex flex-col items-center justify-center w-full h-24 gap-4 sm:justify-between text-accent-500 sm:flex-row">
       <p className="text-sm whitespace-pre">
         © {new Date().getFullYear()} ·{" "}
-        <a className="transition-colors hover:underline hover:text-accent-300" href="/">
+        <a className="transition-colors hover:underline hover:text-accent-300" href="/" data-cuelume-navigate>
           blog.boidu.dev
         </a>{" "}
         · All rights reserved
       </p>
       <div className="flex items-center -mx-2 social-container">
         {socialLinks.map(({ name, url, icon }) => (
-          <a key={name} href={url} target="_blank" rel="noopener noreferrer" aria-label={name} className="p-2">
+          <a
+            key={name}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={name}
+            className="p-2"
+            data-cuelume-tap
+          >
             {icon}
           </a>
         ))}

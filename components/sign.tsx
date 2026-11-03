@@ -8,6 +8,7 @@ import { useSign } from "@/providers/sign";
 import { Tooltip } from "@/utils/components";
 import { ToggleGroup } from "@radix-ui/react-toggle-group";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { play } from "cuelume";
 import { motion } from "motion/react";
 import dynamic from "next/dynamic";
 
@@ -42,10 +43,12 @@ const Sign = ({ id }: SignProps) => {
         queryClient.setQueryData<StoredSignature[]>(key, signs => [...(signs ?? []), { id: signId, paths, dots }]);
       }
       queryClient.invalidateQueries({ queryKey: key });
+      play("success");
       setOpen(false);
     },
     onError: error => {
       console.error("Error submitting sign", error);
+      play("error");
     },
   });
 
@@ -59,6 +62,7 @@ const Sign = ({ id }: SignProps) => {
 
   const handleUndo = () => {
     canvasRef.current?.undo();
+    play("navigate", { emphasis: "subtle", direction: "back" });
   };
 
   const handleAddSignature = async () => {
@@ -98,6 +102,8 @@ const Sign = ({ id }: SignProps) => {
           aria-label="Close"
           className="absolute grid w-6 h-6 text-sm bg-transparent border rounded-full pressable top-3 right-3 border-accent-600/50 place-items-center text-accent-400 hover:bg-accent-800/50 after:absolute after:-inset-2 after:content-['']"
           onClick={handleClose}
+          data-cuelume-close
+          data-cuelume-emphasis="subtle"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -132,6 +138,8 @@ const Sign = ({ id }: SignProps) => {
                 aria-label="Clear"
                 className="p-2 text-sm rounded-lg pressable h-9 w-9 bg-red-500/50 hover:bg-red-500/75"
                 onClick={handleClear}
+                data-cuelume-close
+                data-cuelume-emphasis="strong"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -174,6 +182,7 @@ const Sign = ({ id }: SignProps) => {
           <button
             className="flex items-center justify-between gap-3 px-4 pr-5 text-sm rounded-lg pressable h-9 bg-accent-800/50 hover:bg-accent-800/75 disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={handleAddSignature}
+            data-cuelume-tap
             disabled={mutation.isPending}
           >
             <svg

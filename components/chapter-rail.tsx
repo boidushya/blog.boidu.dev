@@ -104,6 +104,8 @@ export function ChapterRail({ children }: { children: React.ReactNode }) {
                     <a
                       href={`#${chapter.id}`}
                       aria-current={i === active ? "location" : undefined}
+                      data-cuelume-navigate
+                      data-cuelume-emphasis="subtle"
                       onClick={event => {
                         event.preventDefault();
                         history.replaceState(null, "", `#${chapter.id}`);

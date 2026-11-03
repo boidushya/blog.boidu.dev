@@ -89,6 +89,8 @@ const SignGallery = ({ id }: { id: string }) => {
         <button
           onClick={() => setExpanded(!expanded)}
           aria-expanded={expanded}
+          data-cuelume-open={expanded ? "close" : "open"}
+          data-cuelume-emphasis="subtle"
           className={`items-center justify-between h-8 gap-3 px-4 pr-5 text-sm rounded-lg pressable bg-accent-900 hover:bg-accent-800/25 ${
             collapsible ? "flex" : "hidden"
           } `}
