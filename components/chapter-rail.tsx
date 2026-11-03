@@ -41,7 +41,12 @@ export function ChapterRail({ children }: { children: React.ReactNode }) {
         const heading = el.querySelector("h2");
         if (!heading) return [];
         return [
-          { id: heading.id, n: el.dataset.chapter ?? "", title: heading.textContent?.replace(/^#/, "") ?? "", el },
+          {
+            id: heading.id,
+            n: el.dataset.chapter ?? "",
+            title: heading.dataset.title ?? heading.textContent ?? "",
+            el,
+          },
         ];
       })
     );

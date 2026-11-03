@@ -2,6 +2,7 @@ import fs from "fs";
 import { join } from "path";
 import { cardScrim } from "@/lib/card-scrim";
 import { getAuthorsData, getYouTubeThumbnail, isYouTubeLink } from "@/utils/functions";
+import rehypeChapterHeading from "@/utils/rehype-chapter-heading";
 import { rehypeAdmonitions } from "@/utils/rehype-admonitions";
 import rehypeShiki from "@/utils/rehype-shiki";
 import rehypeSourceBlocks from "@/utils/rehype-source-blocks";
@@ -34,6 +35,7 @@ export const rehypePlugins: PluggableList = [
       properties: { className: "heading-anchor" },
     },
   ],
+  rehypeChapterHeading,
 ];
 
 async function getParserPre() {

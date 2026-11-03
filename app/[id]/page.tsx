@@ -16,6 +16,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import React from "react";
 
+const POST_BODY_CLASS = "post-body text-[1.0625rem]/[1.65] sm:text-lg/[1.65]";
+
 function YoutubeEmbed({ url }: { url: string }) {
   const matchResult = url.match(
     /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
@@ -121,7 +123,7 @@ export default async function Post({ params }: { params: Promise<{ id: string }>
 
         {isMDX ? (
           <ChapterRail>
-            <main className="text-[1.0625rem]/[1.65] sm:text-lg/[1.65]">
+            <main className={POST_BODY_CLASS}>
               <MDXRemote
                 source={html}
                 components={mdxComponents}
@@ -132,10 +134,7 @@ export default async function Post({ params }: { params: Promise<{ id: string }>
             </main>
           </ChapterRail>
         ) : (
-          <main
-            className="text-[1.0625rem]/[1.65] sm:text-lg/[1.65]"
-            dangerouslySetInnerHTML={{ __html: html as string }}
-          />
+          <main className={POST_BODY_CLASS} dangerouslySetInnerHTML={{ __html: html as string }} />
         )}
       </article>
       <ArticleExtra id={id} />

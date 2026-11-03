@@ -68,7 +68,7 @@ export function ImageCompare({
   }, [isDragging]);
 
   return (
-    <div className="my-6 touch-none group">
+    <div data-wide className="my-6 touch-none group">
       <div
         ref={containerRef}
         className="relative w-full border select-none cursor-col-resize border-accent-600/20"

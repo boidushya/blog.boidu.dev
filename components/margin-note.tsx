@@ -1,10 +1,8 @@
 "use client";
 
+import { handwriting } from "@/utils/fonts";
 import { motion, useReducedMotion } from "motion/react";
-import { Caveat } from "next/font/google";
 import React, { useLayoutEffect, useRef, useState } from "react";
-
-const handwriting = Caveat({ subsets: ["latin"], weight: "400" });
 
 const BRACKET_PATH = "M2 2.5 C5 1.8 8 1.6 10.5 2 C10.2 30 10.9 70 10.4 98 C7.5 98.6 4.5 98.4 1.5 98.9";
 const NOTE_DELAY = 0.45;

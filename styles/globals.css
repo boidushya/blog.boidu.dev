@@ -581,6 +581,196 @@ circle[id^="react-sketch-canvas__"]{
   @apply !mt-3 !mb-6 text-3xl sm:text-4xl;
 }
 
+.chapter-rule {
+  @apply flex items-center gap-4 min-h-[2rem];
+}
+
+.chapter-rule::after {
+  content: "";
+  @apply flex-1 h-px bg-accent-800 origin-left translate-y-[7px];
+}
+
+.chapter-hand {
+  @apply flex items-center gap-1 text-[30px] leading-none font-medium text-accent-300 -rotate-[4deg] -translate-x-1 translate-y-1;
+}
+
+.chapter-ink {
+  padding: 0.2em 0.25em;
+  margin: -0.2em -0.25em;
+}
+
+.chapter-hand svg {
+  @apply w-[30px] h-[26px] overflow-visible translate-y-2.5;
+}
+
+.chapter-hand path {
+  @apply fill-none stroke-accent-400;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sung-word {
+  @apply relative inline-block whitespace-nowrap;
+}
+
+.sung-letter {
+  @apply inline-block;
+}
+
+.sung-lit {
+  @apply hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .chapter[data-armed] .chapter-rule::after {
+    scale: 0 1;
+  }
+
+  .chapter[data-armed] .chapter-ink,
+  .chapter[data-armed] .sung-lit {
+    -webkit-mask: linear-gradient(90deg, #000 0 42%, transparent 58% 100%) 100% 0 / 260% 100% no-repeat;
+    mask: linear-gradient(90deg, #000 0 42%, transparent 58% 100%) 100% 0 / 260% 100% no-repeat;
+  }
+
+  .chapter[data-armed] .chapter-hand path {
+    stroke-dasharray: 1 2;
+    stroke-dashoffset: 1.05;
+  }
+
+  .chapter[data-armed] .sung-letters:not(.sung-lit) {
+    @apply text-accent-700;
+  }
+
+  .chapter[data-armed] .sung-lit {
+    @apply block absolute -inset-[0.4em] p-[0.4em] text-accent-50;
+    text-shadow: 0 0 14px rgb(var(--color-accent-50) / 0);
+  }
+
+  .chapter[data-shown] .chapter-ink {
+    animation: chapter-sweep 550ms cubic-bezier(0.2, 0, 0, 1) 100ms forwards;
+  }
+
+  .chapter[data-shown] .chapter-rule::after {
+    animation: chapter-rule 700ms cubic-bezier(0.2, 0, 0, 1) 450ms forwards;
+  }
+
+  .chapter[data-shown] .chapter-stem {
+    animation: chapter-draw 320ms cubic-bezier(0.4, 0, 0.2, 1) 600ms forwards;
+  }
+
+  .chapter[data-shown] .chapter-head {
+    animation: chapter-draw 160ms ease-out 900ms forwards;
+  }
+
+  .chapter[data-shown] .sung-lit {
+    animation:
+      chapter-sweep var(--sweep-duration) linear var(--sweep-start) forwards,
+      chapter-glow calc(var(--sweep-duration) + 500ms) ease-out var(--sweep-start) forwards;
+  }
+
+  .chapter[data-shown] .sung-letters:not(.sung-lit) {
+    animation: chapter-lit 1ms linear calc(var(--sweep-start) + var(--sweep-duration)) forwards;
+  }
+
+  .chapter[data-shown] .sung-letter {
+    animation: chapter-wave var(--wave-duration) var(--wave-start) both;
+  }
+
+  .chapter[data-shown] .sung-letter--long {
+    animation-name: chapter-wave-long;
+  }
+
+  .chapter[data-shown] .sung-lit .sung-letter--long {
+    animation:
+      chapter-wave-long var(--wave-duration) var(--wave-start) both,
+      chapter-letter-glow var(--wave-duration) ease-out var(--wave-start) both;
+  }
+}
+
+@keyframes chapter-sweep {
+  to {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+}
+
+@keyframes chapter-rule {
+  to {
+    scale: 1 1;
+  }
+}
+
+@keyframes chapter-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes chapter-lit {
+  to {
+    color: rgb(var(--color-accent-50));
+  }
+}
+
+@keyframes chapter-glow {
+  30% {
+    text-shadow: 0 0 14px rgb(var(--color-accent-50) / 0.25);
+  }
+  to {
+    text-shadow: 0 0 14px rgb(var(--color-accent-50) / 0);
+  }
+}
+
+@keyframes chapter-letter-glow {
+  0%,
+  100% {
+    text-shadow: 0 0 10px rgb(var(--color-accent-50) / 0);
+  }
+  40% {
+    text-shadow: 0 0 10px rgb(var(--color-accent-50) / 0.5);
+  }
+}
+
+@keyframes chapter-wave {
+  0% {
+    translate: 0 0;
+    animation-timing-function: ease-in-out;
+  }
+  40% {
+    translate: 0 -0.05em;
+    animation-timing-function: ease-out;
+  }
+  100% {
+    translate: 0 -0.02em;
+  }
+}
+
+@keyframes chapter-wave-long {
+  0% {
+    translate: 0 0;
+    scale: 1;
+    animation-timing-function: ease-in-out;
+  }
+  40% {
+    translate: 0 -0.05em;
+    scale: 1.11;
+    animation-timing-function: ease-out;
+  }
+  100% {
+    translate: 0 -0.02em;
+    scale: 1;
+  }
+}
+
+:is(.post-body, .post-body > .src-block) > :not(.src-block) {
+  @apply max-w-[44rem] mx-auto;
+}
+
+:is(.post-body, .post-body > .src-block) > :is(p:has(> :is(img, video)), [data-wide]) {
+  @apply max-w-none;
+}
+
 .pill > span {
   text-box: trim-both cap alphabetic;
 }
