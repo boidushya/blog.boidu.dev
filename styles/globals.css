@@ -784,3 +784,48 @@ circle[id^="react-sketch-canvas__"]{
     transform: translateX(1px) scale(1.12);
   }
 }
+
+html {
+  scroll-padding-top: 96px;
+}
+
+.site-nav > nav {
+  transition-property: height, padding, translate, background-color, box-shadow, opacity;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+.site-nav__logo {
+  transition: font-size 300ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.site-nav:is([data-mode="pill"], [data-mode="hidden"]) > nav {
+  @apply fixed inset-x-3 top-0 z-30 max-w-3xl h-[52px] py-0 px-5 rounded-full bg-accent-900/70 backdrop-blur-xl backdrop-saturate-150 sm:inset-x-6;
+  width: auto;
+  translate: 0 12px;
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 0.06),
+    0 1px 2px oklch(0 0 0 / 0.3),
+    0 12px 32px oklch(0 0 0 / 0.35);
+}
+
+.site-nav:is([data-mode="pill"], [data-mode="hidden"]) .site-nav__logo {
+  @apply text-xl;
+}
+
+.site-nav[data-mode="hidden"] > nav {
+  translate: 0 calc(-100% - 16px);
+}
+
+.site-nav[data-instant] > nav,
+.site-nav[data-instant] .site-nav__logo {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-nav[data-mode="hidden"] > nav {
+    translate: 0 12px;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
