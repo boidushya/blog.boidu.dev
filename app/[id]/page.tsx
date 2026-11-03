@@ -4,6 +4,7 @@ import { GreetingAvatar } from "@/components/greeting-avatar";
 import InlineEditor from "@/components/inline-editor";
 import Like from "@/components/like";
 import { PostVideos } from "@/components/post-videos";
+import { ReadingTracker } from "@/components/reading-tracker";
 import Sign from "@/components/sign";
 import SignGallery from "@/components/sign-gallery";
 /* eslint-disable @next/next/no-img-element */
@@ -137,6 +138,7 @@ export default async function Post({ params }: { params: Promise<{ id: string }>
         )}
       </article>
       <ArticleExtra id={id} />
+      <ReadingTracker id={id} />
       {IS_DEV && <InlineEditor id={id} />}
     </>
   );
