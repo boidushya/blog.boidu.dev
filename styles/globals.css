@@ -16,7 +16,7 @@
 :root {
   --color-fg-muted: color-mix(in oklab, rgb(var(--color-accent-50)) 55%, rgb(var(--color-accent-400)));
   --color-fg-subtle: color-mix(in oklab, rgb(var(--color-accent-300)), rgb(var(--color-accent-400)));
-  --color-fg-faint: rgb(var(--color-accent-500));
+  --color-fg-faint: color-mix(in oklab, rgb(var(--color-accent-600)), rgb(var(--color-accent-700)));
   --alert-default-color-stops: 220, 20%;
   --alert-note-color-stops: 196, 50%;
   --alert-tip-color-stops: 135, 50%;
