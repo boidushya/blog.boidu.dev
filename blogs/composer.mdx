@@ -37,12 +37,12 @@ So I opened it, fully expecting to be fine, since building interfaces is _litera
 Reader, I was not fine. This is what you're greeted with:
 
 ![AMLL Tool's starting screen](/composer/amll-start.png)
-_<Peek src="/composer/wall-of-glyphs.mp4" alt="IShowSpeed staring up at a wall covered in hieroglyphs, completely lost">A ribbon full of fields</Peek> for a song you haven't even loaded yet, and a whole lot of nothing_
+_<Peek src="/composer/wall-of-glyphs.mp4" alt="IShowSpeed staring up at a wall covered in hieroglyphs, completely lost">A ribbon full of fields</Peek> for a song you haven't even loaded yet, and not much else_
 
 The second most important thing in a lyrics syncing tool is the audio. In AMLL Tool, that's a tiny button next to, *checks notes*, the play button, tucked away in the bottom left corner. And the most important thing, the lyrics? Hidden inside a dropdown.
 
 ![AMLL Tool's File menu, with Import lyrics near the bottom](/composer/amll-file-menu.png)
-_File, then Import lyrics, then pick a format. Obviously._
+_Your lyrics go in through File, then Import lyrics, then a format... Obviously!_
 
 Meanwhile, there's <Peek src="/composer/tumbleweed.mp4" alt="A lone tumbleweed rolling across an empty dirt road">a football field's worth of empty space</Peek> in the middle of the screen that you can't click and that does absolutely nothing.
 
@@ -101,7 +101,7 @@ What I failed to consider in my callowness was that Space is also <Peek src="/co
 Somewhere down the line, it hit me that I'd been shipping a garbage default this whole time! Pretty much every other editor uses Space to play and pause, and that's the first thing anyone opening Composer reaches for. So newer versions come with a "Remastered" shortcuts preset where Space plays, Enter taps, and the arrow keys seek.
 
 ![The Remastered shortcuts preset in Composer's settings](/composer/remastered-preset.png)
-_Six keys I got wrong, fixed in one click_
+_The Remastered preset swaps all six keys I got wrong in one go_
 
 Composer also notices when you're fighting it. If you're on the default keys and hit Space expecting the song to play, or hit Space and then reach for the real play key a second later, <Peek src="/composer/space-hint.mp4" alt="Pressing Space in Composer brings up a toast asking: Want Space to play?" width="420">a toast pops up asking if you want Space to play</Peek>. One click swaps you over, and it points you to Remastered if you want the arrow keys to seek too.
 
@@ -118,7 +118,7 @@ Miss a tap and the arrow keys will nudge it. Really miss a tap? Time for the Tim
 ## The Timeline
 
 ![The Composer Timeline](/composer/timeline.mp4)
-_Drag a word and it snaps to where the voice actually starts_
+_Word edges snap based on where the singing starts_
 
 This is where Composer stops being a guided workflow and turns into an actual tool. The waveform sits on top, lyric lines stack below it as tracks, and every word is a block you can drag around. If you've ever touched a DAW or a video editor, it'll feel familiar pretty much instantly. Tapping along gets you close, but nobody would edit audio without a timeline, so I don't see why lyrics should be any different.
 
@@ -141,7 +141,7 @@ Word edges lock onto neighbouring words, the playhead and a few more things I'll
 Most songs repeat themselves. Mark a chorus as a group, and every other copy of it gets linked, so when you fix one, the others follow, but only on the parts you actually changed. Composer will even suggest groups when it spots repeated lines. The rules for how edits spread between copies took longer than anything else in the app.
 
 ![Linked groups in Composer](/composer/groups.mp4)
-_Move a word in one chorus and the other chorus moves with it_
+_Both choruses are linked, so fixing one fixes the other, magic!_
 
 ### Dragging across lines
 
@@ -152,7 +152,7 @@ There's a lot more in there, like looping a region, marquee selection, rolling e
 ## The Preview tab
 
 ![Previewing lyrics in Composer](/composer/preview.mp4)
-_Same timing as Better Lyrics, minus the eye candy_
+_Exactly what Better Lyrics will show, minus the eye candy_
 
 The Preview tab runs Braccato, the same rendering engine Better Lyrics uses, so the timing you see here is 1:1 with what people will see on YouTube Music.
 
@@ -228,10 +228,10 @@ My first go at it was a single waveform with the words sitting on top as regions
 That evening I told contributors in our Discord I was almost done, and asked if they'd take it for a spin and tell me everything that annoyed them. Two and a half hours later I told them to ignore that, because "Composer was kil". The commit that got it working again is literally called "fix: FINALLY", and the link was in Discord a minute after the Timeline got merged.
 
 ![Discord reply: "its not kil" with the link to Composer](/composer/not-kil.png)
-_From kil to not kil in about six hours_
+_Went from kil to back from kil in six hrs_
 
 ![Composer's Timeline in January](/composer/composer-january.png)
-_Composer in January. The bones haven't changed much._
+_Composer back in Jan_
 
 And then I didn't touch it for two months.
 
