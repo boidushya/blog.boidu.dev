@@ -770,3 +770,17 @@ circle[id^="react-sketch-canvas__"]{
     padding-top: 2.5px;
   }
 }
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .sound-toggle[aria-pressed="true"]:hover .sound-toggle__wave {
+    animation: sound-wave 600ms ease-in-out infinite alternate;
+    transform-box: fill-box;
+    transform-origin: left center;
+  }
+}
+
+@keyframes sound-wave {
+  to {
+    transform: translateX(1px) scale(1.12);
+  }
+}

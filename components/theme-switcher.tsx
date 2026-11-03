@@ -3,11 +3,9 @@
 import { useTheme } from "@/providers/theme";
 import { TThemeName } from "@/utils/constants";
 import { LIGHT_THEMES } from "@/utils/constants";
-import { getSoundsEnabled, setSoundsEnabled } from "@/utils/sounds";
 import { getAllThemes, getThemeHint } from "@/utils/themeConfig";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItemIndicator,
   DropdownMenuLabel,
@@ -39,7 +37,6 @@ const ThemeSwitcher = () => {
 
   const isCurrentThemeLight = LIGHT_THEMES.includes(theme);
   const closedByPointer = React.useRef(false);
-  const [sounds, setSounds] = React.useState(getSoundsEnabled);
 
   const lightThemes = themes.filter(t => LIGHT_THEMES.includes(t));
   const darkThemes = themes.filter(t => !LIGHT_THEMES.includes(t));
@@ -147,22 +144,6 @@ const ThemeSwitcher = () => {
               </DropdownMenuRadioItem>
             ))}
           </DropdownMenuRadioGroup>
-
-          <DropdownMenuSeparator className="h-px my-2 bg-accent-800/50" />
-
-          <DropdownMenuCheckboxItem
-            checked={sounds}
-            onCheckedChange={checked => {
-              setSoundsEnabled(checked);
-              setSounds(checked);
-              if (checked) play("toggle");
-            }}
-            onSelect={event => event.preventDefault()}
-            className="p-2 px-3 flex items-center justify-between rounded-md text-sm text-accent-300 data-[highlighted]:bg-accent-800/25 data-[highlighted]:text-accent-200 cursor-pointer focus-visible:outline-none"
-          >
-            Sounds
-            <span className="text-xs text-accent-600">{sounds ? "On" : "Off"}</span>
-          </DropdownMenuCheckboxItem>
         </DropdownMenuContent>
       </DropdownMenuPortal>
     </DropdownMenu>

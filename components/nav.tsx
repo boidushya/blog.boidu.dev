@@ -1,5 +1,6 @@
 "use client";
 
+import SoundToggle from "@/components/sound-toggle";
 import ThemeSwitcher from "@/components/theme-switcher";
 import type { NextPage } from "next";
 import Image from "next/image";
@@ -36,6 +37,7 @@ const Navbar: NextPage = () => {
       </Link>
 
       <div className="flex items-center gap-4">
+        <SoundToggle />
         <ThemeSwitcher />
       </div>
     </nav>
