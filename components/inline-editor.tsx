@@ -20,9 +20,13 @@ type Status = "saved" | "saving" | "conflict" | "error";
 const STATUS_TEXT: Record<Status, string> = {
   saved: "Saved",
   saving: "Saving",
-  conflict: "File changed on disk. Press Esc to reload.",
-  error: "Save failed",
+  conflict: "File changed on disk, not saved.",
+  error: "Save failed.",
 };
+
+const DISCARD_HINT = "Press Esc again to discard your text.";
+
+const isUnsaved = (status: Status) => status === "conflict" || status === "error";
 
 type Format = { label: string; text: string; before: string; after: string };
 
@@ -34,6 +38,17 @@ const FORMATS: Record<string, Format> = {
 };
 
 const findArticle = () => document.querySelector<HTMLElement>("article.blog");
+
+const sourceBlocks = () => Array.from(findArticle()?.querySelectorAll<HTMLElement>(".src-block") ?? []);
+
+async function waitForFreshBlock(index: number, bodyLength: number) {
+  for (let attempt = 0; attempt < 40; attempt++) {
+    const el = sourceBlocks()[index];
+    if (el && Number(el.dataset.srcBody) === bodyLength) return el;
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  return null;
+}
 
 const takeCaretHint = (el: HTMLElement): CaretHint | null => {
   const selection = window.getSelection();
@@ -62,12 +77,19 @@ export default function InlineEditor({ id }: { id: string }) {
   const router = useRouter();
   const [block, setBlock] = React.useState<Block | null>(null);
   const [text, setText] = React.useState("");
-  const [status, setStatus] = React.useState<Status>("saved");
+  const [status, setStatusState] = React.useState<Status>("saved");
+  const [discardArmed, setDiscardArmed] = React.useState(false);
+  const statusRef = React.useRef<Status>("saved");
   const blockRef = React.useRef<Block | null>(null);
   const persisted = React.useRef({ end: 0, expected: "" });
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const saveQueue = React.useRef<Promise<void>>(Promise.resolve());
   const openRequest = React.useRef(0);
+
+  const setStatus = React.useCallback((next: Status) => {
+    statusRef.current = next;
+    setStatusState(next);
+  }, []);
 
   const save = React.useMemo(() => {
     const put = async (start: number, replacement: string) => {
@@ -93,30 +115,42 @@ export default function InlineEditor({ id }: { id: string }) {
       saveQueue.current = saveQueue.current.then(() => put(start, replacement));
       return saveQueue.current;
     }, 500);
-  }, [id]);
+  }, [id, setStatus]);
 
-  const close = React.useCallback(async () => {
-    const current = blockRef.current;
-    blockRef.current = null;
-    openRequest.current++;
-    if (!current) return;
-    await save.flush();
-    current.el.removeAttribute("data-editing");
-    setBlock(null);
-    router.refresh();
-  }, [save, router]);
+  const close = React.useCallback(
+    async (discard = false) => {
+      const current = blockRef.current;
+      if (!current) return;
+      await save.flush();
+      if (!discard && isUnsaved(statusRef.current)) {
+        setDiscardArmed(true);
+        return;
+      }
+      blockRef.current = null;
+      openRequest.current++;
+      current.el.removeAttribute("data-editing");
+      setDiscardArmed(false);
+      setBlock(null);
+      router.refresh();
+    },
+    [save, router]
+  );
 
   const open = React.useCallback(
-    async (el: HTMLElement, hint: CaretHint | null) => {
+    async (clicked: HTMLElement, hint: CaretHint | null) => {
+      const index = sourceBlocks().indexOf(clicked);
       await close();
+      if (blockRef.current) return;
       const request = openRequest.current;
-      const start = Number(el.dataset.srcStart);
-      const end = Number(el.dataset.srcEnd);
       try {
         const response = await fetch(`/api/edit?id=${encodeURIComponent(id)}`);
         if (!response.ok) throw new Error(`Unexpected status ${response.status}`);
         const { body }: { body: string } = await response.json();
+        const el = await waitForFreshBlock(index, body.length);
         if (request !== openRequest.current) return;
+        if (!el) throw new Error("Page did not update to the latest source");
+        const start = Number(el.dataset.srcStart);
+        const end = Number(el.dataset.srcEnd);
         const source = body.slice(start, end);
         const mono = source.startsWith("```");
         const computed = getComputedStyle(el.firstElementChild ?? el);
@@ -142,7 +176,7 @@ export default function InlineEditor({ id }: { id: string }) {
         console.error("Error loading post source:", error);
       }
     },
-    [id, close]
+    [id, close, setStatus]
   );
 
   React.useEffect(() => {
@@ -187,7 +221,8 @@ export default function InlineEditor({ id }: { id: string }) {
     if (!block) return;
     const { value } = event.target;
     setText(value);
-    setStatus(current => (current === "conflict" ? current : "saving"));
+    setDiscardArmed(false);
+    if (statusRef.current !== "conflict") setStatus("saving");
     save(block.start, value);
   };
 
@@ -206,7 +241,7 @@ export default function InlineEditor({ id }: { id: string }) {
     const mod = event.metaKey || event.ctrlKey;
     if (event.key === "Escape" || (mod && event.key === "Enter")) {
       event.preventDefault();
-      close();
+      close(event.key === "Escape" && discardArmed);
       return;
     }
     if (!mod) return;
@@ -238,9 +273,9 @@ export default function InlineEditor({ id }: { id: string }) {
               ))}
               <span
                 role="status"
-                className={`ml-auto tabular-nums ${status === "conflict" || status === "error" ? "text-red-400" : "text-accent-300"}`}
+                className={`ml-auto tabular-nums ${isUnsaved(status) ? "text-red-400" : "text-accent-300"}`}
               >
-                {STATUS_TEXT[status]}
+                {STATUS_TEXT[status]} {discardArmed && DISCARD_HINT}
               </span>
             </div>
             <textarea
