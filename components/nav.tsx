@@ -1,8 +1,10 @@
 "use client";
 
+import PostSearch from "@/components/post-search";
 import SoundToggle from "@/components/sound-toggle";
 import ThemeSwitcher from "@/components/theme-switcher";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 type NavMode = "top" | "hidden" | "pill";
@@ -64,6 +66,7 @@ function useNavMode() {
 
 const Navbar = () => {
   const headerRef = useNavMode();
+  const isHome = usePathname() === "/";
 
   return (
     <header ref={headerRef} data-mode="top" className="site-nav">
@@ -77,6 +80,7 @@ const Navbar = () => {
         </Link>
 
         <div className="flex items-center gap-2">
+          {isHome && <PostSearch />}
           <SoundToggle />
           <ThemeSwitcher />
         </div>
