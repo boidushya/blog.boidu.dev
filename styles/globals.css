@@ -331,18 +331,22 @@ circle[id^="react-sketch-canvas__"]{
   visibility: hidden;
 }
 
-.blog .heading-anchor {
-  @apply max-md:hidden mr-2 !no-underline text-fg-faint font-normal md:transform-gpu md:-translate-x-full md:pr-3 md:absolute opacity-0 transition-[opacity,color];
+.blog a.heading-anchor {
+  @apply relative text-inherit no-underline;
 }
 
-.blog :is(h2, h3, h4, h5, h6):hover .heading-anchor,
-.blog .heading-anchor:focus-visible {
+.blog a.heading-anchor::before {
+  content: "#";
+  @apply max-md:hidden absolute right-full pr-3 font-normal text-fg-faint opacity-0 transition-[opacity,color];
+}
+
+.blog a.heading-anchor:focus-visible::before {
   @apply opacity-100;
 }
 
 @media (hover: hover) {
-  .blog .heading-anchor:hover {
-    @apply text-accent-50;
+  .blog a.heading-anchor:hover::before {
+    @apply opacity-100 text-accent-50;
   }
 }
 

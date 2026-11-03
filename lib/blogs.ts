@@ -30,8 +30,8 @@ export const rehypePlugins: PluggableList = [
   [
     rehypeAutolinkHeadings,
     {
-      properties: { ariaHidden: "true", tabIndex: -1, className: "heading-anchor" },
-      content: { type: "text", value: "#" },
+      behavior: "wrap",
+      properties: { className: "heading-anchor" },
     },
   ],
 ];
