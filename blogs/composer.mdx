@@ -66,7 +66,7 @@ The tabs follow that flow:
 
 Timeline and Preview sit right next to each other because that's where you'll bounce back and forth the most. People tend to assume the Timeline is the "advanced mode", which isn't really how it works in practice. Most projects use the tabs for the rough pass and the Timeline for cleanup, and since both read from the same project, nothing ever gets out of sync between them.
 
-And yes, that means Composer has onboarding. If you've read the [Intentional Design](/intentional-design) post, you might remember me being weirdly proud that Better Lyrics doesn't have any. That works when the whole experience is "install it, open a song, lyrics show up". A full-on editor like Composer is a different story, and pretending otherwise would just leave beginners stranded. So there's a tour that runs on your own song, and if you already know your way around, you can skip it.
+And yes, Composer has onboarding. If you've read the [Intentional Design](/intentional-design) post, you might remember me being weirdly proud that Better Lyrics doesn't have any. That works when the whole experience is "install it, open a song, lyrics show up". A full-on editor like Composer is a different story, and pretending otherwise would just leave beginners stranded. So there's a tour that runs on your own song, and if you already know your way around, you can skip it.
 
 ## The Sync tab
 
@@ -88,7 +88,9 @@ Somewhere down the line, it hit me that I'd been shipping a garbage default this
 ![The Remastered shortcuts preset in Composer's settings](/composer/remastered-preset.png)
 _Six keys I got wrong, fixed in one click_
 
-Composer also notices when you're fighting it. Hit Space on the default keys expecting the song to play, and a toast offers to swap it for you. We do this kind of thing a lot: turn on the pitch line before separating the vocals and Composer tells you that's what it needs, and try to auto-align without a synced line and it tells you what to select first. Whenever someone gets stuck, I'd rather Composer hold their hand through it if it can, instead of leaving them guessing. It's the same "guess what they want" idea from [Intentional Design](/intentional-design), just with a lot more buttons to guess about.
+Composer also notices when you're fighting it. If you're on the default keys and hit Space expecting the song to play, or hit Space and then reach for the real play key a second later, a toast pops up asking if you want Space to play. One click swaps you over, and it points you to Remastered if you want the arrow keys to seek too.
+
+We do this kind of thing a lot. Turn on the pitch line before separating the vocals and Composer tells you that's what it needs. Try to auto-align without a synced line and it tells you what to select first. Whenever someone gets stuck, I'd rather Composer hold their hand through it if it can, instead of leaving them guessing. It's the same "guess what they want" idea from [Intentional Design](/intentional-design), just with a lot more buttons to guess about.
 
 <MarginNote note="muscle memory is hard to unlearn, no judgement… mostly">
 
@@ -115,11 +117,9 @@ Drag the playhead or scroll over the waveform and Composer plays a tiny snippet 
 
 Getting it to sound right took three tries. The first version just played a snippet under the playhead. Months later someone reported it sounded choppy, so I rewrote it to blend tiny slices of audio together, and threw that out the same day because scrubbing through short bits sounded weirdly mechanical. Varispeed came up too, and that was a hard no. We're a lyrics editor, so the song has to keep sounding like the song. The version that stuck stretches the audio in time instead.
 
-### The little things
+### Snapping
 
-Word edges snap to neighbouring words, the playhead and a few more things I'll get to in a bit, and holding Cmd (or Ctrl on Windows) lets you place something by hand. It took me three attempts to get snapping to feel right, and I'm hoping nobody ever notices.
-
-You can loop a region (or a selection, or a group) while you fix it, set a cue to replay from, and grab a word and drop it on a completely different line. Composer works out whether that should move the word, add a syllable, send it to the background vocals, or refuse because there's no room, and the cursor changes shape so you know which one is about to happen. There's a lot more in there, like marquee selection, rolling edits and stretching a whole selection at once, and the searchable help inside the app covers all of it.
+Word edges lock onto neighbouring words, the playhead and a few more things I'll get to in a bit. Hold Cmd (or Ctrl on Windows) when you want to place something by hand. It took me three attempts to get this feeling right, and I'm hoping nobody ever notices.
 
 ### Linked groups
 
@@ -127,6 +127,16 @@ Most songs repeat themselves. Mark a chorus as a group, and every other copy of 
 
 ![Linked groups in Composer](/composer/groups.mp4)
 _Move a word in one chorus and the other chorus moves with it_
+
+### Loop and cue
+
+You can draw a region on the waveform (or use a selection or a group) and loop it while you fix it. Set a cue, and you can replay from that spot as many times as it takes.
+
+### Dragging across lines
+
+You can grab a word and drop it on a completely different line. Composer works out whether that should move the word, add a syllable, send it to the background vocals, or refuse because there's no room, and the cursor changes shape so you know which one is about to happen.
+
+There's a lot more in there, like marquee selection, rolling edits, stretching a whole selection at once, and splitting and merging words. The help inside the app is searchable and covers all of it.
 
 ## The Preview tab
 
@@ -163,7 +173,11 @@ Then there's the beat grid. Composer detects the song's tempo on your device (it
 
 These two are the part of Composer I'm proudest of, so bear with me.
 
-They exist because of one person in our Discord who was OBSESSED with getting timing exactly right, enough to sync with a custom Audacity plugin because neither AMLL Tool nor the early, beginner-leaning Composer cut it. This is someone who worked out the built-in delay in Braccato, Better Lyrics' rendering engine, down to the nearest ten milliseconds without ever looking at the code. They gave me a bunch of pointers, I went off and did a lot of reading, and after a good amount of back and forth we landed on something we were both really happy with.
+They exist because of one person in our Discord. Before Composer, they synced lyrics with a custom Audacity plugin, because they were OBSESSED with getting the timing exactly right. AMLL Tool was, and I know this will come as a HUGE shock to everyone, _not_ it. And back then Composer leaned way more towards beginners, so neither one cut it.
+
+They also know a ridiculous amount about a ridiculous number of things, from how spectrograms actually work to vocal separation to the politics among the top dogs of the osu! community. We disagree on plenty, but when it comes to syncing lyrics, they're as pro as it gets. This is someone who worked out the built-in delay in Braccato, Better Lyrics' rendering engine, down to the nearest ten milliseconds, by themselves, without ever looking at the code.
+
+They gave me a bunch of pointers, I went off and did a lot of reading, and then we went back and forth for a good while. It took some time to find a middle ground, but it was one both of us ended up really happy with. This is what came out of it.
 
 One key swaps the waveform for a spectrum. A sung vowel shows up as a stack of bright bands and a consonant as a short burst of noise, so you can actually see where a word starts and ends instead of squinting at a blob of waveform. Plenty of tools give you a spectrogram and wish you luck, but I wanted this one to actually help you read it.
 
@@ -196,7 +210,7 @@ If you like to tinker, you can swap the alignment model in Settings, and anyone 
 
 ## How it got here
 
-Everything above is Composer as it is today. Getting there took most of a year, so here's the short version.
+Everything above is Composer as it is today. It took a while to get there, so here's the short version.
 
 ### Composer is kil
 
@@ -220,11 +234,17 @@ In March it got ready for people who weren't me. The Preview moved over to Bracc
 
 May was the busiest month by a mile. Linked groups, snapping and scrub audio all landed, and Adalie started on Composer too. She filed six issues in one day (one of them asking for scrubbing like Premiere's) and opened the vocal separation PR the same day.
 
-### Nine walls
+### Composer Bridge
 
-May also brought YouTube imports, and they kept breaking. YouTube blocks cloud IP ranges pretty aggressively, so I'd ship a fix, the same thing would break two days later, and my inbox would fill up with "YouTube import broken." I tried a browser extension too, and it made it past eight of YouTube's defences, bot detection and signature deciphering included, only to run into a ninth it had no way around.
+YouTube blocks cloud IP ranges pretty aggressively. Public yt-dlp servers get throttled or blocked within hours of going live, so I'd ship a fix, the same thing would break two days later, and my inbox would fill up with "YouTube import broken." Eventually I realised your own laptop looks like a normal viewer to YouTube, so why not just run yt-dlp _there_?
 
-Then it clicked that your own laptop looks like a normal viewer to YouTube. So in June I built [Composer Bridge](https://github.com/better-lyrics/composer-bridge), a tiny [Wails](https://wails.io) app that runs yt-dlp on your machine and keeps itself updated. Yes, that means a little Go binary living on your laptop _forever_, and since code signing costs more than this project earns, you'll get a scary warning the first time you run it. After that you'll forget it's there.
+[Composer Bridge](https://github.com/better-lyrics/composer-bridge) is a tiny [Wails](https://wails.io) app that runs yt-dlp behind a local server on your machine. You install it, leave it running in the background, and Composer sends its YouTube imports through it over your own connection, with no rate limits and no server of mine in the middle. It updates yt-dlp once a day by itself and checks its own installer against a manifest before writing anything to disk.
+
+Yes, that means a little Go binary living on your laptop _forever_. I looked at rotating proxies, paying for a hosted yt-dlp service and doing the extraction in the browser, and every one of them was either more expensive, more fragile or flat out impossible.
+
+The browser route got the furthest, and that's what made it so annoying. A browser extension made it past eight of YouTube's defences, bot detection and signature deciphering included, only to run into a ninth it had no way around. At that point a little app on your own machine started looking pretty reasonable.
+
+The installer is unsigned, because Apple and Microsoft code signing costs more than this project earns. You'll get a scary warning the first time you run it, and after that you'll forget it's there.
 
 ### The merge that lasted 11 minutes
 
@@ -265,7 +285,7 @@ On top of that, the tap mode they'd gotten used to looked completely different. 
 
 The classic look was progressive disclosure at its most basic: show the line you're on, keep its neighbours quietly in view, and don't overload anyone. I'd traded that for something busier, and a couple of people told me they couldn't even tell which word they were syncing anymore, because the tinted next word looked like the one being sung.
 
-They were right. People had built up muscle memory for the old Sync tab over months, and I'd broken it to make something prettier. So I put the classic view back, within the hour. The small fixes that came along with the redesign stayed, like long lines no longer overlapping and split syllables staying joined, but everything people actually touched went back to exactly how it was. If it ain't broke, don't fix it. Less really is more sometimes, and apparently I need to keep relearning that.
+They were right. People had built up muscle memory for the old Sync tab over months, and I'd broken it to make something prettier. So within an hour I put the classic view back. The small fixes that came along with the redesign stayed, like long lines no longer overlapping and split syllables staying joined, but everything people actually touched went back to exactly how it was. If it ain't broke, don't fix it. Less really is more sometimes, and apparently I need to keep relearning that.
 
 ### Not everyone was a fan
 
@@ -282,7 +302,7 @@ I'm all for that kind of speed, and it's a big part of how Composer gets better 
 
 The same goes for the loud feedback. Whenever one of their points actually made sense, it got fixed, sometimes within the hour. If something didn't make sense and just felt spiteful, though, I don't really bother arguing about it anymore.
 
-The people I listen to hardest are the ones syncing songs in Composer every day, which is exactly why the reading lane got rolled back so fast. Someone who'd never use Composer either way doesn't get that kind of pull, and I can live without their approval ;)
+The people I listen to hardest are the ones syncing songs in Composer every day. When they told me the reading lane broke their workflow, it was gone the same day. Someone who'd never use Composer either way doesn't get that kind of pull, and I can live without their approval ;)
 
 ## Closing the loop
 
