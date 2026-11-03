@@ -4,7 +4,7 @@ import { motion, useMotionValue, useReducedMotion, useSpring } from "motion/reac
 import React, { useCallback, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-const WIDTH = 280;
+const DEFAULT_WIDTH = 280;
 const GAP = 12;
 const EDGE = 8;
 const CLOSE_DELAY = 80;
@@ -13,6 +13,8 @@ const VIDEO = /\.(mp4|webm|mov)(\?|#|$)/i;
 type Props = {
   src: string;
   alt: string;
+  /** Popover width in px, for clips with small text. Never wider than the screen. A string, because MDX props can't carry numbers. */
+  width?: `${number}`;
   children: React.ReactNode;
 };
 
@@ -22,7 +24,7 @@ function lineRectAt(el: HTMLElement, clientY?: number) {
   return rects.find(r => clientY >= r.top && clientY <= r.bottom) ?? rects[0] ?? el.getBoundingClientRect();
 }
 
-export function Peek({ src, alt, children }: Props) {
+export function Peek({ src, alt, width: wantedWidth, children }: Props) {
   const id = useId();
   const reduceMotion = useReducedMotion();
   const triggerRef = useRef<HTMLSpanElement>(null);
@@ -35,7 +37,9 @@ export function Peek({ src, alt, children }: Props) {
   const [below, setBelow] = useState(false);
 
   const [ratio, setRatio] = useState(16 / 9);
-  const height = WIDTH / ratio;
+  const fullWidth = wantedWidth ? Number(wantedWidth) : DEFAULT_WIDTH;
+  const width = mounted ? Math.min(fullWidth, window.innerWidth - 2 * EDGE) : fullWidth;
+  const height = width / ratio;
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
   const springX = useSpring(rawX, { stiffness: 420, damping: 42, mass: 0.6 });
@@ -67,7 +71,7 @@ export function Peek({ src, alt, children }: Props) {
       if (!el) return;
       const line = lineRectAt(el, pointer.current?.y);
       const centerX = pointer.current?.x ?? line.left + line.width / 2;
-      const nextX = Math.min(Math.max(centerX - WIDTH / 2, EDGE), window.innerWidth - WIDTH - EDGE);
+      const nextX = Math.min(Math.max(centerX - width / 2, EDGE), window.innerWidth - width - EDGE);
       const flip = line.top - height - GAP < EDGE;
       const nextY = flip ? line.bottom + GAP : line.top - height - GAP;
       setBelow(flip);
@@ -78,7 +82,7 @@ export function Peek({ src, alt, children }: Props) {
         springY.jump(nextY);
       }
     },
-    [height, rawX, rawY, springX, springY]
+    [width, height, rawX, rawY, springX, springY]
   );
 
   const show = useCallback(() => {
@@ -160,7 +164,7 @@ export function Peek({ src, alt, children }: Props) {
         createPortal(
           <motion.div
             className="fixed top-0 left-0 z-50 pointer-events-none"
-            style={{ x, y, width: WIDTH, height }}
+            style={{ x, y, width, height }}
             aria-hidden={!open}
           >
             <motion.div
