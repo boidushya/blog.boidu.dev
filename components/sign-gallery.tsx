@@ -3,7 +3,7 @@
 import { SIGNATURE_VIEWBOX, type Signature } from "@/lib/signature";
 import { Tooltip } from "@/utils/components";
 import { useQuery } from "@tanstack/react-query";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 import React from "react";
 
 export type StoredSignature = Signature & { id: string };

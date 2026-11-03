@@ -1,7 +1,7 @@
 "use client";
 
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-import { MotionConfig } from "framer-motion";
+import { MotionConfig } from "motion/react";
 import dynamic from "next/dynamic";
 
 const ThemeProvider = dynamic(() => import("../providers/theme"), {

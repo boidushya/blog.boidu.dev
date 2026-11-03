@@ -8,7 +8,7 @@ import { useSign } from "@/providers/sign";
 import { Tooltip } from "@/utils/components";
 import { ToggleGroup } from "@radix-ui/react-toggle-group";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import dynamic from "next/dynamic";
 
 interface SignProps extends ComponentProps<"div"> {

@@ -2,7 +2,7 @@
 
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 /* eslint-disable jsx-a11y/alt-text */
-import { motion, useAnimation } from "framer-motion";
+import { motion, useAnimation } from "motion/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 

@@ -10,7 +10,7 @@ import {
   motion,
   motionValue,
   useAnimate,
-} from "framer-motion";
+} from "motion/react";
 import React, { useCallback, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
 import Sign from "./sign";

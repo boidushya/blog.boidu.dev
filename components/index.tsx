@@ -6,7 +6,7 @@ import { LIGHT_THEMES } from "@/utils/constants";
 import { isYouTubeLink } from "@/utils/functions";
 import { useWaterMark } from "@/utils/hooks";
 import { ToggleGroup, ToggleGroupItem } from "@radix-ui/react-toggle-group";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
