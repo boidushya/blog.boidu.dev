@@ -75,6 +75,7 @@ export async function getPostById(id: string) {
     html = processed.value.toString();
   }
 
+  const reading = readingTime(content);
   const authors = data.authors ? getAuthorsData(data.authors) : [];
 
   return {
@@ -86,7 +87,8 @@ export async function getPostById(id: string) {
     cover: data.cover as string | undefined,
     description: data.description,
     date: format(new Date(data.date), "LLL dd, yyyy"),
-    readingTime: readingTime(content).text,
+    readingTime: reading.text,
+    minutes: Math.ceil(Number(reading.minutes.toFixed(2))),
     html,
     isMDX,
     labels: (data.labels ?? []) as string[],
@@ -116,7 +118,6 @@ export async function getAllBlogs() {
     posts.map(async post => {
       const art = post.cover ?? post.banner;
       const image = (isYouTubeLink(art) && getYouTubeThumbnail(art)) || art;
-      const minutes = Number.parseInt(post.readingTime);
       return {
         id: post.id,
         title: post.title,
@@ -126,8 +127,8 @@ export async function getAllBlogs() {
         dim: await washDim(image),
         link: `/${post.id}`,
         labels: post.draft ? ["Draft", ...post.labels] : post.labels,
-        minutes,
-        note: `${format(new Date(post.date), "LLL ''yy").toLowerCase()} · ${minutes} min`,
+        minutes: post.minutes,
+        note: `${format(new Date(post.date), "LLL ''yy").toLowerCase()} · ${post.minutes} min`,
       };
     })
   );

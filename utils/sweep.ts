@@ -1,5 +1,5 @@
-export type SweepTiming = { pxPerMs: number; minWordMs: number; overlapMs: number; startMs: number };
-export type SungWord = { startMs: number; letters: number };
+type SweepTiming = { pxPerMs: number; minWordMs: number; overlapMs: number; startMs: number };
+type SungWord = { startMs: number; letters: number };
 
 const WAVE_CREST = 0.4;
 const MIN_RISE_MS = 320;

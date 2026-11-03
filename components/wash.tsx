@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from "react";
 const SETTLE_MS = 180;
 const FADE_MS = 1200;
 
-/** Full-page Kawarp wash of `src`, darkened by `dim`. */
 export function Wash({ src, dim }: { src: string; dim: number }) {
   const kawarp = useRef<KawarpRef>(null);
   const [first] = useState(src);
@@ -33,9 +32,12 @@ export function Wash({ src, dim }: { src: string; dim: number }) {
       }
       if (shown.current.src === src) return;
       shown.current = { src, busyUntil: performance.now() + FADE_MS };
-      kawarp.current?.loadImage(src).then(() => {
-        if (reduceMotion) kawarp.current?.instance?.renderFrame();
-      });
+      kawarp.current
+        ?.loadImage(src)
+        .then(() => {
+          if (reduceMotion) kawarp.current?.instance?.renderFrame();
+        })
+        .catch(error => console.warn(`Wash failed to load ${src}:`, error));
     };
     timer = setTimeout(() => {
       setShownDim(dim);

@@ -364,7 +364,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
 
   const unhover = useCallback(() => clearTimeout(hoverTimer.current), []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const vars = Object.entries(getThemeVariables("obsidian"));
     for (const [name, value] of vars) document.body.style.setProperty(name, value);
     return () => {

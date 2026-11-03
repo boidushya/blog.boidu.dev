@@ -1065,6 +1065,10 @@ html {
   --ease: cubic-bezier(0.2, 0, 0, 1);
 }
 
+html:has(.player) {
+  color-scheme: dark;
+}
+
 @media (min-width: 861px) {
   html:has(.player) {
     overflow: hidden;
