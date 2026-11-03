@@ -66,15 +66,27 @@ function wakeWalk() {
 }
 
 /**
- * One soft pressed note for a sung word, pitched by its length: long words low, short words high.
- * cuelume has no pitch control, so this is synthesized here.
+ * The scale step each word of a title sings, pitched by length: long words low, short words high.
+ * A word that would repeat the note before it climbs one step instead, so a run never stutters.
  */
-export function playWalkNote(letters: number, volume = REVEAL.volume ?? 1) {
+export function walkMelody(wordLengths: number[]) {
+  const top = WALK_STEPS.length - 1;
+  const byLength = wordLengths.map(letters => Math.max(0, Math.min(top, WALK_STEPS.length - letters)));
+  const melody: number[] = [];
+  byLength.forEach((step, i) => {
+    const previous = melody[i - 1];
+    if (i === 0 || (step !== byLength[i - 1] && step !== previous)) melody.push(step);
+    else melody.push(previous < top ? previous + 1 : previous - 1);
+  });
+  return melody;
+}
+
+/** One soft pressed note on a step of the walk scale. cuelume has no pitch control, so this is synthesized here. */
+export function playWalkNote(step: number, volume = REVEAL.volume ?? 1) {
   const ac = walkContext;
   if (!enabled || ac?.state !== "running") return;
 
-  const step = WALK_STEPS[Math.max(0, Math.min(WALK_STEPS.length - 1, WALK_STEPS.length - letters))];
-  const frequency = WALK_ROOT_HZ * 2 ** (step / 12);
+  const frequency = WALK_ROOT_HZ * 2 ** (WALK_STEPS[step] / 12);
   const now = ac.currentTime;
   const out = ac.createGain();
   out.gain.value = 0.16 * volume;

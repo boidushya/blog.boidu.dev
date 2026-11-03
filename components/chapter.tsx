@@ -1,7 +1,8 @@
 "use client";
 
 import { Handwriting } from "@/components/handwriting";
-import { playWalkNote } from "@/utils/sounds";
+import { observeReveal } from "@/utils/reveal";
+import { playWalkNote, walkMelody } from "@/utils/sounds";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 
@@ -52,7 +53,7 @@ export function Chapter({ n, children }: { n: string; children: React.ReactNode 
   useEffect(() => {
     const chapter = ref.current;
     if (!chapter) return;
-    let observer: IntersectionObserver | undefined;
+    let stopObserving: (() => void) | undefined;
     const notes: ReturnType<typeof setTimeout>[] = [];
     let cancelled = false;
     document.fonts.ready.then(() => {
@@ -60,21 +61,16 @@ export function Chapter({ n, children }: { n: string; children: React.ReactNode 
       const heading = chapter.querySelector("h2");
       const words = heading ? timeSweep(heading) : [];
       setArmed(true);
-      observer = new IntersectionObserver(
-        ([entry]) => {
-          if (!entry.isIntersecting) return;
-          setShown(true);
-          observer?.disconnect();
-          if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-          for (const word of words) notes.push(setTimeout(() => playWalkNote(word.letters), word.startMs));
-        },
-        { threshold: 0.8 }
-      );
-      observer.observe(chapter);
+      stopObserving = observeReveal(chapter, 0.8, () => {
+        setShown(true);
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const melody = walkMelody(words.map(word => word.letters));
+        words.forEach((word, i) => notes.push(setTimeout(() => playWalkNote(melody[i]), word.startMs)));
+      });
     });
     return () => {
       cancelled = true;
-      observer?.disconnect();
+      stopObserving?.();
       notes.forEach(clearTimeout);
     };
   }, []);

@@ -1,10 +1,12 @@
 "use client";
 
 import { Handwriting } from "@/components/handwriting";
+import { observeReveal } from "@/utils/reveal";
 import { REVEAL } from "@/utils/sounds";
 import { play } from "cuelume";
 import { motion, useReducedMotion } from "motion/react";
 import type React from "react";
+import { useEffect, useRef, useState } from "react";
 
 const BRACKET_PATH = "M2 2.5 C5 1.8 8 1.6 10.5 2 C10.2 30 10.9 70 10.4 98 C7.5 98.6 4.5 98.4 1.5 98.9";
 const NOTE_DELAY = 0.45;
@@ -12,14 +14,23 @@ const NOTE_DELAY = 0.45;
 export function MarginNote({ note, children }: { note: string; children: React.ReactNode }) {
   const reduceMotion = useReducedMotion();
   const draw = !reduceMotion;
+  const ref = useRef<HTMLDivElement>(null);
+  const [shown, setShown] = useState(false);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    return observeReveal(ref.current, 0.6, () => {
+      setShown(true);
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) play("open", REVEAL);
+    });
+  }, []);
 
   return (
     <motion.div
+      ref={ref}
       className="relative"
       initial={draw ? "hidden" : false}
-      whileInView="shown"
-      viewport={{ once: true, amount: 0.6 }}
-      onViewportEnter={() => draw && play("open", REVEAL)}
+      animate={shown || !draw ? "shown" : "hidden"}
     >
       {children}
       <motion.svg

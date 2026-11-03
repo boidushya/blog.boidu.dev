@@ -128,7 +128,7 @@ export default function Like({ postId }: { postId: string }) {
         <button
           onClick={handleClick}
           ref={contentRef}
-          aria-label={liked ? "Unlike this post" : "Like this post"}
+          aria-label={`${liked ? "Unlike" : "Like"} this post, ${likeCount ?? 0} likes`}
           aria-pressed={liked}
           data-cuelume-toggle
           className="flex items-center justify-center gap-2 px-3 py-2 pr-4 text-sm leading-none text-pink-500 pressable"

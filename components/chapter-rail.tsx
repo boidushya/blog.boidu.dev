@@ -1,5 +1,6 @@
 "use client";
 
+import { endJump, startJump } from "@/utils/reveal";
 import { motion, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useSpring } from "motion/react";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -10,12 +11,14 @@ const CHAPTER_SCROLL_OFFSET = 96;
 // Lazy media above the target can grow mid-scroll, so re-aim until it lands.
 function scrollToChapter(el: HTMLElement, behavior: ScrollBehavior, attempts = 3) {
   const offset = () => el.getBoundingClientRect().top - CHAPTER_SCROLL_OFFSET;
+  if (Math.abs(offset()) <= 2) return endJump();
+  startJump();
   window.scrollTo({ top: window.scrollY + offset(), behavior });
-  if (attempts <= 1) return;
   window.addEventListener(
     "scrollend",
     () => {
-      if (Math.abs(offset()) > 2) scrollToChapter(el, behavior, attempts - 1);
+      if (attempts > 1 && Math.abs(offset()) > 2) scrollToChapter(el, behavior, attempts - 1);
+      else endJump();
     },
     { once: true }
   );

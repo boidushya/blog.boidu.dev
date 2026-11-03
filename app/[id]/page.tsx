@@ -1,8 +1,9 @@
 import ArticleExtra from "@/components/article-extra";
-import { GreetingAvatar } from "@/components/greeting-avatar";
 import { ChapterRail } from "@/components/chapter-rail";
+import { GreetingAvatar } from "@/components/greeting-avatar";
 import InlineEditor from "@/components/inline-editor";
 import Like from "@/components/like";
+import { PostVideos } from "@/components/post-videos";
 import Sign from "@/components/sign";
 import SignGallery from "@/components/sign-gallery";
 /* eslint-disable @next/next/no-img-element */
@@ -116,9 +117,10 @@ export default async function Post({ params }: { params: Promise<{ id: string }>
           />
         )}
 
+        <PostVideos />
         {isMDX ? (
           <ChapterRail>
-            <main className={POST_BODY_CLASS}>
+            <div className={POST_BODY_CLASS}>
               <MDXRemote
                 source={html}
                 components={mdxComponents}
@@ -126,10 +128,10 @@ export default async function Post({ params }: { params: Promise<{ id: string }>
                   mdxOptions: { remarkPlugins, rehypePlugins },
                 }}
               />
-            </main>
+            </div>
           </ChapterRail>
         ) : (
-          <main className={POST_BODY_CLASS} dangerouslySetInnerHTML={{ __html: html as string }} />
+          <div className={POST_BODY_CLASS} dangerouslySetInnerHTML={{ __html: html as string }} />
         )}
       </article>
       <ArticleExtra id={id} />

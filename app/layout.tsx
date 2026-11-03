@@ -53,14 +53,14 @@ export default function RootLayout({
         ></script>
       </head>
       <body>
-        <main className="relative max-w-3xl px-4 mx-auto sm:px-0">
+        <div className="relative box-content max-w-3xl px-4 mx-auto sm:px-6">
           <Providers>
             <NextTopLoader color={topLoaderColor} />
             <Navbar />
-            {children}
+            <main>{children}</main>
             <Footer />
           </Providers>
-        </main>
+        </div>
       </body>
       <Script src="/static/script.js"></Script>
     </html>

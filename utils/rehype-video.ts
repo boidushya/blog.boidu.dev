@@ -4,7 +4,7 @@ import { visit } from "unist-util-visit";
 
 /**
  * Rehype plugin to transform video URLs in markdown to HTML5 video elements
- * with lazy loading and autoplay support
+ * that loop silently, started by components/post-videos.tsx
  */
 const rehypeVideo: Plugin<[], Root> = function () {
   return function (tree: Root) {
@@ -25,12 +25,11 @@ const rehypeVideo: Plugin<[], Root> = function () {
         type: "element",
         tagName: "video",
         properties: {
-          controls: false,
-          autoplay: true,
+          dataAutoplay: true,
           loop: true,
           muted: true,
           playsinline: true,
-          loading: "lazy",
+          ariaLabel: node.properties.alt || undefined,
           style: "width: 100%; height: auto; border-radius: 0.5rem;",
         },
         children: [

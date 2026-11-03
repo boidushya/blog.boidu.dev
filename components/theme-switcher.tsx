@@ -46,7 +46,7 @@ const ThemeSwitcher = () => {
       <DropdownMenuTrigger asChild>
         <button
           className="flex items-center gap-2 px-2 py-2 -mx-2 capitalize rounded-md pressable text-accent-400 hover:text-accent-300 data-[state=open]:text-accent-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-400"
-          aria-label="Select Theme"
+          aria-label={`Theme: ${theme}`}
         >
           <span className="pt-[1.5px]">{theme}</span>
           <span className="relative grid w-3 h-3 place-items-center">

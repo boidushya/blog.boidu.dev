@@ -166,7 +166,9 @@ export function Peek({ src, alt, children }: Props) {
             <motion.div
               id={id}
               role="tooltip"
-              className="w-full h-full p-1 rounded-xl bg-accent-900 shadow-deep will-change-[transform,opacity,filter]"
+              onPointerEnter={() => window.clearTimeout(closeTimer.current)}
+              onPointerLeave={() => hide(CLOSE_DELAY)}
+              className={`${open ? "pointer-events-auto" : ""} w-full h-full p-1 rounded-xl bg-accent-900 shadow-deep will-change-[transform,opacity,filter]`}
               style={{ transformOrigin: below ? "50% 0%" : "50% 100%" }}
               initial={false}
               animate={open ? shown : hidden}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ComponentProps, useEffect } from "react";
+import React, { ComponentProps, useEffect, useId } from "react";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 
 import { type StoredSignature, signsQueryKey } from "@/components/sign-gallery";
@@ -53,6 +53,7 @@ const Sign = ({ id }: SignProps) => {
   });
 
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const titleId = useId();
 
   const canvasRef = React.useRef<ReactSketchCanvasRef>(null);
 
@@ -80,24 +81,33 @@ const Sign = ({ id }: SignProps) => {
   };
 
   useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
     containerRef.current?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOpen(false);
     };
     document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      opener?.focus({ preventScroll: true });
+    };
   }, [setOpen]);
 
   return (
     <motion.div
-      ref={containerRef}
       initial={{ opacity: 0, y: 8, scale: 0.9, filter: "blur(4px)" }}
       animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
       exit={{ opacity: 0, y: 4, scale: 0.96, filter: "blur(4px)", transition: { duration: 0.15, ease: "easeOut" } }}
       transition={{ type: "spring", duration: 0.35, bounce: 0 }}
       style={{ originX: 1, originY: 1 }}
     >
-      <div className="absolute right-0 z-10 p-4 origin-bottom-right -translate-y-full border rounded-lg -top-4 bg-accent-900/90 border-accent-600/50 backdrop-blur shadow-deep">
+      <div
+        ref={containerRef}
+        role="dialog"
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        className="absolute right-0 z-10 p-4 outline-none origin-bottom-right -translate-y-full border rounded-lg -top-4 bg-accent-900/90 border-accent-600/50 backdrop-blur shadow-deep"
+      >
         <button
           aria-label="Close"
           className="absolute grid w-6 h-6 text-sm bg-transparent border rounded-full pressable top-3 right-3 border-accent-600/50 place-items-center text-accent-400 hover:bg-accent-800/50 after:absolute after:-inset-2 after:content-['']"
@@ -116,7 +126,9 @@ const Sign = ({ id }: SignProps) => {
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
           </svg>
         </button>
-        <h3 className="mb-2 text-accent-200">Thanks for liking this post!</h3>
+        <h3 id={titleId} className="mb-2 text-accent-200">
+          Thanks for liking this post!
+        </h3>
         <p className="mb-4 text-sm text-accent-400">Sketch your signature below to add it to the post.</p>
         {mutation.isError && (
           <p role="alert" className="mb-3 text-sm text-red-400">

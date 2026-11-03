@@ -1,7 +1,10 @@
 "use client";
 
+import { play } from "cuelume";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+
+const HANDLE_RADIUS_PX = 20;
 
 interface ImageCompareProps {
   before: string;
@@ -20,61 +23,25 @@ export function ImageCompare({
   beforeLabel,
   afterLabel,
 }: ImageCompareProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
   const [sliderPosition, setSliderPosition] = useState(50);
-  const [isDragging, setIsDragging] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const dragging = useRef(false);
+  // Where the pointer grabbed the handle, so the divider doesn't jump to the pointer.
+  const grabOffset = useRef(0);
 
-  const updateSliderPosition = (clientX: number) => {
-    if (!containerRef.current) return;
-
+  // A drag clicks once per tenth of the width, like detents; each key press clicks on its own.
+  const move = (next: number) => {
+    const crossed = Math.floor(next / 10) !== Math.floor(sliderPosition / 10);
+    if (!dragging.current || crossed) {
+      play("select", { emphasis: "subtle", direction: next < sliderPosition ? "back" : "forward" });
+    }
     setHasInteracted(true);
-
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    setSliderPosition(percentage);
+    setSliderPosition(next);
   };
-
-  const handleMouseDown = () => setIsDragging(true);
-  const handleMouseUp = () => setIsDragging(false);
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging) return;
-    updateSliderPosition(e.clientX);
-  };
-
-  const handleTouchMove = (e: TouchEvent) => {
-    if (!isDragging) return;
-    updateSliderPosition(e.touches[0].clientX);
-  };
-
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    updateSliderPosition(e.clientX);
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-    document.addEventListener("touchmove", handleTouchMove);
-    document.addEventListener("touchend", handleMouseUp);
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("touchend", handleMouseUp);
-    };
-  }, [isDragging]);
 
   return (
-    <div data-wide className="my-6 touch-none group">
-      <div
-        ref={containerRef}
-        className="relative w-full border select-none cursor-col-resize border-accent-600/20"
-        onClick={handleClick}
-        style={{ aspectRatio: "16/9" }}
-      >
+    <div data-wide className="my-6 touch-none group image-compare">
+      <div className="relative w-full border select-none border-accent-600/20" style={{ aspectRatio: "16/9" }}>
         {/* Before Image with Label */}
         <div
           className="absolute inset-0"
@@ -117,13 +84,11 @@ export function ImageCompare({
 
         {/* Slider */}
         <div
-          className="absolute top-0 bottom-0 z-10 w-0.5 bg-accent-900 cursor-col-resize"
+          className="absolute top-0 bottom-0 z-10 w-0.5 bg-accent-900 pointer-events-none"
           style={{ left: `${sliderPosition}%`, transform: "translateX(-50%)" }}
-          onMouseDown={handleMouseDown}
-          onTouchStart={handleMouseDown}
         >
           {/* Handle */}
-          <div className="absolute flex items-center justify-center w-10 h-10 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-lg top-1/2 left-1/2 bg-accent-900 text-accent-50 btn-glass active:scale-[0.96]">
+          <div className="absolute flex items-center justify-center w-10 h-10 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-lg top-1/2 left-1/2 bg-accent-900 text-accent-50 btn-glass image-compare__handle">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
@@ -132,6 +97,27 @@ export function ImageCompare({
             </svg>
           </div>
         </div>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          step="any"
+          value={sliderPosition}
+          aria-label={`Compare ${beforeLabel || beforeAlt} and ${afterLabel || afterAlt}`}
+          aria-valuetext={`${Math.round(sliderPosition)}% ${beforeLabel || beforeAlt}`}
+          onPointerDown={e => {
+            dragging.current = true;
+            const box = e.currentTarget.getBoundingClientRect();
+            const offset = ((e.clientX - box.left) / box.width) * 100 - sliderPosition;
+            grabOffset.current = Math.abs((offset / 100) * box.width) <= HANDLE_RADIUS_PX ? offset : 0;
+          }}
+          onPointerUp={() => {
+            dragging.current = false;
+            grabOffset.current = 0;
+          }}
+          onChange={e => move(Math.min(100, Math.max(0, Number(e.currentTarget.value) - grabOffset.current)))}
+          className="image-compare__range"
+        />
       </div>
       <span className="flex items-center justify-center gap-2 mt-4 text-sm not-italic font-normal text-center text-accent-400">
         <svg
