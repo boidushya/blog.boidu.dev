@@ -2,8 +2,8 @@ import fs from "fs";
 import { join } from "path";
 import { cardScrim } from "@/lib/card-scrim";
 import { getAuthorsData, getYouTubeThumbnail, isYouTubeLink } from "@/utils/functions";
-import rehypeChapterHeading from "@/utils/rehype-chapter-heading";
 import { rehypeAdmonitions } from "@/utils/rehype-admonitions";
+import rehypeChapterHeading from "@/utils/rehype-chapter-heading";
 import rehypeShiki from "@/utils/rehype-shiki";
 import rehypeSourceBlocks from "@/utils/rehype-source-blocks";
 import rehypeVideo from "@/utils/rehype-video";
@@ -16,6 +16,7 @@ import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
+import { createCssVariablesTheme } from "shiki";
 import { type PluggableList, unified } from "unified";
 
 let p: ReturnType<typeof getParserPre> | undefined;
@@ -24,7 +25,7 @@ export const remarkPlugins: PluggableList = [remarkGfm];
 
 export const rehypePlugins: PluggableList = [
   rehypeSourceBlocks,
-  [rehypeShiki, { theme: "tokyo-night" }],
+  [rehypeShiki, { theme: createCssVariablesTheme() }],
   rehypeSlug,
   rehypeAdmonitions as any,
   rehypeVideo,

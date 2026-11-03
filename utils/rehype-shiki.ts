@@ -158,10 +158,11 @@ function rehypeShikiFromHighlighter(
                 tagName: "button",
                 properties: {
                   class: "copy",
+                  type: "button",
+                  "aria-label": "Copy code",
                   "data-code": escapedCode,
                   "data-cuelume-tap": "success",
                   "data-cuelume-emphasis": "subtle",
-                  onClick: `copyText(this)`,
                 },
                 children: [
                   {

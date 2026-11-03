@@ -28,7 +28,7 @@ const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     Object.entries(themeVariables).forEach(([property, value]) => {
       root.style.setProperty(property, value);
     });
-    root.style.colorScheme = LIGHT_THEMES.includes(theme) ? "light" : "dark";
+    root.dataset.scheme = LIGHT_THEMES.includes(theme) ? "light" : "dark";
     // Recalculate styles while transitions are frozen, otherwise every color animates.
     window.getComputedStyle(root).color;
     requestAnimationFrame(() => freeze.remove());
