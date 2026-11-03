@@ -85,8 +85,8 @@ export function MarginNote({ note, children }: { note: string; children: React.R
               }}
               className="inline-block"
               variants={{
-                hidden: { clipPath: "inset(-0.25em 100% -0.25em 0)" },
-                shown: { clipPath: "inset(-0.25em 0% -0.25em 0)" },
+                hidden: { clipPath: "inset(-0.5em 100% -0.5em -10%)" },
+                shown: { clipPath: "inset(-0.5em -10% -0.5em -10%)" },
               }}
               transition={{ ease: "linear", ...(timings[i] ?? { delay: NOTE_DELAY, duration: 0.2 }) }}
             >
