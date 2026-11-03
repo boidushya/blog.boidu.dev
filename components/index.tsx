@@ -82,6 +82,7 @@ export function ContentBox({ post, feature }: { post: BlogCard; feature: boolean
           fill
           sizes={feature ? "(min-width: 768px) 768px, 100vw" : "(min-width: 768px) 374px, 100vw"}
           priority={feature}
+          quality={100}
           className="object-cover"
         />
       </div>
