@@ -13,7 +13,6 @@ const VIDEO = /\.(mp4|webm|mov)(\?|#|$)/i;
 type Props = {
   src: string;
   alt: string;
-  ratio?: number;
   children: React.ReactNode;
 };
 
@@ -23,7 +22,7 @@ function lineRectAt(el: HTMLElement, clientY?: number) {
   return rects.find(r => clientY >= r.top && clientY <= r.bottom) ?? rects[0] ?? el.getBoundingClientRect();
 }
 
-export function Peek({ src, alt, ratio = 16 / 9, children }: Props) {
+export function Peek({ src, alt, children }: Props) {
   const id = useId();
   const reduceMotion = useReducedMotion();
   const triggerRef = useRef<HTMLSpanElement>(null);
@@ -35,6 +34,7 @@ export function Peek({ src, alt, ratio = 16 / 9, children }: Props) {
   const [open, setOpen] = useState(false);
   const [below, setBelow] = useState(false);
 
+  const [ratio, setRatio] = useState(16 / 9);
   const height = WIDTH / ratio;
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
@@ -186,12 +186,14 @@ export function Peek({ src, alt, ratio = 16 / 9, children }: Props) {
                   loop
                   playsInline
                   preload={near ? "auto" : "none"}
+                  onLoadedMetadata={e => setRatio(e.currentTarget.videoWidth / e.currentTarget.videoHeight)}
                   className="block w-full h-full object-cover rounded-lg outline outline-1 -outline-offset-1 outline-white/10"
                 />
               ) : (
                 <img
                   src={near ? src : undefined}
                   alt={alt}
+                  onLoad={e => setRatio(e.currentTarget.naturalWidth / e.currentTarget.naturalHeight)}
                   decoding="async"
                   className="block w-full h-full object-cover rounded-lg outline outline-1 -outline-offset-1 outline-white/10"
                 />
