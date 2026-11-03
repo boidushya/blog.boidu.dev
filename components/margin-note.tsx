@@ -6,28 +6,29 @@ import React, { useLayoutEffect, useRef, useState } from "react";
 
 const BRACKET_PATH = "M2 2.5 C5 1.8 8 1.6 10.5 2 C10.2 30 10.9 70 10.4 98 C7.5 98.6 4.5 98.4 1.5 98.9";
 const NOTE_DELAY = 0.45;
-const SECONDS_PER_PX = 0.0035;
-const LINE_PAUSE = 0.08;
+const SECONDS_PER_PX = 0.004;
+const WORD_GAP = 0.06;
+const LINE_PAUSE = 0.14;
+const PUNCTUATION_PAUSE = 0.22;
+const SPEED_DRIFT = [1, 0.9, 1.1, 0.95, 1.05];
+const PEN_EASE = [0.45, 0, 0.55, 1] as const;
+const INK_MASK = "linear-gradient(90deg, #000 0 42%, transparent 58% 100%)";
 
 type WordTiming = { delay: number; duration: number };
 
 function timeWords(words: HTMLElement[]): WordTiming[] {
-  const lines = new Map<number, HTMLElement[]>();
-  for (const word of words) lines.set(word.offsetTop, [...(lines.get(word.offsetTop) ?? []), word]);
-  const timings: WordTiming[] = [];
-  let lineStart = NOTE_DELAY;
-  for (const line of Array.from(lines.values())) {
-    const left = Math.min(...line.map(w => w.offsetLeft));
-    const right = Math.max(...line.map(w => w.offsetLeft + w.offsetWidth));
-    for (const word of line) {
-      timings.push({
-        delay: lineStart + (word.offsetLeft - left) * SECONDS_PER_PX,
-        duration: word.offsetWidth * SECONDS_PER_PX,
-      });
+  let time = NOTE_DELAY;
+  let lineTop = words[0]?.offsetTop;
+  return words.map((word, i) => {
+    if (word.offsetTop !== lineTop) {
+      time += LINE_PAUSE;
+      lineTop = word.offsetTop;
     }
-    lineStart += (right - left) * SECONDS_PER_PX + LINE_PAUSE;
-  }
-  return timings;
+    const duration = word.offsetWidth * SECONDS_PER_PX * SPEED_DRIFT[i % SPEED_DRIFT.length];
+    const timing = { delay: time, duration };
+    time += duration + (/[,.;:!?…]$/.test(word.textContent ?? "") ? PUNCTUATION_PAUSE : WORD_GAP);
+    return timing;
+  });
 }
 
 export function MarginNote({ note, children }: { note: string; children: React.ReactNode }) {
@@ -81,12 +82,17 @@ export function MarginNote({ note, children }: { note: string; children: React.R
               ref={el => {
                 if (el) wordRefs.current[i] = el;
               }}
-              className="inline-block"
-              variants={{
-                hidden: { clipPath: "inset(-0.5em 110% -0.5em -10%)" },
-                shown: { clipPath: "inset(-0.5em -10% -0.5em -10%)" },
+              className="inline-block px-[0.25em] -mx-[0.25em] py-[0.3em] -my-[0.3em]"
+              style={{
+                maskImage: INK_MASK,
+                maskSize: "260% 100%",
+                maskRepeat: "no-repeat",
               }}
-              transition={{ ease: "linear", ...(timings[i] ?? { delay: NOTE_DELAY, duration: 0.2 }) }}
+              variants={{
+                hidden: { maskPosition: "100% 0%" },
+                shown: { maskPosition: "0% 0%" },
+              }}
+              transition={{ ease: PEN_EASE, ...(timings[i] ?? { delay: NOTE_DELAY, duration: 0.2 }) }}
             >
               {word}
             </motion.span>
