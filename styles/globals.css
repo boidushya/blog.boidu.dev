@@ -562,3 +562,11 @@ circle[id^="react-sketch-canvas__"]{
 .src-block[data-editing] > :not(.src-editor) {
   display: none;
 }
+
+.blog .chapter {
+  @apply mt-20 sm:mt-28;
+}
+
+.blog .chapter h2 {
+  @apply !mt-3 !mb-6 text-3xl sm:text-4xl;
+}

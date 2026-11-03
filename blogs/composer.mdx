@@ -8,6 +8,12 @@ description: >
   Better Lyrics fixed how I listen to lyrics. Composer is how I let everyone else write them, because the tool everyone was using made me want to throw my laptop.
 ---
 
+<Chapter n="1">
+
+## Why it exists
+
+</Chapter>
+
 ## How it started
 
 If you've read the [Better Lyrics post](/better-lyrics), you already know the setup. YouTube Music's lyrics were either missing or just plain ugly, so I built an extension to fix it. A couple of years and a lot of users later, most of my inbox had turned into some version of "song X has no lyrics, can you add them?"
@@ -67,6 +73,12 @@ The tabs follow that flow:
 Timeline and Preview sit right next to each other because that's where you'll bounce back and forth the most. People tend to assume the Timeline is the "advanced mode", which isn't really how it works in practice. Most projects use the tabs for the rough pass and the Timeline for cleanup, and since both read from the same project, nothing ever gets out of sync between them.
 
 And yes, Composer has onboarding. If you've read the [Intentional Design](/intentional-design) post, you might remember me being weirdly proud that Better Lyrics doesn't have any. That works when the whole experience is "install it, open a song, lyrics show up". A full-on editor like Composer is a different story, and pretending otherwise would just leave beginners stranded. So there's a tour that runs on your own song, and if you already know your way around, you can skip it.
+
+<Chapter n="2">
+
+## The tour
+
+</Chapter>
 
 ## The Sync tab
 
@@ -208,7 +220,11 @@ I'd rather be upfront about this: it isn't perfect. Shocking, I know. It gets mo
 
 If you like to tinker, you can swap the alignment model in Settings, and anyone self-hosting Composer can drop in their own checkpoints.
 
+<Chapter n="3">
+
 ## How it got here
+
+</Chapter>
 
 Everything above is Composer as it is today. It took a while to get there, so here's the short version.
 
@@ -262,7 +278,11 @@ I went through two rounds of mockups and picked a direction I called Lit Console
 
 Not long after, people on another Discord server told me Composer was laggy. That wasn't the redesign's fault, most of it was older stuff that had been piling up for a while. I slowed my CPU down 4x to see it for myself, and production was borderline unusable. That turned into a few days of nothing but performance work, and at one point I seriously asked whether the whole Timeline should be rewritten as a canvas. Thankfully it didn't come to that.
 
+<Chapter n="4">
+
 ## Building it, and who I listen to
+
+</Chapter>
 
 Unlike Better Lyrics, Composer has been heavily AI assisted from the start. That made shipping a whole lot faster, but writing the code stopped being the slow part, so now the slow part is deciding how every small thing should look and feel. The big features get specs and mockups. The small stuff I fix the moment it feels off, because I use Composer a lot, and using it as much as I do is the best protection I've found against it slowly turning into AMLL Tool.
 
@@ -304,7 +324,11 @@ The same goes for the loud feedback. Whenever one of their points actually made 
 
 The people I listen to hardest are the ones syncing songs in Composer every day. When they told me the reading lane broke their workflow, it was gone the same day. Someone who'd never use Composer either way doesn't get that kind of pull, and I can live without their approval ;)
 
+<Chapter n="5">
+
 ## Closing the loop
+
+</Chapter>
 
 Composer is one part of a loop. You sync a song in Composer and submit the TTML to [Unison](https://unison.betterlyrics.org), the crowdsourced lyrics API behind Better Lyrics. From then on, anyone who plays that track on YouTube Music with Better Lyrics gets your lyrics scrolling along in karaoke style.
 

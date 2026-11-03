@@ -1,5 +1,6 @@
 import logo from "@/assets/images/logo.jpg";
 import ArticleExtra from "@/components/article-extra";
+import { ChapterRail } from "@/components/chapter-rail";
 import InlineEditor from "@/components/inline-editor";
 import Like from "@/components/like";
 import Sign from "@/components/sign";
@@ -119,15 +120,17 @@ export default async function Post({ params }: { params: Promise<{ id: string }>
         )}
 
         {isMDX ? (
-          <main className="text-[1.0625rem] sm:text-lg leading-[1.7]">
-            <MDXRemote
-              source={html}
-              components={mdxComponents}
-              options={{
-                mdxOptions: { remarkPlugins, rehypePlugins },
-              }}
-            />
-          </main>
+          <ChapterRail>
+            <main className="text-[1.0625rem] sm:text-lg leading-[1.7]">
+              <MDXRemote
+                source={html}
+                components={mdxComponents}
+                options={{
+                  mdxOptions: { remarkPlugins, rehypePlugins },
+                }}
+              />
+            </main>
+          </ChapterRail>
         ) : (
           <main
             className="text-[1.0625rem] sm:text-lg leading-[1.7]"
