@@ -1,0 +1,88 @@
+"use client";
+
+import { handwriting } from "@/utils/fonts";
+import { motion, useReducedMotion } from "motion/react";
+import React, { useLayoutEffect, useRef, useState } from "react";
+
+const SECONDS_PER_PX = 0.003;
+const LINE_PAUSE = 0.12;
+const INK_MASK = "linear-gradient(90deg, #000 0 42%, transparent 58% 100%)";
+
+type WordTiming = { delay: number; duration: number };
+
+// One soft edge travels each line at a steady pace. A word's mask is 260% of its width with the
+// edge at its middle, so the edge crosses the word from -0.3 to 1.3 of its width over the sweep.
+function timeWords(words: HTMLElement[], delay: number): WordTiming[] {
+  const lines = new Map<number, HTMLElement[]>();
+  for (const word of words) lines.set(word.offsetTop, [...(lines.get(word.offsetTop) ?? []), word]);
+  const timings: WordTiming[] = [];
+  let lineStart = delay;
+  for (const line of Array.from(lines.values())) {
+    const left = Math.min(...line.map(w => w.offsetLeft));
+    const right = Math.max(...line.map(w => w.offsetLeft + w.offsetWidth));
+    for (const word of line) {
+      const width = word.offsetWidth;
+      timings.push({
+        delay: lineStart + (word.offsetLeft - left - 0.3 * width) * SECONDS_PER_PX,
+        duration: 1.6 * width * SECONDS_PER_PX,
+      });
+    }
+    lineStart += (right - left) * SECONDS_PER_PX + LINE_PAUSE;
+  }
+  return timings;
+}
+
+/**
+ * Text that writes itself in like a pen. Pass `shown` to drive it directly, or leave it out to
+ * follow the "hidden" and "shown" variants of a motion parent.
+ */
+export function Handwriting({
+  text,
+  delay = 0,
+  shown,
+  className = "",
+}: {
+  text: string;
+  delay?: number;
+  shown?: boolean;
+  className?: string;
+}) {
+  const reduceMotion = useReducedMotion();
+  const words = text.split(" ");
+  const wordRefs = useRef<HTMLSpanElement[]>([]);
+  const [timings, setTimings] = useState<WordTiming[]>([]);
+
+  useLayoutEffect(() => {
+    const measure = () => setTimings(timeWords(wordRefs.current.slice(0, words.length), delay));
+    measure();
+    const observer = new ResizeObserver(measure);
+    if (wordRefs.current[0]?.parentElement) observer.observe(wordRefs.current[0].parentElement);
+    return () => observer.disconnect();
+  }, [words.length, delay]);
+
+  const driven = shown !== undefined && {
+    initial: reduceMotion ? false : ("hidden" as const),
+    animate: shown || reduceMotion ? "shown" : "hidden",
+  };
+
+  return (
+    <motion.span className={`${handwriting.className} ${className}`} {...driven}>
+      {words.map((word, i) => (
+        <React.Fragment key={`${word}-${i}`}>
+          {i > 0 && " "}
+          <motion.span
+            ref={el => {
+              if (el) wordRefs.current[i] = el;
+            }}
+            className="inline-block px-[0.25em] -mx-[0.25em] py-[0.3em] -my-[0.3em]"
+            style={{ maskImage: INK_MASK, maskSize: "260% 100%", maskRepeat: "no-repeat" }}
+            variants={{ hidden: { maskPosition: "100% 0%" }, shown: { maskPosition: "0% 0%" } }}
+            transition={{ ease: "linear", ...(timings[i] ?? { delay, duration: 0.2 }) }}
+          >
+            {word}
+          </motion.span>
+        </React.Fragment>
+      ))}
+    </motion.span>
+  );
+}
