@@ -322,7 +322,9 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const onLyricsResize = useCallback(
     (lyrics: HTMLElement, entry: ResizeObserverEntry) => {
       if (entry.contentRect.width === lyricsWidth.current) return;
+      const first = lyricsWidth.current < 0;
       lyricsWidth.current = entry.contentRect.width;
+      if (first) return;
       measure();
       const note = noteRef.current;
       const ink = inkRef.current;
