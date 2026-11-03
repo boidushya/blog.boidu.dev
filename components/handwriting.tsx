@@ -41,19 +41,27 @@ export function Handwriting({
   delay = 0,
   shown,
   className = "",
+  onTimed,
 }: {
   text: string;
   delay?: number;
   shown?: boolean;
   className?: string;
+  onTimed?: (endSeconds: number) => void;
 }) {
   const reduceMotion = useReducedMotion();
   const words = text.split(" ");
   const wordRefs = useRef<HTMLSpanElement[]>([]);
   const [timings, setTimings] = useState<WordTiming[]>([]);
+  const onTimedRef = useRef(onTimed);
+  onTimedRef.current = onTimed;
 
   useLayoutEffect(() => {
-    const measure = () => setTimings(timeWords(wordRefs.current.slice(0, words.length), delay));
+    const measure = () => {
+      const next = timeWords(wordRefs.current.slice(0, words.length), delay);
+      setTimings(next);
+      onTimedRef.current?.(Math.max(delay, ...next.map(t => t.delay + t.duration)));
+    };
     measure();
     const observer = new ResizeObserver(measure);
     if (wordRefs.current[0]?.parentElement) observer.observe(wordRefs.current[0].parentElement);

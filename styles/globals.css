@@ -646,11 +646,11 @@ circle[id^="react-sketch-canvas__"]{
   }
 
   .chapter[data-shown] .chapter-stem {
-    animation: chapter-draw 320ms cubic-bezier(0.4, 0, 0.2, 1) 600ms forwards;
+    animation: chapter-draw 320ms cubic-bezier(0.4, 0, 0.2, 1) var(--ink-end, 600ms) forwards;
   }
 
   .chapter[data-shown] .chapter-head {
-    animation: chapter-draw 160ms ease-out 900ms forwards;
+    animation: chapter-draw 160ms ease-out calc(var(--ink-end, 600ms) + 300ms) forwards;
   }
 
   .chapter[data-shown] .sung-lit {

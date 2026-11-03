@@ -69,7 +69,12 @@ export function Chapter({ n, children }: { n: string; children: React.ReactNode 
       <div className="chapter-rule">
         <span className="sr-only">{`Chapter ${n}`}</span>
         <span aria-hidden="true" className="chapter-hand">
-          <Handwriting text={`ch. ${n}`} delay={0.1} shown={shown} />
+          <Handwriting
+            text={`ch. ${n}`}
+            delay={0.1}
+            shown={shown}
+            onTimed={end => ref.current?.style.setProperty("--ink-end", `${Math.round(end * 1000)}ms`)}
+          />
           <svg viewBox="0 0 34 26">
             <path className="chapter-stem" pathLength={1} d="M2 5 C13 2 24 6 25 21" />
             <path className="chapter-head" pathLength={1} d="M20.5 16.5 L25 21.5 L29 16" />
