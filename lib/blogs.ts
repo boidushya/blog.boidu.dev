@@ -1,6 +1,6 @@
 import fs from "fs";
 import { join } from "path";
-import { cardScrim } from "@/lib/card-scrim";
+import { washDim } from "@/lib/wash-dim";
 import { getAuthorsData, getYouTubeThumbnail, isYouTubeLink } from "@/utils/functions";
 import { rehypeAdmonitions } from "@/utils/rehype-admonitions";
 import rehypeChapterHeading from "@/utils/rehype-chapter-heading";
@@ -80,6 +80,7 @@ export async function getPostById(id: string) {
   return {
     ...data,
     title: data.title,
+    short: (data.short as string | undefined) ?? String(data.title).toLowerCase(),
     id: realId,
     banner: data.banner,
     cover: data.cover as string | undefined,
@@ -112,20 +113,21 @@ export async function getAllBlogs() {
   const posts = await getVisiblePosts();
   posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   return Promise.all(
-    posts.map(async (post, index) => {
+    posts.map(async post => {
       const art = post.cover ?? post.banner;
       const image = (isYouTubeLink(art) && getYouTubeThumbnail(art)) || art;
+      const minutes = Number.parseInt(post.readingTime);
       return {
-        id: index + 1,
+        id: post.id,
         title: post.title,
+        short: post.short,
         description: post.description,
         image,
-        scrim: await cardScrim(image),
+        dim: await washDim(image),
         link: `/${post.id}`,
-        labels: post.labels,
-        date: post.date,
-        readingTime: post.readingTime,
-        draft: post.draft,
+        labels: post.draft ? ["Draft", ...post.labels] : post.labels,
+        minutes,
+        note: `${format(new Date(post.date), "LLL ''yy").toLowerCase()} · ${minutes} min`,
       };
     })
   );
