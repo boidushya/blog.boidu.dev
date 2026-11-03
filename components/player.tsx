@@ -392,7 +392,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
       const target = e.target;
       if (target instanceof HTMLElement && (target.isContentEditable || target.matches("input, textarea, select")))
         return;
