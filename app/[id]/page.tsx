@@ -35,11 +35,8 @@ function YoutubeEmbed({ url }: { url: string }) {
   );
 }
 
-export default async function Post({
-  params: { id },
-}: {
-  params: { id: string };
-}) {
+export default async function Post({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const post = await getPostById(id);
   if (isHiddenDraft(post)) notFound();
   const { html, title, date, readingTime, banner, authors, isMDX } = post;
@@ -123,7 +120,6 @@ export default async function Post({
 
         {isMDX ? (
           <main className="text-[1.0625rem] sm:text-lg leading-[1.7]">
-            {/* @ts-expect-error Async Server Component */}
             <MDXRemote
               source={html}
               components={mdxComponents}
@@ -153,11 +149,8 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({
-  params: { id },
-}: {
-  params: { id: string };
-}) {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const { title, description, banner } = await getPostById(id);
 
   const processedDescription = truncate(description, 160);

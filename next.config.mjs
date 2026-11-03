@@ -2,7 +2,7 @@
 
 const nextConfig = {
   images: {
-    domains: [
+    remotePatterns: [
       "images.unsplash.com",
       "source.unsplash.com",
       "img.youtube.com",
@@ -10,13 +10,11 @@ const nextConfig = {
       "avatars.githubusercontent.com",
       "api.dicebear.com",
       "composer.betterlyrics.org",
-    ],
+    ].map(hostname => ({ protocol: "https", hostname })),
+    qualities: [75, 100],
   },
-  webpack: config => {
-    config.externals.push("utf-8-validate", "bufferutil");
-    config.ignoreWarnings = [{ message: /Critical dependency: require function/ }];
-    return config;
-  },
+  serverExternalPackages: ["utf-8-validate", "bufferutil"],
+  agentRules: false,
 };
 
 export default nextConfig;
