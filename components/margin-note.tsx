@@ -6,7 +6,7 @@ import React, { useLayoutEffect, useRef, useState } from "react";
 
 const BRACKET_PATH = "M2 2.5 C5 1.8 8 1.6 10.5 2 C10.2 30 10.9 70 10.4 98 C7.5 98.6 4.5 98.4 1.5 98.9";
 const NOTE_DELAY = 0.45;
-const SECONDS_PER_PX = 0.004;
+const SECONDS_PER_PX = 0.0035;
 const LINE_PAUSE = 0.12;
 const INK_MASK = "linear-gradient(90deg, #000 0 42%, transparent 58% 100%)";
 
