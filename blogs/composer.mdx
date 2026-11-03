@@ -10,7 +10,7 @@ description: >
 
 ## How it started
 
-If you've read the [Better Lyrics post](/better-lyrics), you already know the setup. YouTube Music's lyrics were either missing or just plain ugly, so I built an extension to fix it. A couple of years and a lot of users later, my inbox stopped being "this is great" and started being "song X has no lyrics, can you add them?"
+If you've read the [Better Lyrics post](/better-lyrics), you already know the setup. YouTube Music's lyrics were either missing or just plain ugly, so I built an extension to fix it. A couple of years and a lot of users later, my inbox stopped being "this is great" and started being "song X has no lyrics, can you add them?" @@ last line reads weirdly, has an odd cadence. might have to switch it up
 
 I'd always reply with some version of the same thing. Better Lyrics isn't a lyrics database, it just shows whatever is out there, and if nobody has made synced lyrics for your song then nobody is going to, me included.
 
@@ -34,7 +34,7 @@ The second most important thing in a lyrics syncing tool is the audio. In AMLL T
 ![AMLL Tool's File menu, with Import lyrics near the bottom](/composer/amll-file-menu.png)
 _File, then Import lyrics, then pick a format. Obviously._
 
-Meanwhile, there's a football field's worth of empty space in the middle of the screen that you can't click and that does absolutely nothing. _\*insert rolling tumbleweed gif here\*_
+Meanwhile, there's <Peek src="/composer/tumbleweed.mp4" alt="A tumbleweed rolling across empty desert">a football field's worth of empty space</Peek> in the middle of the screen that you can't click and that does absolutely nothing.
 
 Some of the forks do try to fill it, and I'll give them that, but mostly by swapping the nothing for a few buttons that send you off somewhere else. It's an improvement, just not much of one.
 
@@ -73,18 +73,22 @@ _Tap along, and the words land on the timeline as you go_
 
 The Sync tab does what you'd expect, with one detail that took me forever to settle on. Tapping Space gives the current word a start time, and holding F gives it a start and an end. Tap Space while holding F and you get gapless syllable boundaries without having to think about it.
 
-That sounds dumb written out, but it makes a huge difference. Space alone is enough for most songs. Add F and you can handle rap, staccato, or Japanese and Korean lyrics where every character needs its own timing. It also works with touch, so yes, you can sync on your phone!
+That sounds dumb written out, but it makes a huge difference. Space alone is enough for most songs. Add F and you can handle rap, staccato, or Japanese and Korean lyrics where every character needs its own timing. It also works with touch, so yes, you can sync on a tablet!
 
-Why Enter to play and Space to tap? I took it from Cubase, where Enter starts playback. That left Space free, and older versions of Cubase even had you tap a song's tempo on the space bar while it played, which is exactly the feeling I wanted for syncing: the song plays, you tap.
+Why Enter to play and Space to tap? I took it from Cubase, where Enter starts playback. That left Space free, and older versions of Cubase even had you tap a song's tempo on the space bar while it played, which is exactly the feeling I wanted for syncing: the song plays, you tap. @@ 'and from my naive intuition, space felt much nicer for something as important as, well, syncing your lyrics since that was the whole flow in the early days. infact, food for thought! if you are syncing something, which button makes more sense? the big & wide one where both your thumbs are always resting, or the button thats tucked to the right? oh or nightmare fuel here: G _* shudders *_
 
-Somewhere down the line, I realised I'd been shipping a garbage default this whole time! Pretty much every other editor uses Space to play and pause, and that's the first thing anyone opening Composer reaches for. So newer versions come with a "Remastered" shortcuts preset, a.k.a. the keys I should've shipped in the first place. Space plays, Enter taps, and the arrow keys seek.
+This was my thought process when composer initially became a thing. What i failed to consider back then in my callowness was space is also the button people are most familiar with for playing or pausing! '
+i do say more on that later so maybe a segue is needed here...
+@@
+
+Somewhere down the line, I realised I'd been shipping a garbage default this whole time! Pretty much every other editor uses Space to play and pause, and that's the first thing anyone opening Composer reaches for. So newer versions come with a "Remastered" shortcuts preset where Space plays, Enter taps, and the arrow keys seek.
 
 ![The Remastered shortcuts preset in Composer's settings](/composer/remastered-preset.png)
 _Six keys I got wrong, fixed in one click_
 
 Composer also notices when you're fighting it. If you're on the default keys and hit Space expecting the song to play, or hit Space and then reach for the real play key a second later, a toast pops up asking if you want Space to play. One click swaps you over, and it points you to Remastered if you want the arrow keys to seek too.
 
-We do this kind of thing a lot. Turn on the pitch line before separating the vocals and Composer tells you that's what it needs. Try to auto-align without a synced line and it tells you what to select first. Whenever someone gets stuck, I'd rather Composer hold their hand through it if it can, instead of leaving them guessing.
+We do this kind of thing a lot. Turn on the pitch line before separating the vocals and Composer tells you that's what it needs. Try to auto-align without a synced line and it tells you what to select first. Whenever someone gets stuck, I'd rather Composer hold their hand through it if it can, instead of leaving them guessing. @@ also callback to the smart defaults in intentional design thing.
 
 <MarginNote note="muscle memory is hard to unlearn, no judgement… mostly">
 
@@ -111,11 +115,7 @@ On top of that, the tap mode they'd gotten used to looked completely different. 
   afterLabel="Reading lane"
 />
 
-<MarginNote note="the classic one is on the first line, so nothing above it yet">
-
 The classic look was progressive disclosure at its most basic: show the line you're on, keep its neighbours quietly in view, and don't overload anyone. I'd traded that for something busier, and a couple of people told me they couldn't even tell which word they were syncing anymore, because the tinted next word looked like the one being sung.
-
-</MarginNote>
 
 They were right. People had built up muscle memory for the old Sync tab over months, and I'd broken it to make something prettier. So within an hour I put the classic view back. The small fixes that came along with the redesign stayed, like long lines no longer overlapping and split syllables staying joined, but everything people actually touched went back to exactly how it was. If it ain't broke, don't fix it. Less really is more sometimes, and apparently I need to keep relearning that.
 
@@ -125,6 +125,8 @@ They were right. People had built up muscle memory for the old Sync tab over mon
 _Drag a word and it snaps to where the voice actually starts_
 
 This is where Composer stops being a guided workflow and turns into an actual tool. The waveform sits on top, lyric lines stack below it as tracks, and every word is a block you can drag around. If you've ever touched a DAW or a video editor, it'll feel familiar pretty much instantly. Tapping along gets you close, but nobody would edit audio without a timeline, so I don't see why lyrics should be any different.
+
+To err is human, and that's pretty much the first rule of designing an interface. If fixing a mistake is an afterthought in your tool, or worse, something you blame the user for, then breaking news: that's a tool failure.
 
 It's the part of Composer I spent the most time on, and most of that time went into how things feel rather than adding features.
 
