@@ -53,7 +53,7 @@ export default function RootLayout({
         ></script>
       </head>
       <body>
-        <div className="relative box-content max-w-3xl px-4 mx-auto sm:px-6">
+        <div className="site relative box-content max-w-3xl px-4 mx-auto sm:px-6">
           <Providers>
             <NextTopLoader color={topLoaderColor} />
             <Navbar />
