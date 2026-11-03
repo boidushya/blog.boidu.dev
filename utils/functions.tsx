@@ -11,6 +11,13 @@ export function isYouTubeLink(url: string) {
   return youtubePatterns.some(pattern => pattern.test(url));
 }
 
+export function getYouTubeThumbnail(url: string) {
+  const match = url.match(
+    /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+  );
+  return match ? `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg` : null;
+}
+
 export function truncate(str: string, num: number) {
   if (str.length <= num) {
     return str;

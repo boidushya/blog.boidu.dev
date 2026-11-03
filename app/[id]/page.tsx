@@ -154,7 +154,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { title, description, banner } = await getPostById(id);
+  const { title, description, banner, cover } = await getPostById(id);
+  const image = cover ?? banner;
 
   const processedDescription = truncate(description, 160);
 
@@ -168,7 +169,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       siteName: "blog.boidu.dev",
       images: [
         {
-          url: banner,
+          url: image,
           width: 1200,
           height: 675,
           alt: title,
@@ -180,7 +181,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       card: "summary_large_image",
       title,
       description: processedDescription,
-      images: [banner],
+      images: [image],
     },
   };
 }

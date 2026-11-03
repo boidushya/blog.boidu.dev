@@ -1,6 +1,7 @@
 import fs from "fs";
 import { join } from "path";
-import { getAuthorsData } from "@/utils/functions";
+import { cardScrim } from "@/lib/card-scrim";
+import { getAuthorsData, getYouTubeThumbnail, isYouTubeLink } from "@/utils/functions";
 import { rehypeAdmonitions } from "@/utils/rehype-admonitions";
 import rehypeShiki from "@/utils/rehype-shiki";
 import rehypeSourceBlocks from "@/utils/rehype-source-blocks";
@@ -78,12 +79,13 @@ export async function getPostById(id: string) {
     title: data.title,
     id: realId,
     banner: data.banner,
+    cover: data.cover as string | undefined,
     description: data.description,
     date: format(new Date(data.date), "LLL dd, yyyy"),
     readingTime: readingTime(content).text,
     html,
     isMDX,
-    labels: data.labels || [],
+    labels: (data.labels ?? []) as string[],
     authors: authors || [],
     draft: data.draft === true,
   };
@@ -105,21 +107,25 @@ export async function getAllPosts() {
 
 export async function getAllBlogs() {
   const posts = await getVisiblePosts();
-  return posts
-    .sort((post1, post2) => {
-      const date1 = new Date(post1.date);
-      const date2 = new Date(post2.date);
-      return date2.getTime() - date1.getTime();
-    })
-    .map((post, index) => {
+  posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  return Promise.all(
+    posts.map(async (post, index) => {
+      const art = post.cover ?? post.banner;
+      const image = (isYouTubeLink(art) && getYouTubeThumbnail(art)) || art;
       return {
         id: index + 1,
         title: post.title,
         description: post.description,
-        image: post.banner,
+        image,
+        scrim: await cardScrim(image),
         link: `/${post.id}`,
         labels: post.labels,
+        date: post.date,
+        readingTime: post.readingTime,
         draft: post.draft,
       };
-    });
+    })
+  );
 }
+
+export type BlogCard = Awaited<ReturnType<typeof getAllBlogs>>[number];

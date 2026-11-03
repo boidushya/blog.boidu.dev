@@ -570,3 +570,13 @@ circle[id^="react-sketch-canvas__"]{
 .blog .chapter h2 {
   @apply !mt-3 !mb-6 text-3xl sm:text-4xl;
 }
+
+.pill > span {
+  text-box: trim-both cap alphabetic;
+}
+
+@supports not (text-box: trim-both cap alphabetic) {
+  .pill {
+    padding-top: 2.5px;
+  }
+}

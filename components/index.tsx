@@ -1,137 +1,134 @@
 "use client";
 
+import type { BlogCard } from "@/lib/blogs";
 import { useTheme } from "@/providers/theme";
 import { Tooltip } from "@/utils/components";
 import { LIGHT_THEMES } from "@/utils/constants";
-import { isYouTubeLink } from "@/utils/functions";
 import { useWaterMark } from "@/utils/hooks";
+import { Kawarp, type KawarpRef } from "@kawarp/react";
 import { ToggleGroup, ToggleGroupItem } from "@radix-ui/react-toggle-group";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const MotionLink = motion(Link);
 
-const getYouTubeThumbnail = (url: string): string | null => {
-  const match = url.match(
-    /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+function Wash({ src, scrim, isLight }: { src: string; scrim: number; isLight: boolean }) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const kawarpRef = useRef<KawarpRef>(null);
+  const [ready, setReady] = useState(false);
+  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!ready || reduceMotion || !box) return;
+    const observer = new IntersectionObserver(([entry]) =>
+      entry.isIntersecting ? kawarpRef.current?.start() : kawarpRef.current?.stop()
+    );
+    observer.observe(box);
+    return () => {
+      observer.disconnect();
+      kawarpRef.current?.stop();
+    };
+  }, [ready, reduceMotion]);
+
+  return (
+    <div ref={boxRef} aria-hidden="true" className="absolute inset-0 overflow-hidden -z-10">
+      <Image src={src} alt="" fill sizes="128px" className="object-cover scale-[1.4] blur-[48px] saturate-150" />
+      <Kawarp
+        ref={kawarpRef}
+        src={src}
+        autoPlay={false}
+        blurPasses={8}
+        animationSpeed={1.6}
+        saturation={1.6}
+        warpIntensity={0.9}
+        onLoad={() => {
+          kawarpRef.current?.instance?.renderFrame();
+          setReady(true);
+        }}
+        style={{ position: "absolute", inset: 0 }}
+        className={`transition-opacity duration-[600ms] ease-out ${ready ? "opacity-100" : "opacity-0"}`}
+      />
+      <div className={`absolute inset-0 ${isLight ? "bg-accent-50" : "bg-accent-900"}`} style={{ opacity: scrim }} />
+    </div>
   );
+}
 
-  if (match) {
-    const videoId = match[1];
-    const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-    return thumbnailUrl;
-  }
-
-  return null;
+const cardVariants = {
+  hidden: { opacity: 0, y: -20 },
+  visible: { opacity: 1, y: 0 },
 };
 
-export function ContentBox({
-  id,
-  title,
-  description,
-  image,
-  link,
-  length,
-  labels,
-  draft,
-}: {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  link: string;
-  length: number;
-  labels: string[];
-  draft: boolean;
-}) {
-  const projectVariants = {
-    hidden: {
-      opacity: 0,
-      y: -20,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-    },
-  };
-
-  const isYoutubeVideo = isYouTubeLink(image);
-  const resolvedImage = isYoutubeVideo ? getYouTubeThumbnail(image) : image;
-
+export function ContentBox({ post, feature }: { post: BlogCard; feature: boolean }) {
   const { theme } = useTheme();
-
   const isLight = LIGHT_THEMES.includes(theme);
 
   return (
     <MotionLink
-      href={link}
-      aria-labelledby={`post-${id}-title`}
-      variants={projectVariants}
-      className={`group focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-400 rounded-xl shadow-xl overflow-hidden grid items-start self-start justify-start w-full grid-cols-3 border border-opacity-10 border-accent-400 ${
-        id !== length ? `border-b` : ``
+      href={post.link}
+      aria-labelledby={`post-${post.id}-title`}
+      variants={cardVariants}
+      className={`relative grid grid-rows-[auto_1fr] overflow-hidden isolate shadow-[0_1px_2px_oklch(0_0_0/0.3),0_12px_32px_oklch(0_0_0/0.28)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-400 ${
+        feature ? "rounded-3xl sm:col-span-2" : "rounded-[20px]"
       }`}
     >
-      <div className="relative items-start order-2 hidden h-full col-span-1 border-l border-accent-400 border-opacity-10 sm:flex">
-        <div className="absolute inset-0 bg-gradient-radial from-transparent to-accent-900/80" />
+      <Wash src={post.image} scrim={post.scrim} isLight={isLight} />
+      <div className="relative aspect-video">
         <Image
-          src={resolvedImage as string}
+          src={post.image}
+          alt=""
           fill
-          style={{
-            objectFit: "cover",
-          }}
-          alt={title}
-          loading="lazy"
+          sizes={feature ? "(min-width: 768px) 768px, 100vw" : "(min-width: 768px) 374px, 100vw"}
+          priority={feature}
+          className="object-cover"
         />
       </div>
-      <div className="relative flex flex-col items-start justify-between order-1 h-full col-span-3 overflow-hidden tracking-normal sm:col-span-2 isolate">
-        <div className="flex flex-row flex-wrap justify-start w-full gap-2 p-6 pb-0 sm:p-8 sm:pb-0">
-          {(draft ? ["Draft", ...labels] : labels).map(label => (
+      <div
+        className={
+          feature
+            ? "grid content-start gap-3.5 px-3.5 py-[18px] sm:px-8 sm:pt-6 sm:pb-[30px]"
+            : "grid content-start grid-rows-[auto_auto_auto_1fr] gap-3 p-5"
+        }
+      >
+        <div className="flex flex-wrap items-center gap-1.5">
+          {(post.draft ? ["Draft", ...post.labels] : post.labels).map(label => (
             <span
               key={label}
-              className={`bg-accent-800/50 text-fg-muted border border-accent-800 px-2 py-1 text-xs rounded-md`}
+              className={`pill inline-flex items-center h-6 px-2.5 rounded-full text-xs font-medium leading-none whitespace-nowrap ${
+                label === "Draft" && post.draft
+                  ? isLight
+                    ? "bg-accent-850 text-accent-50"
+                    : "bg-accent-100 text-accent-900"
+                  : "bg-white/[0.12] text-white/[0.92]"
+              }`}
             >
-              {label}
+              <span>{label}</span>
             </span>
           ))}
         </div>
-        <div className="flex flex-col justify-center h-full p-6 pb-10 sm:p-8 sm:pb-12">
-          <h3
-            id={`post-${id}-title`}
-            className="mb-4 text-2xl font-semibold tracking-tight text-accent-50 [text-wrap:balance]"
-          >
-            {title}
-          </h3>
-          <p className="text-sm tracking-normal text-fg-muted [text-wrap:pretty]">{description}</p>
-        </div>
-        <div className="absolute inset-0 z-[-1] isolate">
-          <div className="absolute inset-0 z-10 bg-accent-900/50" />
-          {!isLight && (
-            <Image
-              src={resolvedImage as string}
-              fill={true}
-              alt="Boidu"
-              className="z-0 object-cover filter blur-3xl saturate-200"
-              loading="lazy"
-            />
-          )}
-        </div>
-        <div
-          aria-hidden="true"
-          className="flex items-center justify-start w-full gap-1 px-6 py-4 sm:px-8 text-sm font-semibold tracking-wide transition-colors border-t select-none border-accent-400 border-opacity-5 bg-opacity-30 text-accent-400 bg-accent-800 group-hover:bg-opacity-50 group-hover:text-accent-300 group-hover:border-transparent"
+        <h3
+          id={`post-${post.id}-title`}
+          className={`font-semibold tracking-[-0.015em] text-white [text-wrap:balance] ${
+            feature ? "text-[22px] leading-[1.2] sm:text-[28px]" : "text-[19px] leading-[1.3]"
+          }`}
         >
-          Read More
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={3}
-            stroke="currentColor"
-            className="w-3 h-3 transition-transform motion-safe:group-hover:translate-x-2"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-          </svg>
+          {post.title}
+        </h3>
+        <p
+          className={`leading-relaxed text-white/[0.84] [text-wrap:pretty] ${
+            feature ? "text-[15px] max-w-[58ch]" : "text-sm line-clamp-2"
+          }`}
+        >
+          {post.description}
+        </p>
+        <div className={`flex items-center gap-2 text-[13px] text-white/[0.72] ${feature ? "" : "self-end pt-1"}`}>
+          <span>{post.date}</span>
+          <span aria-hidden="true" className="text-white/40">
+            ·
+          </span>
+          <span>{post.readingTime}</span>
         </div>
       </div>
     </MotionLink>
@@ -150,8 +147,9 @@ const projectContainerVariants = {
   },
 };
 
-export function View({ data }: { data: any }) {
+export function View({ data }: { data: BlogCard[] }) {
   useWaterMark();
+  const [first, ...rest] = data;
 
   return (
     <motion.div
@@ -159,30 +157,19 @@ export function View({ data }: { data: any }) {
       initial="hidden"
       animate="visible"
       exit="hidden"
-      className="w-full space-y-6 sm:space-y-8"
+      className="grid w-full gap-5 sm:grid-cols-2"
     >
       <AnimatePresence>
-        {data.map(
-          (
-            item: React.JSX.IntrinsicAttributes & {
-              id: number;
-              title: string;
-              description: string;
-              image: string;
-              link: string;
-              labels: string[];
-              draft: boolean;
-            }
-          ) => (
-            <ContentBox length={data.length} key={item.id} {...item} />
-          )
-        )}
+        {first && <ContentBox key={first.link} post={first} feature />}
+        {rest.map(post => (
+          <ContentBox key={post.link} post={post} feature={false} />
+        ))}
       </AnimatePresence>
     </motion.div>
   );
 }
 
-export const ViewWithUtils = ({ data }: { data: any }) => {
+export const ViewWithUtils = ({ data }: { data: BlogCard[] }) => {
   const [search, setSearch] = React.useState("");
   const [sort, setSort] = React.useState("");
   const [filteredData, setFilteredData] = React.useState(data);
@@ -193,7 +180,7 @@ export const ViewWithUtils = ({ data }: { data: any }) => {
       return;
     }
     setFilteredData(
-      filteredData.filter((post: any) => {
+      filteredData.filter(post => {
         const postTitle = post.title.toLowerCase();
         const postDescription = post.description.toLowerCase();
         const postLabels = post.labels.join(" ").toLowerCase();
@@ -210,10 +197,10 @@ export const ViewWithUtils = ({ data }: { data: any }) => {
 
     switch (sort) {
       case "asc":
-        newFilteredData = [...filteredData].sort((a: any, b: any) => a.title.localeCompare(b.title));
+        newFilteredData = [...filteredData].sort((a, b) => a.title.localeCompare(b.title));
         break;
       case "dsc":
-        newFilteredData = [...filteredData].sort((a: any, b: any) => b.title.localeCompare(a.title));
+        newFilteredData = [...filteredData].sort((a, b) => b.title.localeCompare(a.title));
         break;
       default:
         newFilteredData = data;
@@ -224,10 +211,10 @@ export const ViewWithUtils = ({ data }: { data: any }) => {
   }, [sort]);
 
   const toggleGroupItemClasses =
-    "pressable hover:bg-accent-900 text-accent-400 data-[state=on]:bg-accent-800/50 data-[state=on]:text-accent-100 grid w-10 place-items-center bg-accent-900 text-base leading-4 first:rounded-l last:rounded-r ";
+    "pressable hover:bg-accent-900 text-accent-400 data-[state=on]:bg-accent-800/50 data-[state=on]:text-accent-100 grid w-10 place-items-center bg-accent-900 text-base leading-4 first:rounded-l-md last:rounded-r-md ";
 
   return (
-    <div className="flex flex-col w-full gap-6 sm:gap-8">
+    <div className="flex flex-col w-full gap-6">
       <div className="flex flex-row w-full h-10 gap-4">
         <div className="relative flex-grow">
           <input
@@ -235,7 +222,7 @@ export const ViewWithUtils = ({ data }: { data: any }) => {
             placeholder="e.g. Understanding React Hooks"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full p-2 px-3 transition-colors border rounded-md pl-9 border-accent-800/50 bg-accent-900 focus:outline-0 focus:border-accent-600 focus:ring-transparent placeholder:text-accent-400/50"
+            className="w-full h-full px-3 transition-colors border rounded-md pl-9 border-accent-800/50 bg-accent-900 focus:outline-0 focus:border-accent-600 focus:ring-transparent placeholder:text-accent-400/50"
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -256,7 +243,7 @@ export const ViewWithUtils = ({ data }: { data: any }) => {
           type="single"
           value={sort}
           onValueChange={setSort}
-          className="inline-flex border rounded w-fit border-accent-800/50"
+          className="inline-flex border rounded-md w-fit border-accent-800/50"
           aria-label="Alphabetical Sort"
         >
           <ToggleGroupItem value="asc" className={toggleGroupItemClasses} aria-label="Sort Ascending">
