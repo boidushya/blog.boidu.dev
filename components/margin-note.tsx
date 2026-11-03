@@ -7,28 +7,31 @@ import React, { useLayoutEffect, useRef, useState } from "react";
 const BRACKET_PATH = "M2 2.5 C5 1.8 8 1.6 10.5 2 C10.2 30 10.9 70 10.4 98 C7.5 98.6 4.5 98.4 1.5 98.9";
 const NOTE_DELAY = 0.45;
 const SECONDS_PER_PX = 0.004;
-const WORD_GAP = 0.06;
-const LINE_PAUSE = 0.14;
-const PUNCTUATION_PAUSE = 0.22;
-const SPEED_DRIFT = [1, 0.9, 1.1, 0.95, 1.05];
-const PEN_EASE = [0.45, 0, 0.55, 1] as const;
+const LINE_PAUSE = 0.12;
 const INK_MASK = "linear-gradient(90deg, #000 0 42%, transparent 58% 100%)";
 
 type WordTiming = { delay: number; duration: number };
 
+// One soft edge travels each line at a steady pace. A word's mask is 260% of its width with the
+// edge at its middle, so the edge crosses the word from -0.3 to 1.3 of its width over the sweep.
 function timeWords(words: HTMLElement[]): WordTiming[] {
-  let time = NOTE_DELAY;
-  let lineTop = words[0]?.offsetTop;
-  return words.map((word, i) => {
-    if (word.offsetTop !== lineTop) {
-      time += LINE_PAUSE;
-      lineTop = word.offsetTop;
+  const lines = new Map<number, HTMLElement[]>();
+  for (const word of words) lines.set(word.offsetTop, [...(lines.get(word.offsetTop) ?? []), word]);
+  const timings: WordTiming[] = [];
+  let lineStart = NOTE_DELAY;
+  for (const line of Array.from(lines.values())) {
+    const left = Math.min(...line.map(w => w.offsetLeft));
+    const right = Math.max(...line.map(w => w.offsetLeft + w.offsetWidth));
+    for (const word of line) {
+      const width = word.offsetWidth;
+      timings.push({
+        delay: lineStart + (word.offsetLeft - left - 0.3 * width) * SECONDS_PER_PX,
+        duration: 1.6 * width * SECONDS_PER_PX,
+      });
     }
-    const duration = word.offsetWidth * SECONDS_PER_PX * SPEED_DRIFT[i % SPEED_DRIFT.length];
-    const timing = { delay: time, duration };
-    time += duration + (/[,.;:!?…]$/.test(word.textContent ?? "") ? PUNCTUATION_PAUSE : WORD_GAP);
-    return timing;
-  });
+    lineStart += (right - left) * SECONDS_PER_PX + LINE_PAUSE;
+  }
+  return timings;
 }
 
 export function MarginNote({ note, children }: { note: string; children: React.ReactNode }) {
@@ -92,7 +95,7 @@ export function MarginNote({ note, children }: { note: string; children: React.R
                 hidden: { maskPosition: "100% 0%" },
                 shown: { maskPosition: "0% 0%" },
               }}
-              transition={{ ease: PEN_EASE, ...(timings[i] ?? { delay: NOTE_DELAY, duration: 0.2 }) }}
+              transition={{ ease: "linear", ...(timings[i] ?? { delay: NOTE_DELAY, duration: 0.2 }) }}
             >
               {word}
             </motion.span>
