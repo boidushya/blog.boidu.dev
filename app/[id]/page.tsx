@@ -164,11 +164,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return {
     title,
     description,
-    alternates: { canonical: `/${id}` },
+    alternates: { canonical: `/${post.id}` },
     openGraph: {
       title,
       description,
-      url: `/${id}`,
+      url: `/${post.id}`,
       siteName: SITE.host,
       type: "article",
       publishedTime: publishedAt,

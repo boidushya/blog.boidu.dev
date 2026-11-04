@@ -33,8 +33,6 @@ export function Wash({ src, dim }: { src: string; dim: number }) {
 
 const diatype = fs.promises.readFile(join(process.cwd(), "public/fonts/ABCDiatypeRoundedVariable.woff2"));
 
-let caveat: ReturnType<typeof googleFonts> | undefined;
-
 /** `handwriting` loads Caveat, for cards that write a title by hand. */
 export async function ogImage(node: ReactNode, { handwriting = false } = {}) {
   return new ImageResponse(
@@ -58,7 +56,7 @@ export async function ogImage(node: ReactNode, { handwriting = false } = {}) {
       quality: 90,
       fonts: [
         { name: "Diatype", data: await diatype },
-        ...(handwriting ? await (caveat ??= googleFonts([{ name: "Caveat", weight: 700 }])) : []),
+        ...(handwriting ? await googleFonts([{ name: "Caveat", weight: 700 }]) : []),
       ],
     }
   );
