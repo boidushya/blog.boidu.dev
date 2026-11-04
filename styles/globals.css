@@ -1625,7 +1625,9 @@ html:has(.player) .radix-tooltip__content {
     height: auto;
     margin-inline: 0;
     overflow: visible;
-    padding: 32vh 0 60vh;
+    padding: 14svh 0 64px;
+    /* The list slides up inside its sticky box, so the footer is pulled up over the space it leaves. */
+    margin-bottom: calc(-1 * var(--player-travel, 0px));
     -webkit-mask-image: none;
     mask-image: none;
   }

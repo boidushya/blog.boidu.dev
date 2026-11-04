@@ -114,7 +114,10 @@ function placeNote(
   const wordRight = last.offsetLeft + last.offsetWidth;
   const wordTop = lineTop + last.offsetTop;
   const wordBottom = wordTop + last.offsetHeight;
-  const low = lineCentre + line.offsetHeight / 2 > lyrics.clientHeight * 0.6 && lyrics.clientHeight < innerHeight * 1.5;
+  const low =
+    isDesktop() &&
+    lineCentre + line.offsetHeight / 2 > lyrics.clientHeight * 0.6 &&
+    lyrics.clientHeight < innerHeight * 1.5;
 
   const fits = (side: NoteSide, x: number) => {
     const left = x - tipIn(side, inkWidth)[0];
@@ -462,7 +465,8 @@ export function Player({ posts }: { posts: BlogCard[] }) {
     };
 
     const fit = () => {
-      if (!phone.matches) {
+      const lines = linesIn(list);
+      if (!phone.matches || !lines.length) {
         body.style.removeProperty("--player-tail");
         return;
       }
@@ -471,7 +475,8 @@ export function Player({ posts }: { posts: BlogCard[] }) {
         `${pageTop(lyrics) + Number.parseFloat(getComputedStyle(lyrics).paddingTop)}px`
       );
       lyrics.style.setProperty("--player-focus", `${pageTop(band)}px`);
-      const travel = (linesIn(list).length - 1) * band.offsetHeight;
+      lyrics.style.setProperty("--player-travel", `${lines[lines.length - 1].offsetTop - lines[0].offsetTop}px`);
+      const travel = (lines.length - 1) * band.offsetHeight;
       const tail = Number.parseFloat(body.style.getPropertyValue("--player-tail")) || 0;
       const room = document.documentElement.scrollHeight - tail - innerHeight;
       body.style.setProperty("--player-tail", `${Math.max(0, travel - room)}px`);
