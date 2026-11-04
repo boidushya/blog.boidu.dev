@@ -250,6 +250,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const indexRef = useRef(index);
   const followFocus = useRef(false);
   const committedIndex = useRef(index);
+  const shown = useRef({ visible, index });
   const focusingLine = useRef(false);
   const pointer = useRef({ x: -1, y: -1 });
   const hoverTimer = useRef<Timer>(undefined);
@@ -406,7 +407,8 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   useLayoutEffect(() => {
     indexRef.current = index;
     committedIndex.current = index;
-    picked.set(visible[index]?.id);
+    if (shown.current.visible === visible && shown.current.index !== index) picked.set(visible[index]?.id);
+    shown.current = { visible, index };
     if (followFocus.current) {
       followFocus.current = false;
       const line = linesIn(listRef.current)[index];
