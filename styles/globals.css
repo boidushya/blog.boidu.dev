@@ -1072,16 +1072,36 @@ html:has(.player) {
 @media (min-width: 861px) {
   html:has(.player) {
     overflow: hidden;
+    scrollbar-gutter: auto;
   }
 
   .site:has(.player) {
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
     max-width: 1360px;
     padding-inline: 56px;
   }
 
+  .site:has(.player) > main {
+    flex: 1;
+    min-height: 0;
+  }
+
   .site:has(.player) footer {
-    display: none;
+    height: 64px;
+  }
+
+  .player,
+  .player-stage {
+    height: 100%;
+  }
+}
+
+@media (max-width: 860px) {
+  .site:has(.player) footer {
+    margin-bottom: calc(120px + env(safe-area-inset-bottom));
   }
 }
 
@@ -1505,7 +1525,7 @@ html:has(.player) {
 
 .player-lyrics {
   position: relative;
-  height: calc(100dvh - 96px);
+  height: 100%;
   margin-inline: -32px;
   overflow: hidden;
   -webkit-mask-image: linear-gradient(transparent, #000 14%, #000 80%, transparent);
