@@ -464,8 +464,8 @@ export function Player({ posts }: { posts: BlogCard[] }) {
     const phone = matchMedia(`(max-width: ${PHONE_MAX_PX}px)`);
     const lines = linesIn(listRef.current);
     const observer = new IntersectionObserver(
-      entries => {
-        if (!phone.matches || !entries.some(entry => entry.isIntersecting)) return;
+      () => {
+        if (!phone.matches) return;
         const middle = window.innerHeight / 2;
         const distance = (line: HTMLElement) => {
           const { top, bottom } = line.getBoundingClientRect();
