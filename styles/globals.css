@@ -1205,13 +1205,17 @@ html:has(.player) {
   outline: 1px solid oklch(1 0 0 / 0.1);
   outline-offset: -1px;
   border-radius: inherit;
+}
+
+/* Cover art swaps between posts by settling in from a slight zoom and blur (homepage card and phone window). */
+.cover-morph {
   opacity: 0;
   scale: 1.015;
   filter: blur(2px);
   transition: opacity 320ms ease-out, scale 480ms var(--ease), filter 320ms ease-out;
 }
 
-.player-cover img[data-on] {
+.cover-morph[data-on] {
   opacity: 1;
   scale: 1;
   filter: blur(0);
@@ -1668,7 +1672,7 @@ html:has(.player) {
     scale: 1;
   }
 
-  .player-cover img {
+  .cover-morph {
     transition: opacity 150ms ease-out;
     scale: 1;
     filter: none;
@@ -1822,17 +1826,11 @@ html:has(.player) {
 .pip-window img {
   object-fit: cover;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 320ms ease-out;
 }
 
-.pip-window img[data-on] {
-  opacity: 1;
-}
-
-.pip-glow img {
-  opacity: 1;
-  transition: none;
+.pip-shot {
+  position: absolute;
+  inset: 0;
 }
 
 .pip-unread {
@@ -1840,7 +1838,6 @@ html:has(.player) {
   inset: 0;
   filter: grayscale(1) brightness(0.3);
   clip-path: inset(0 0 calc(var(--read) * 100%) 0);
-  transition: clip-path 600ms var(--ease);
 }
 
 .pip-mark {
@@ -1848,7 +1845,6 @@ html:has(.player) {
   inset: 0;
   pointer-events: none;
   translate: 0 calc((1 - var(--read)) * 100%);
-  transition: translate 600ms var(--ease), opacity 200ms ease-out;
 }
 
 .pip-mark::before {
@@ -1982,11 +1978,6 @@ html:has(.player) {
 
   .pip-card .pip-play,
   .pip-handle {
-    transition: opacity 200ms ease-out;
-  }
-
-  .pip-unread,
-  .pip-mark {
     transition: opacity 200ms ease-out;
   }
 }

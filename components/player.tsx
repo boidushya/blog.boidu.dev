@@ -555,6 +555,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
                 fill
                 sizes="(min-width: 861px) 40vw, 72px"
                 preload={i === 0}
+                className="cover-morph"
                 data-on={post.id === active.id || undefined}
               />
             ))}
@@ -704,7 +705,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
           </div>
         </section>
       </div>
-      <PipWindow posts={posts} post={active} read={done} disabled={empty} anchorRef={noteRef} />
+      <PipWindow posts={posts} post={active} progress={progress} disabled={empty} anchorRef={noteRef} />
     </div>
   );
 }

@@ -317,37 +317,35 @@ function stash(
   };
 }
 
-function Art({ posts, active }: { posts: BlogCard[]; active: string }) {
-  return posts.map(post => (
-    <Image
-      key={post.id}
-      src={post.image}
-      alt=""
-      fill
-      sizes={ART_SIZES}
-      draggable={false}
-      data-on={post.id === active || undefined}
-    />
-  ));
+function Shot({ post, read, on }: { post: BlogCard; read: number; on: boolean }) {
+  const image = <Image src={post.image} alt="" fill sizes={ART_SIZES} draggable={false} />;
+  const style: CSSVars = { "--read": read };
+  return (
+    <div className="pip-shot cover-morph" style={style} data-on={on || undefined}>
+      {image}
+      <div className="pip-unread">{image}</div>
+      <span className="pip-mark" data-edge={read <= 0 || read >= 1 || undefined} />
+    </div>
+  );
 }
 
 type Props = {
   posts: BlogCard[];
   post: BlogCard;
-  read: number;
+  progress: Record<string, number> | null;
   disabled: boolean;
   anchorRef: RefObject<HTMLElement | null>;
 };
 
 /** The phone player: a picture-in-picture window stashed in the screen edge, pulled in to open. */
-export function PipWindow({ posts, post, read, disabled, anchorRef }: Props) {
+export function PipWindow({ posts, post, progress, disabled, anchorRef }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const labelId = useId();
-  const pct = Math.round(read * 100);
+  const readOf = (id: string) => progress?.[id] ?? 0;
+  const pct = Math.round(readOf(post.id) * 100);
   const style: CSSVars = {
     "--peek": `${PEEK}px`,
-    "--read": read,
     "--wash-fade": `${WASH_FADE_MS}ms`,
     "--wash-settle": `${WASH_SETTLE_MS}ms`,
   };
@@ -380,11 +378,9 @@ export function PipWindow({ posts, post, read, disabled, anchorRef }: Props) {
         <div className="pip-body enter [--i:1]">
           <div className="pip-card">
             <div className="pip-art">
-              <Art posts={posts} active={post.id} />
-              <div className="pip-unread">
-                <Art posts={posts} active={post.id} />
-              </div>
-              <span className="pip-mark" data-edge={read <= 0 || read >= 1 || undefined} />
+              {posts.map(each => (
+                <Shot key={each.id} post={each} read={readOf(each.id)} on={each.id === post.id} />
+              ))}
             </div>
             <span className="pip-handle" />
             <button
