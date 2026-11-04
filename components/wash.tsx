@@ -84,7 +84,7 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
         animationSpeed={1.6}
         saturation={1.4}
         warpIntensity={0.9}
-        transitionDuration={FADE_MS}
+        transitionDuration={reduceMotion ? 0 : FADE_MS}
         onLoad={() => {
           kawarp.current?.instance?.renderFrame();
           setReady(true);

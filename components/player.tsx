@@ -431,6 +431,8 @@ export function Player({ posts }: { posts: BlogCard[] }) {
       if (step === undefined) return;
       e.preventDefault();
       select(indexRef.current + step);
+      if (target instanceof HTMLElement && target.matches(".player-line"))
+        linesIn(listRef.current)[indexRef.current]?.focus({ preventScroll: true });
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
