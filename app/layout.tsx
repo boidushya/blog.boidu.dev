@@ -4,6 +4,7 @@ import Navbar from "@/components/nav";
 import { PageWash } from "@/components/wash";
 import Providers from "@/providers";
 import { SITE } from "@/utils/constants";
+import { caveat } from "@/utils/fonts";
 import { colors } from "@/utils/theme";
 import type { Metadata } from "next";
 import Script from "next/script";
@@ -44,7 +45,7 @@ export default function RootLayout({
           data-website-id="de3af0e1-5059-4da8-82ff-0129a817a658"
         ></script>
       </head>
-      <body>
+      <body className={caveat.variable}>
         <div className="site relative box-content max-w-3xl px-4 mx-auto sm:px-6">
           <Providers>
             <NextTopLoader color={topLoaderColor} />

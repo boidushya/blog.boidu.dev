@@ -11,7 +11,7 @@ import type { BlogCard } from "@/lib/blogs";
 import { clock } from "@/utils/clock";
 import { NEUTRAL_COLORS } from "@/utils/constants";
 import type { CSSVars } from "@/utils/css-vars";
-import { handwriting } from "@/utils/fonts";
+import { boidoodleNova } from "@/utils/fonts";
 import { useResizeObserver, useWaterMark } from "@/utils/hooks";
 import { clamp } from "@/utils/math";
 import { matchesSearch, usePostSearch } from "@/utils/post-search";
@@ -688,12 +688,12 @@ export function Player({ posts }: { posts: BlogCard[] }) {
             e.stopPropagation();
           }}
         >
-          {empty && <p className={`player-empty ${handwriting.className}`}>nothing matches</p>}
+          {empty && <p className={`player-empty ${boidoodleNova.className}`}>nothing matches</p>}
           <div ref={scrollerRef} className="player-scroller">
             <ol ref={listRef} className="player-lines">
               {lines}
             </ol>
-            <div ref={noteRef} className={`player-note ${handwriting.className}`} aria-hidden="true">
+            <div ref={noteRef} className={`player-note ${boidoodleNova.className}`} aria-hidden="true">
               <svg viewBox="0 0 34 26">
                 <path pathLength={1} d="M30 22 C22 22 10 18 6 5" />
                 <path pathLength={1} d="M2.5 10 L6 4.5 L11 8.5" />

@@ -98,7 +98,7 @@ export function ChapterRail({ children }: { children: React.ReactNode }) {
               transition={{ type: "spring", duration: 0.3, bounce: 0 }}
               className="relative"
             >
-              <span aria-hidden="true" className="absolute inset-y-0 left-0 w-px bg-accent-800" />
+              <span aria-hidden="true" className="absolute inset-y-0 left-0 w-px bg-accent-800/50" />
               <motion.span
                 aria-hidden="true"
                 className="absolute inset-y-0 left-0 w-px origin-top bg-accent-400"

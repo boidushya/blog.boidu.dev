@@ -1,6 +1,6 @@
 "use client";
 
-import { Handwriting } from "@/components/handwriting";
+import { GuestHand, Handwriting } from "@/components/handwriting";
 import type { CSSVars } from "@/utils/css-vars";
 import { useReveal } from "@/utils/reveal";
 import { layTapes } from "@/utils/tape-layout";
@@ -75,10 +75,12 @@ export function Foreword({
         </span>
       ))}
       {children}
-      <p ref={outroRef} className="foreword-outro">
-        <Handwriting text={outro} delay={0.1} shown={outroShown} />
-      </p>
-      <Signature name={signer} />
+      <GuestHand>
+        <p ref={outroRef} className="foreword-outro">
+          <Handwriting text={outro} delay={0.1} shown={outroShown} />
+        </p>
+        <Signature name={signer} />
+      </GuestHand>
     </section>
   );
 }
