@@ -211,12 +211,12 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   useWaterMark();
   const router = useRouter();
   const query = usePostSearch();
-  const visible = useMemo(() => posts.filter(post => matchesSearch(post, query)), [posts, query]);
+  const matches = useMemo(() => posts.filter(post => matchesSearch(post, query)), [posts, query]);
 
   const [index, setIndex] = useState(0);
-  const [shownQuery, setShownQuery] = useState(query);
-  if (shownQuery !== query) {
-    setShownQuery(query);
+  const [visible, setVisible] = useState(matches);
+  if (matches.length !== visible.length || matches.some((post, i) => post !== visible[i])) {
+    setVisible(matches);
     setIndex(0);
   }
 

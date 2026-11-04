@@ -1500,6 +1500,7 @@ html:has(.player) {
 
 .player-empty {
   position: absolute;
+  left: 32px;
   top: 40%;
   translate: 0 -50%;
   margin: 0;
@@ -1616,6 +1617,10 @@ html:has(.player) {
     position: relative;
     inset: 0;
     translate: none !important;
+  }
+
+  .player-empty {
+    left: 0;
   }
 
   .player-line {
