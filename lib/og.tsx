@@ -32,9 +32,10 @@ export function Wash({ src, dim }: { src: string; dim: number }) {
 }
 
 const diatype = fs.promises.readFile(join(process.cwd(), "public/fonts/ABCDiatypeRoundedVariable.woff2"));
+const boidoodleNovaData = fs.promises.readFile(join(process.cwd(), "public/fonts/boidoodle-nova.woff2"));
 
-/** `handwriting` loads Caveat, for cards that write a title by hand. */
-export async function ogImage(node: ReactNode, { handwriting = false } = {}) {
+/** `boidoodleNova` loads boidoodle nova with Caveat as its fallback, for cards that write a title by hand. */
+export async function ogImage(node: ReactNode, { boidoodleNova = false } = {}) {
   return new ImageResponse(
     <div
       style={{
@@ -56,7 +57,12 @@ export async function ogImage(node: ReactNode, { handwriting = false } = {}) {
       quality: 90,
       fonts: [
         { name: "Diatype", data: await diatype },
-        ...(handwriting ? await googleFonts([{ name: "Caveat", weight: 700 }]) : []),
+        ...(boidoodleNova
+          ? [
+              { name: "boidoodle-nova", data: await boidoodleNovaData, weight: 700 },
+              ...(await googleFonts([{ name: "Caveat", weight: 700 }])),
+            ]
+          : []),
       ],
     }
   );

@@ -94,7 +94,9 @@ export default async function Image({ params }: { params: Promise<{ id: string }
             />
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            <div style={{ fontFamily: "Caveat", fontSize: 36, fontWeight: 700, lineHeight: 1.1 }}>{post.short}</div>
+            <div style={{ fontFamily: "boidoodle-nova, Caveat", fontSize: 36, fontWeight: 700, lineHeight: 1.1 }}>
+              {post.short}
+            </div>
             <div style={{ display: "flex", fontSize: 18, lineHeight: 1.3, color: "rgb(255 255 255 / 0.5)" }}>
               {post.labels.map((label, i) => (
                 <span key={label} style={{ display: "flex" }}>
@@ -146,6 +148,6 @@ export default async function Image({ params }: { params: Promise<{ id: string }
         </div>
       </div>
     </>,
-    { handwriting: true }
+    { boidoodleNova: true }
   );
 }

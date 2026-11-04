@@ -1,0 +1,16 @@
+boidoodle nova
+Copyright (c) 2026 Boidushya. All rights reserved.
+
+This font software, including its design and every glyph in it, is the
+proprietary property of Boidushya. No licence is granted to anyone.
+
+You may not use, copy, install, embed, modify, convert, redistribute, sell,
+sublicense or create derivative works from this font software, in whole or in
+part, in any form or medium, without prior written permission from the
+copyright holder.
+
+The font is served on blog.boidu.dev only so that pages on that site render.
+Being able to download the font file from that site does not grant any right
+to use it anywhere else.
+
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
