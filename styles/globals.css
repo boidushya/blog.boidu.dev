@@ -1223,8 +1223,8 @@ html {
 
 .progress-bar-times .t {
   display: inline-flex;
-  /* The digits sit high in their line box; the full box stays as the roll's clip. */
-  translate: 0 0.09em;
+  /* Measured on screen: the digits sit high in their line box, which stays whole as the roll's clip. */
+  translate: 0 0.19em;
 }
 
 .pip-line {
