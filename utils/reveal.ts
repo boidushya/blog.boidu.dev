@@ -27,11 +27,11 @@ export function endJump() {
   flush();
 }
 
-let watchingScroll = false;
+let watchingSkim = false;
 
-function watchScroll() {
-  if (watchingScroll) return;
-  watchingScroll = true;
+function watchSkim() {
+  if (watchingSkim) return;
+  watchingSkim = true;
   let sample = { y: window.scrollY, at: performance.now() };
   let settle: ReturnType<typeof setTimeout> | undefined;
   window.addEventListener(
@@ -57,7 +57,7 @@ function watchScroll() {
 
 /** Calls onReveal once, the first time `amount` of el is in view outside a rail jump or a fast skim; `quiet` means skip the sound. */
 export function observeReveal(el: Element, amount: number, onReveal: (quiet: boolean) => void) {
-  watchScroll();
+  watchSkim();
   let inView = false;
   const reveal = () => {
     if (!inView || jumping || skimming) return;
