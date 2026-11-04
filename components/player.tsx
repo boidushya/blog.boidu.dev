@@ -11,6 +11,7 @@ import { handwriting } from "@/utils/fonts";
 import { useResizeObserver, useWaterMark } from "@/utils/hooks";
 import { matchesSearch, usePostSearch } from "@/utils/post-search";
 import { clock, getProgress, pickShuffle } from "@/utils/reading-progress";
+import { retrigger } from "@/utils/retrigger";
 import { timeSweep } from "@/utils/sweep";
 import { getPaletteVariables } from "@/utils/themeConfig";
 import { isTypingTarget } from "@/utils/typing";
@@ -139,13 +140,6 @@ function placeNote(
   const [ox, oy] = tipIn(side, inkWidth);
   note.dataset.side = side;
   note.style.translate = `${tx - ox}px ${ty - oy}px`;
-}
-
-function retrigger(el: HTMLElement, className: string, ms: number) {
-  el.classList.remove(className);
-  void el.offsetWidth;
-  el.classList.add(className);
-  setTimeout(() => el.classList.remove(className), ms);
 }
 
 function ripple(button: HTMLElement, layer: HTMLElement, e: MouseEvent) {

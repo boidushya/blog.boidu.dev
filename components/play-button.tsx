@@ -1,7 +1,8 @@
 "use client";
 
 import { PauseIcon, PlayIcon } from "@/components/player-icons";
-import { useEffect, useRef } from "react";
+import { retrigger } from "@/utils/retrigger";
+import { useRef } from "react";
 
 type Props = {
   playing: boolean;
@@ -12,19 +13,9 @@ type Props = {
 
 export function PlayButton({ playing, onToggle, label, className }: Props) {
   const ref = useRef<HTMLButtonElement>(null);
-  const popTimer = useRef<number>(undefined);
-
-  useEffect(() => () => window.clearTimeout(popTimer.current), []);
 
   const onClick = () => {
-    const el = ref.current;
-    if (el) {
-      el.classList.remove("control-pop");
-      void el.offsetWidth;
-      el.classList.add("control-pop");
-      window.clearTimeout(popTimer.current);
-      popTimer.current = window.setTimeout(() => el.classList.remove("control-pop"), 320);
-    }
+    if (ref.current) retrigger(ref.current, "control-pop", 320);
     onToggle();
   };
 

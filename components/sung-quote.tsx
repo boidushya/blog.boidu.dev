@@ -6,6 +6,7 @@ import { Handwriting } from "@/components/handwriting";
 import { PlayButton } from "@/components/play-button";
 import { ProgressBar } from "@/components/progress-bar";
 import { IS_DEV } from "@/utils/constants";
+import { clock } from "@/utils/reading-progress";
 import type { BraccatoLyricsElement } from "@braccato/core/element";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -20,9 +21,6 @@ declare module "react" {
 
 const THEME = "/* blyrics-letter-wave = false; */";
 const END_SLACK_SECONDS = 0.05;
-
-const formatTime = (seconds: number) =>
-  `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
 
 const normalizeWords = (text: string) => text.trim().split(/\s+/).join(" ");
 
@@ -44,7 +42,7 @@ export function SungQuote({ lyrics, audio, children }: Props) {
   const [sung, setSung] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [now, setNow] = useState(formatTime(0));
+  const [now, setNow] = useState(clock(0));
   const [duration, setDuration] = useState(0);
 
   useEffect(() => {
@@ -69,7 +67,7 @@ export function SungQuote({ lyrics, audio, children }: Props) {
       const time = sound.currentTime;
       write(time, !sound.paused);
       setProgress(sound.duration ? time / sound.duration : 0);
-      setNow(formatTime(time));
+      setNow(clock(time / 60));
     };
 
     const loop = (tick: () => boolean) => {
@@ -198,7 +196,7 @@ export function SungQuote({ lyrics, audio, children }: Props) {
         <ProgressBar
           progress={progress}
           now={now}
-          total={formatTime(duration)}
+          total={clock(duration / 60)}
           max={duration}
           label="Seek"
           onSeek={fraction => controls.current?.seek(fraction)}
