@@ -16,11 +16,20 @@ function useScrollAway() {
   useEffect(() => {
     const dock = ref.current;
     if (!dock) return;
-    return watchScroll((y, dy) => {
+    const hasDialog = () => dock.querySelector('[role="dialog"]') !== null;
+    const dialogWatch = new MutationObserver(() => {
+      if (hasDialog()) dock.removeAttribute("data-away");
+    });
+    dialogWatch.observe(dock, { childList: true, subtree: true });
+    const stopScroll = watchScroll((y, dy) => {
       const atEnd = y + window.innerHeight >= document.documentElement.scrollHeight - END_PX;
-      if (atEnd || dy < -SCROLL_INTENT_PX) dock.removeAttribute("data-away");
+      if (atEnd || dy < -SCROLL_INTENT_PX || hasDialog()) dock.removeAttribute("data-away");
       else if (dy > SCROLL_INTENT_PX) dock.setAttribute("data-away", "");
     });
+    return () => {
+      dialogWatch.disconnect();
+      stopScroll();
+    };
   }, []);
 
   return ref;
