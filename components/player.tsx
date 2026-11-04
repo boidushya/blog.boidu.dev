@@ -296,6 +296,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const noteRef = useRef<HTMLDivElement>(null);
   const inkRef = useRef<HTMLSpanElement>(null);
   const indexRef = useRef(0);
+  const followFocus = useRef(false);
   const pointer = useRef({ x: -1, y: -1 });
   const hoverTimer = useRef<Timer>(undefined);
   const drawTimer = useRef<Timer>(undefined);
@@ -395,6 +396,10 @@ export function Player({ posts }: { posts: BlogCard[] }) {
 
   useLayoutEffect(() => {
     indexRef.current = index;
+    if (followFocus.current) {
+      followFocus.current = false;
+      linesIn(listRef.current)[index]?.focus({ preventScroll: true });
+    }
     const note = noteRef.current;
     clearTimeout(drawTimer.current);
     const wasOn = note?.hasAttribute("data-on") ?? false;
@@ -420,6 +425,19 @@ export function Player({ posts }: { posts: BlogCard[] }) {
     );
   }, [index, measured, visible, lyricsRef]);
 
+  // A focused title follows the selection once the new line is visible, so Enter opens what is highlighted.
+  const moveSelection = useCallback(
+    (steps: number) => {
+      const focused = document.activeElement;
+      const from = indexRef.current;
+      select(from + steps);
+      if (!(focused instanceof HTMLElement && focused.matches(".player-line"))) return;
+      if (indexRef.current === from) linesIn(listRef.current)[from]?.focus({ preventScroll: true });
+      else followFocus.current = true;
+    },
+    [select]
+  );
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!isDesktop()) return;
@@ -430,19 +448,17 @@ export function Player({ posts }: { posts: BlogCard[] }) {
       const step = KEY_STEPS.get(e.key);
       if (step === undefined) return;
       e.preventDefault();
-      select(indexRef.current + step);
-      if (target instanceof HTMLElement && target.matches(".player-line"))
-        linesIn(listRef.current)[indexRef.current]?.focus({ preventScroll: true });
+      moveSelection(step);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [select]);
+  }, [moveSelection]);
 
   useEffect(() => {
     let bank = 0;
     let idle: Timer;
     const onWheel = (e: WheelEvent) => {
-      if (!isDesktop()) return;
+      if (!isDesktop() || e.ctrlKey) return;
       clearTimeout(idle);
       idle = setTimeout(() => {
         bank = 0;
@@ -453,14 +469,14 @@ export function Player({ posts }: { posts: BlogCard[] }) {
         steps += Math.sign(bank);
         bank -= Math.sign(bank) * WHEEL_STEP_PX;
       }
-      if (steps) select(indexRef.current + steps);
+      if (steps) moveSelection(steps);
     };
     window.addEventListener("wheel", onWheel, { passive: true });
     return () => {
       window.removeEventListener("wheel", onWheel);
       clearTimeout(idle);
     };
-  }, [select]);
+  }, [moveSelection]);
 
   useEffect(() => {
     const phone = matchMedia(`(max-width: ${PHONE_MAX_PX}px)`);
