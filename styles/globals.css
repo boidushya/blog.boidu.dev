@@ -1290,7 +1290,15 @@ html:has(.player) {
 }
 
 .player-bar .progress-bar-fill {
+  background: #fff;
+  background: color(display-p3 1 1 1);
   transition: clip-path 600ms var(--ease);
+}
+
+.player-controls .play-button,
+.play-button.pip-play {
+  background: #fff;
+  background: color(display-p3 1 1 1);
 }
 
 .player-controls {
@@ -1571,6 +1579,8 @@ html:has(.player) {
   pointer-events: none;
   opacity: 0;
   transition: opacity 120ms ease-out;
+  rotate: -3deg;
+  transform-origin: 0 50%;
 }
 
 .player-note[data-on] {
