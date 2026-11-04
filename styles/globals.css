@@ -1903,8 +1903,8 @@ html:has(.player) .radix-tooltip__content {
 
 /* Caveat's last glyph overhangs its advance, so the roll's clip box gets room on the right. */
 .pip-name .pip-layer {
-  padding-inline: 0.1em 0.3em;
-  margin-inline: -0.1em -0.3em;
+  padding-inline: 0.1em 0.5em;
+  margin-inline: -0.1em -0.5em;
 }
 
 .pip-meta {

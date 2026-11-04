@@ -5,7 +5,7 @@ import { PlayIcon } from "@/components/player-icons";
 import { TrackName, TrackTags } from "@/components/track-lines";
 import type { BlogCard } from "@/lib/blogs";
 import type { CSSVars } from "@/utils/css-vars";
-import { clamp } from "@/utils/math";
+import { clamp01 } from "@/utils/math";
 import { prefersReducedMotion } from "@/utils/motion";
 import { pop } from "@/utils/retrigger";
 import Image from "next/image";
@@ -111,15 +111,15 @@ function stash(root: HTMLElement, parts: Parts, anchor: () => Element | null, on
   };
 
   const render = () => {
-    const p = clamp((stashX - x) / (stashX - openX), 0, 1);
+    const p = clamp01((stashX - x) / (stashX - openX));
     const shift = (w / 2 - PEEK / 2) * (1 - p);
-    const detail = clamp((p - DETAIL_FROM) / (1 - DETAIL_FROM), 0, 1);
+    const detail = clamp01((p - DETAIL_FROM) / (1 - DETAIL_FROM));
     frame.style.transform = `translate3d(${x}px, ${y}px, 0)`;
     card.style.rotate = `y ${-TILT_DEG * (1 - p)}deg`;
     art.style.transform = `translateX(${-shift}px)`;
     play.style.opacity = String(detail);
     play.style.scale = String(0.8 + 0.2 * detail);
-    handle.style.opacity = String(1 - clamp(p * 2.2, 0, 1));
+    handle.style.opacity = String(1 - clamp01(p * 2.2));
     glow.style.opacity = String(0.75 + 0.25 * p);
     glow.style.transform = `translate3d(${x - shift}px, ${y}px, 0) scale(${0.4 + 0.6 * p}, ${1.15 - 0.15 * p})`;
   };
@@ -151,6 +151,7 @@ function stash(root: HTMLElement, parts: Parts, anchor: () => Element | null, on
     open = nextOpen;
     atMid = nextMid;
     onOpen(open);
+    if (!open && document.activeElement === play) toggle.focus();
     tx = open ? openX : stashX;
     ty = atMid ? midY() : 0;
     cancelAnimationFrame(raf);
@@ -173,7 +174,8 @@ function stash(root: HTMLElement, parts: Parts, anchor: () => Element | null, on
 
   const place = () => {
     measure();
-    if (drag || raf) return settle(open);
+    if (drag) return;
+    if (raf) return settle(open);
     tx = open ? openX : stashX;
     ty = atMid ? midY() : 0;
     x = tx;
@@ -203,6 +205,7 @@ function stash(root: HTMLElement, parts: Parts, anchor: () => Element | null, on
 
   const onMove = (e: PointerEvent) => {
     if (!drag || e.pointerId !== drag.id) return;
+    if (e.buttons === 0) return onRelease(e);
     const dx = e.clientX - drag.sx;
     const dy = e.clientY - drag.sy;
     if (!drag.moved) {
@@ -245,7 +248,10 @@ function stash(root: HTMLElement, parts: Parts, anchor: () => Element | null, on
 
   const onClick = (e: MouseEvent) => {
     if (e.detail === 0) return settle(!open);
-    if (swallowTap) return;
+    if (swallowTap) {
+      swallowTap = false;
+      return;
+    }
     if (open) play.click();
     else settle(true);
   };
