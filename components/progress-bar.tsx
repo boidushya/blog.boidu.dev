@@ -38,6 +38,7 @@ export function ProgressBar({ progress, now, total, max, label, onSeek, classNam
   };
 
   const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return;
     e.currentTarget.setPointerCapture(e.pointerId);
     seekTo(e);
   };
@@ -51,6 +52,7 @@ export function ProgressBar({ progress, now, total, max, label, onSeek, classNam
   };
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
     const step = max > 0 ? KEY_STEP_SECONDS / max : 0;
     const targets: Record<string, number> = {
       ArrowLeft: progress - step,

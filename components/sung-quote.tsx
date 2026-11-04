@@ -7,7 +7,7 @@ import { PlayButton } from "@/components/play-button";
 import { ProgressBar } from "@/components/progress-bar";
 import { IS_DEV } from "@/utils/constants";
 import type { BraccatoLyricsElement } from "@braccato/core/element";
-import { type DetailedHTMLProps, type HTMLAttributes, type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 declare module "react" {
@@ -105,7 +105,7 @@ export function SungQuote({ lyrics, audio, children }: Props) {
       toggle: () => {
         if (!sound.paused) return sound.pause();
         if (sound.ended || sound.currentTime >= sound.duration - END_SLACK_SECONDS) sound.currentTime = 0;
-        void sound.play();
+        sound.play().catch((error: unknown) => console.error("SungQuote: playback failed", error));
       },
       seek: fraction => {
         if (!sound.duration) return;
@@ -133,11 +133,16 @@ export function SungQuote({ lyrics, audio, children }: Props) {
 
     const metadata = new Promise(resolve => sound.addEventListener("loadedmetadata", resolve, { once: true, signal }));
 
+    metadata.then(() => setDuration(sound.duration));
+
     (async () => {
       const [, { detectParser }, ttml] = await Promise.all([
         import("@braccato/core/element"),
         import("@braccato/parsers"),
-        fetch(lyrics).then(response => response.text()),
+        fetch(lyrics).then(response => {
+          if (!response.ok) throw new Error(`${lyrics} answered ${response.status}`);
+          return response.text();
+        }),
         metadata,
       ]);
       if (signal.aborted) return;
@@ -145,7 +150,7 @@ export function SungQuote({ lyrics, audio, children }: Props) {
       const parsed = detectParser(ttml).parse(ttml, sound.duration * 1000);
       const sungLines = parsed.filter(line => !line.isInstrumental);
       const last = sungLines[sungLines.length - 1];
-      if (!last) return;
+      if (!last) throw new Error(`${lyrics} has no sung lines`);
       sungEnd = (last.startTimeMs + last.durationMs) / 1000;
 
       if (IS_DEV) {
@@ -159,8 +164,10 @@ export function SungQuote({ lyrics, audio, children }: Props) {
       view.theme = THEME;
       view.lyrics = parsed;
       write(sungEnd, false);
-      setDuration(sound.duration);
-    })();
+    })().catch((error: unknown) => {
+      // The quote stays as plain text; the player still plays the clip.
+      if (!signal.aborted) console.error("SungQuote: lyrics failed to load", error);
+    });
 
     return () => {
       lifetime.abort();
