@@ -298,6 +298,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const indexRef = useRef(0);
   const followFocus = useRef(false);
   const committedIndex = useRef(0);
+  const focusingLine = useRef(false);
   const pointer = useRef({ x: -1, y: -1 });
   const hoverTimer = useRef<Timer>(undefined);
   const drawTimer = useRef<Timer>(undefined);
@@ -341,6 +342,12 @@ export function Player({ posts }: { posts: BlogCard[] }) {
 
   const lyricsRef = useResizeObserver<HTMLElement>(onLyricsResize);
 
+  const focusLine = useCallback((line: HTMLElement) => {
+    focusingLine.current = true;
+    line.focus({ preventScroll: true });
+    focusingLine.current = false;
+  }, []);
+
   const select = useCallback(
     (target: number, move = true) => {
       const count = linesIn(listRef.current).length;
@@ -354,11 +361,20 @@ export function Player({ posts }: { posts: BlogCard[] }) {
       if (focused instanceof HTMLElement && focused.matches(".player-line")) {
         followFocus.current = i !== committedIndex.current;
         const line = linesIn(listRef.current)[i];
-        if (!followFocus.current && line !== focused) line?.focus({ preventScroll: true });
+        if (!followFocus.current && line !== focused && line) focusLine(line);
       }
       setIndex(i);
     },
-    [centre]
+    [centre, focusLine]
+  );
+
+  const focusTitle = useCallback(
+    (i: number, keyboard: boolean) => {
+      if (focusingLine.current) return;
+      if (i !== indexRef.current) select(i, keyboard);
+      else if (keyboard) centre(i);
+    },
+    [select, centre]
   );
 
   const hover = useCallback(
@@ -410,7 +426,8 @@ export function Player({ posts }: { posts: BlogCard[] }) {
     committedIndex.current = index;
     if (followFocus.current) {
       followFocus.current = false;
-      linesIn(listRef.current)[index]?.focus({ preventScroll: true });
+      const line = linesIn(listRef.current)[index];
+      if (line) focusLine(line);
     }
     const note = noteRef.current;
     clearTimeout(drawTimer.current);
@@ -521,7 +538,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
               style={{ ...cssVars({ "--o": opacity, "--b": `${blur}px` }), visibility: hidden ? "hidden" : undefined }}
               onPointerMove={e => hover(i, e)}
               onPointerLeave={unhover}
-              onFocus={e => i !== indexRef.current && select(i, e.currentTarget.matches(":focus-visible"))}
+              onFocus={e => focusTitle(i, e.currentTarget.matches(":focus-visible"))}
             >
               <h2>
                 <SungTitle title={post.title} />

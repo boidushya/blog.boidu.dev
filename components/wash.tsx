@@ -47,13 +47,14 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
   const shown = useRef({ src, busyUntil: 0 });
   const stillFrames = useRef(reduceMotion);
   stillFrames.current = reduceMotion;
+  const fadeMs = () => (stillFrames.current ? 0 : FADE_MS);
 
   // Kawarp does not drop an older image that finishes loading late, so the latest choice is loaded again over it.
   function load(target: string) {
     kawarp.current
       ?.loadImage(target)
       .then(() => {
-        shown.current.busyUntil = performance.now() + FADE_MS;
+        shown.current.busyUntil = performance.now() + fadeMs();
         if (shown.current.src !== target) return load(shown.current.src);
         if (stillFrames.current) kawarp.current?.instance?.renderFrame();
       })
@@ -96,7 +97,7 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
       }
       setShownDim(dim);
       if (shown.current.src === src) return;
-      shown.current = { src, busyUntil: performance.now() + FADE_MS };
+      shown.current = { src, busyUntil: performance.now() + fadeMs() };
       load(src);
     };
     timer = setTimeout(flush, SETTLE_MS);
@@ -117,7 +118,7 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
         animationSpeed={1.6}
         saturation={1.4}
         warpIntensity={0.9}
-        transitionDuration={reduceMotion ? 0 : FADE_MS}
+        transitionDuration={fadeMs()}
         onLoad={() => {
           kawarp.current?.instance?.renderFrame();
           setReady(true);
