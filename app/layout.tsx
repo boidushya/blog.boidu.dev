@@ -18,6 +18,7 @@ export const metadata: Metadata = {
     title: SITE.name,
     description: SITE.description,
     siteName: SITE.host,
+    url: "/",
     type: "website",
   },
   twitter: {

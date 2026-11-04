@@ -145,6 +145,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
           </div>
         </div>
       </div>
-    </>
+    </>,
+    { handwriting: true }
   );
 }
