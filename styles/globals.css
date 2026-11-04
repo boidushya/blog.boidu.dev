@@ -1457,6 +1457,8 @@ html:has(.player) .radix-tooltip__content {
   transform-origin: 0 50%;
   transition: opacity 0.4s 0.166s, filter 0.1s, scale 500ms var(--ease);
   opacity: var(--o, 1);
+  /* WebKit 27 smears a magenta edge on blurred boxes that are not their own layer. */
+  will-change: filter;
   filter: blur(var(--b, 0px));
   scale: var(--z, 1);
 }
