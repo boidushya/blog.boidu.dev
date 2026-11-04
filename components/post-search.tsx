@@ -35,7 +35,7 @@ const PostSearch = () => {
         onKeyDown={e => e.key === "Escape" && setPostSearch("")}
         data-cuelume-type
         data-cuelume-emphasis="subtle"
-        className="w-9 h-full pt-px pl-9 text-[15px] leading-[21px] bg-transparent rounded-full outline-none text-white/90 placeholder:text-transparent placeholder:transition-colors transition-[width] duration-300 ease-[cubic-bezier(0.2,0,0,1)] focus:w-40 focus:pr-8 focus:placeholder:text-white/40 [&:not(:placeholder-shown)]:w-40 [&:not(:placeholder-shown)]:pr-8 sm:w-[101px] sm:pr-[18px] sm:focus:pr-8 sm:[&:not(:placeholder-shown)]:pr-8 sm:placeholder:text-white/50 sm:focus:w-56 sm:focus:placeholder:text-white/40 sm:[&:not(:placeholder-shown)]:w-56 [&::-webkit-search-cancel-button]:hidden"
+        className="w-9 h-full pt-px pl-[34px] text-[15px] leading-[21px] bg-transparent rounded-full outline-none text-white/90 placeholder:text-transparent placeholder:transition-colors transition-[width] duration-300 ease-[cubic-bezier(0.2,0,0,1)] focus:w-40 focus:pr-8 focus:placeholder:text-white/40 [&:not(:placeholder-shown)]:w-40 [&:not(:placeholder-shown)]:pr-8 sm:w-[99px] sm:pr-[18px] sm:focus:pr-8 sm:[&:not(:placeholder-shown)]:pr-8 sm:placeholder:text-white/50 sm:focus:w-56 sm:focus:placeholder:text-white/40 sm:[&:not(:placeholder-shown)]:w-56 [&::-webkit-search-cancel-button]:hidden"
       />
       <AnimatePresence initial={false}>
         {query && (
