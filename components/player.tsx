@@ -52,6 +52,9 @@ const KEY_STEPS = new Map([
 ]);
 
 type Timer = ReturnType<typeof setTimeout> | undefined;
+
+// Outlives the page, so coming home by any route lands on the post picked last.
+const picked = createStore<string | undefined>(undefined);
 type NoteSide = "right" | "below" | "below-left" | "above";
 
 const linesIn = (list: HTMLElement | null) => Array.from(list?.querySelectorAll<HTMLElement>(".player-line") ?? []);
@@ -218,7 +221,12 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const query = usePostSearch();
   const matches = useMemo(() => posts.filter(post => matchesSearch(post, query)), [posts, query]);
 
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(() =>
+    Math.max(
+      0,
+      matches.findIndex(post => post.id === picked.get())
+    )
+  );
   const [visible, setVisible] = useState(matches);
   if (matches.length !== visible.length || matches.some((post, i) => post !== visible[i])) {
     setVisible(matches);
@@ -241,9 +249,9 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const listRef = useRef<HTMLOListElement>(null);
   const noteRef = useRef<HTMLDivElement>(null);
   const inkRef = useRef<HTMLSpanElement>(null);
-  const indexRef = useRef(0);
+  const indexRef = useRef(index);
   const followFocus = useRef(false);
-  const committedIndex = useRef(0);
+  const committedIndex = useRef(index);
   const focusingLine = useRef(false);
   const pointer = useRef({ x: -1, y: -1 });
   const hoverTimer = useRef<Timer>(undefined);
@@ -251,6 +259,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const copyTimer = useRef<Timer>(undefined);
   const scrollOffset = useRef(0);
   const lyricsWidth = useRef(-1);
+  const landed = useRef(false);
 
   const centre = useCallback((i: number) => {
     const line = linesIn(listRef.current)[i];
@@ -372,6 +381,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   useLayoutEffect(() => {
     indexRef.current = index;
     committedIndex.current = index;
+    picked.set(visible[index]?.id);
     if (followFocus.current) {
       followFocus.current = false;
       const line = linesIn(listRef.current)[index];
@@ -480,6 +490,10 @@ export function Player({ posts }: { posts: BlogCard[] }) {
       const tail = Number.parseFloat(body.style.getPropertyValue("--player-tail")) || 0;
       const room = document.documentElement.scrollHeight - tail - innerHeight;
       body.style.setProperty("--player-tail", `${Math.max(0, travel - room)}px`);
+      if (!landed.current) {
+        landed.current = true;
+        if (indexRef.current) window.scrollTo({ top: indexRef.current * band.offsetHeight, behavior: "instant" });
+      }
       follow();
     };
 
