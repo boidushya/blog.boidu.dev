@@ -18,6 +18,7 @@ async function averageLuminance(src: string) {
   const data = await sharp(await readImage(src))
     .resize(8, 5, { fit: "fill" })
     .removeAlpha()
+    .toColourspace("srgb")
     .raw()
     .toBuffer();
   let sum = 0;

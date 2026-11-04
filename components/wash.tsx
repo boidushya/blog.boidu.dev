@@ -50,7 +50,7 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
   stillFrames.current = reduceMotion;
   const fadeMs = () => (stillFrames.current ? 0 : FADE_MS);
 
-  const loading = useRef(false);
+  const loading = useRef(true);
 
   // Kawarp does not drop an older image that finishes loading late, so loads run one at a time.
   function load(target: string) {
@@ -134,8 +134,15 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
         transitionDuration={fadeMs()}
         onLoad={() => {
           kawarp.current?.instance?.renderFrame();
+          loading.current = false;
           setReady(true);
           if (shown.current.src !== first) load(shown.current.src);
+        }}
+        onError={error => {
+          console.warn(`Wash failed to load ${first}:`, error);
+          loading.current = false;
+          setReady(true);
+          shown.current.src = "";
         }}
         style={{ position: "absolute", inset: 0 }}
       />
