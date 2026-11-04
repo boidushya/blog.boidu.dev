@@ -1901,10 +1901,10 @@ html:has(.player) .radix-tooltip__content {
   color: #f6f7f9;
 }
 
-/* Caveat's last glyph overhangs its advance, so the roll's clip box gets room on the right. */
-.pip-name .pip-layer {
-  padding-inline: 0.1em 0.5em;
-  margin-inline: -0.1em -0.5em;
+/* Caveat's ascenders and last glyph overhang the line box, so the roll's clip box gets room around them. */
+.track-name .pip-layer {
+  padding: 0.3em 0.5em 0.25em 0.1em;
+  margin: -0.3em -0.5em -0.25em -0.1em;
 }
 
 .pip-meta {
