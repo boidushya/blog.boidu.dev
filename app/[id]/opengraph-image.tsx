@@ -6,6 +6,7 @@ import type { CSSProperties } from "react";
 
 export const size = OG_SIZE;
 export const contentType = OG_TYPE;
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
   return (await getAllBlogs()).map(post => ({ id: post.id }));

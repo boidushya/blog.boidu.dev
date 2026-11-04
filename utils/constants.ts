@@ -182,6 +182,9 @@ export const IS_DEV = process.env.NODE_ENV === "development";
 /** Kawarp settings for the page wash, shared by the live wash and the OG card frames. */
 export const WASH_KAWARP = { blurPasses: 8, saturation: 1.4, warpIntensity: 0.9 };
 
+/** The colour under the page wash and its dimming layer. */
+export const WASH_BASE = "oklch(0.1 0.01 270)";
+
 export const SITE = {
   url: process.env.NEXT_PUBLIC_BASE_URL || "https://blog.boidu.dev",
   host: "blog.boidu.dev",

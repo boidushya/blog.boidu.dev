@@ -1,15 +1,13 @@
 import fs from "fs";
 import { join } from "path";
 import { kawarpFrame } from "@/lib/kawarp-frame";
+import { WASH_BASE } from "@/utils/constants";
 import type { CSSProperties, ReactNode } from "react";
 import { googleFonts } from "takumi-js/helpers";
 import { ImageResponse } from "takumi-js/response";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_TYPE = "image/jpeg";
-
-/** Same backdrop as the page wash in components/wash.tsx. */
-const WASH_BASE = "oklch(0.1 0.01 270)";
 
 const toDataUrl = (data: Buffer, type: string) => `data:${type};base64,${data.toString("base64")}`;
 

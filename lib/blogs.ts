@@ -85,7 +85,6 @@ export async function getPostById(id: string) {
     short: (data.short as string | undefined) ?? String(data.title).toLowerCase(),
     id: realId,
     banner: data.banner,
-    cover: data.cover as string | undefined,
     art: (isYouTubeLink(artSource) && getYouTubeThumbnail(artSource)) || artSource,
     video: data.video as string | undefined,
     description: String(data.description ?? "").trim(),
