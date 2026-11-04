@@ -57,9 +57,9 @@ function fits(note: HTMLElement, side: Side, oneLine: boolean) {
 
 // One line to the left of the avatar when it fits, then wrapped, then under the byline row, so the
 // bubble never covers the byline.
-function place(note: HTMLElement, avatar: HTMLElement): Tail {
+function place(note: HTMLElement, avatar: HTMLElement, stayBelow: boolean): Tail {
   note.style.top = "";
-  if (fits(note, "left", true) || fits(note, "left", false)) return { side: "left" };
+  if (!stayBelow && (fits(note, "left", true) || fits(note, "left", false))) return { side: "left" };
   const row = avatar.closest(".blog__meta") ?? avatar;
   const rowBottom = Math.max(...Array.from(row.children, child => child.getBoundingClientRect().bottom));
   const tip = avatar.offsetHeight + TAIL_GAP_PX;
@@ -129,6 +129,7 @@ export function GreetingAvatar() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const noteRef = useRef<HTMLSpanElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const below = useRef(false);
   const [message, setMessage] = useState<{ text: string; id: number; fresh: boolean } | null>(null);
   const state = useRef({
     chat: -1,
@@ -167,7 +168,9 @@ export function GreetingAvatar() {
     const svg = svgRef.current;
     const avatar = buttonRef.current;
     if (!message || !note || !svg || !avatar) return;
-    const tail = place(note, avatar);
+    // Once a bubble has dropped below the byline, later ones stay there instead of hopping sides.
+    const tail = place(note, avatar, below.current);
+    below.current = tail.side === "below";
     const d = bubblePath(note.offsetWidth, note.offsetHeight, tail);
     for (const path of Array.from(svg.children)) path.setAttribute("d", d);
     if (message.fresh) restart(note, "data-drawn");
