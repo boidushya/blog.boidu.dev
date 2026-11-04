@@ -10,9 +10,11 @@ import SignGallery from "@/components/sign-gallery";
 /* eslint-disable @next/next/no-img-element */
 import { getAllPosts, getPostById, isHiddenDraft, rehypePlugins, remarkPlugins } from "@/lib/blogs";
 import { mdxComponents } from "@/lib/mdx-components";
+import { videoSize } from "@/lib/video-size";
 import { FadeInImage } from "@/utils/components";
-import { IS_DEV } from "@/utils/constants";
+import { IS_DEV, SITE } from "@/utils/constants";
 import { getAuthorsData, isYouTubeLink, truncate } from "@/utils/functions";
+import type { Metadata } from "next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -152,36 +154,36 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const { title, description, banner, cover } = await getPostById(id);
-  const image = cover ?? banner;
-
-  const processedDescription = truncate(description, 160);
+  const post = await getPostById(id);
+  if (isHiddenDraft(post)) notFound();
+  const { title, publishedAt, authors, labels, video } = post;
+  const description = truncate(post.description, 160);
 
   return {
     title,
-    description: processedDescription,
+    description,
+    alternates: { canonical: `/${id}` },
     openGraph: {
       title,
-      description: processedDescription,
-      url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://blog.boidu.dev"}/${id}`,
-      siteName: "blog.boidu.dev",
-      images: [
-        {
-          url: image,
-          width: 1200,
-          height: 675,
-          alt: title,
-        },
-      ],
+      description,
+      url: `/${id}`,
+      siteName: SITE.host,
       type: "article",
+      publishedTime: publishedAt,
+      authors: [SITE.author, ...authors.map(author => author.name)],
+      tags: labels,
+      ...(video && {
+        videos: [{ url: new URL(video, SITE.url).href, type: "video/mp4", ...(await videoSize(video)) }],
+      }),
     },
     twitter: {
       card: "summary_large_image",
+      site: SITE.twitter,
+      creator: SITE.twitter,
       title,
-      description: processedDescription,
-      images: [image],
+      description,
     },
   };
 }
