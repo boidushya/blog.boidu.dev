@@ -13,7 +13,7 @@ const nextConfig = {
     ].map(hostname => ({ protocol: "https", hostname })),
     qualities: [75, 100],
   },
-  serverExternalPackages: ["utf-8-validate", "bufferutil"],
+  serverExternalPackages: ["utf-8-validate", "bufferutil", "@takumi-rs/core"],
   agentRules: false,
 };
 

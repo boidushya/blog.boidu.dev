@@ -77,6 +77,7 @@ export async function getPostById(id: string) {
 
   const reading = readingTime(content);
   const authors = data.authors ? getAuthorsData(data.authors) : [];
+  const artSource: string = data.cover ?? data.banner;
 
   return {
     ...data,
@@ -85,8 +86,11 @@ export async function getPostById(id: string) {
     id: realId,
     banner: data.banner,
     cover: data.cover as string | undefined,
-    description: data.description,
+    art: (isYouTubeLink(artSource) && getYouTubeThumbnail(artSource)) || artSource,
+    video: data.video as string | undefined,
+    description: String(data.description ?? "").trim(),
     date: format(new Date(data.date), "LLL dd, yyyy"),
+    publishedAt: new Date(data.date).toISOString(),
     readingTime: reading.text,
     minutes: Math.ceil(Number(reading.minutes.toFixed(2))),
     html,
@@ -115,22 +119,18 @@ export async function getAllBlogs() {
   const posts = await getVisiblePosts();
   posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   return Promise.all(
-    posts.map(async post => {
-      const art = post.cover ?? post.banner;
-      const image = (isYouTubeLink(art) && getYouTubeThumbnail(art)) || art;
-      return {
-        id: post.id,
-        title: post.title,
-        short: post.short,
-        description: post.description,
-        image,
-        dim: await washDim(image),
-        link: `/${post.id}`,
-        labels: post.draft ? ["Draft", ...post.labels] : post.labels,
-        minutes: post.minutes,
-        note: `${format(new Date(post.date), "LLL ''yy").toLowerCase()} · ${post.minutes} min`,
-      };
-    })
+    posts.map(async post => ({
+      id: post.id,
+      title: post.title,
+      short: post.short,
+      description: post.description,
+      image: post.art,
+      dim: await washDim(post.art),
+      link: `/${post.id}`,
+      labels: post.draft ? ["Draft", ...post.labels] : post.labels,
+      minutes: post.minutes,
+      note: `${format(new Date(post.date), "LLL ''yy").toLowerCase()} · ${post.minutes} min`,
+    }))
   );
 }
 
