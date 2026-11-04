@@ -1076,16 +1076,18 @@ html:has(.player) {
   --player-glass-blur: blur(24px) saturate(1.5);
   --player-glass-ring: inset 0 0 0 1px rgb(255 255 255 / 10%);
   --player-glass-shadow: 0 12px 30px oklch(0 0 0 / 0.35);
+  --player-chrome: rgb(255 255 255 / 0.06);
+  --player-chrome-ring: inset 0 0 0 1px rgb(255 255 255 / 0.08);
 }
 
 html:has(.player) .radix-tooltip__content {
   border-color: transparent;
   border-radius: 10px;
   color: rgb(255 255 255 / 0.8);
-  background: var(--player-glass);
+  background: var(--player-chrome);
   -webkit-backdrop-filter: var(--player-glass-blur);
   backdrop-filter: var(--player-glass-blur);
-  box-shadow: var(--player-glass-ring), var(--player-glass-shadow);
+  box-shadow: var(--player-chrome-ring);
 }
 
 html:has(.player) {

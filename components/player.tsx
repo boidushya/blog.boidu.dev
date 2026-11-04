@@ -349,7 +349,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   }, []);
 
   const select = useCallback(
-    (target: number, move = true) => {
+    (target: number, move = true, carryFocus = true) => {
       const count = linesIn(listRef.current).length;
       if (!count) return;
       const i = Math.max(0, Math.min(count - 1, target));
@@ -358,7 +358,8 @@ export function Player({ posts }: { posts: BlogCard[] }) {
       indexRef.current = i;
       // A focused title follows the selection once its line is visible, so Enter opens what is highlighted.
       const focused = document.activeElement;
-      if (focused instanceof HTMLElement && focused.matches(".player-line")) {
+      followFocus.current = false;
+      if (carryFocus && focused instanceof HTMLElement && focused.matches(".player-line")) {
         followFocus.current = i !== committedIndex.current;
         const line = linesIn(listRef.current)[i];
         if (!followFocus.current && line !== focused && line) focusLine(line);
@@ -371,6 +372,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const focusTitle = useCallback(
     (i: number, keyboard: boolean) => {
       if (focusingLine.current) return;
+      clearTimeout(hoverTimer.current);
       if (i !== indexRef.current) select(i, keyboard);
       else if (keyboard) centre(i);
     },
@@ -506,7 +508,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
           return Math.abs((top + bottom) / 2 - middle);
         };
         const nearest = lines.reduce((best, line, i) => (distance(line) < distance(lines[best]) ? i : best), 0);
-        select(nearest, false);
+        select(nearest, false, false);
       },
       { rootMargin: "-45% 0px -45% 0px" }
     );
@@ -547,7 +549,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
           </li>
         );
       }),
-    [visible, index, hover, unhover, select]
+    [visible, index, hover, unhover, focusTitle]
   );
 
   useWash(active?.image, active?.dim ?? 0);

@@ -15,7 +15,7 @@ const PostSearch = () => {
   useEffect(() => () => setPostSearch(""), []);
 
   return (
-    <label className="relative flex items-center mr-4 h-9 rounded-full bg-white/[0.06] text-white/60 shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)] transition-[background-color,box-shadow,color] duration-200 ease-out hover:bg-white/[0.09] focus-within:bg-white/[0.1] focus-within:text-white/80 focus-within:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.16)]">
+    <label className="relative flex items-center mr-4 h-9 rounded-full bg-[var(--player-chrome)] text-white/60 [box-shadow:var(--player-chrome-ring)] transition-[background-color,box-shadow,color] duration-200 ease-out hover:bg-white/[0.09] focus-within:bg-white/[0.1] focus-within:text-white/80 focus-within:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.16)]">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"

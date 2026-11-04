@@ -49,16 +49,21 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
   stillFrames.current = reduceMotion;
   const fadeMs = () => (stillFrames.current ? 0 : FADE_MS);
 
-  // Kawarp does not drop an older image that finishes loading late, so the latest choice is loaded again over it.
+  const loading = useRef(false);
+
+  // Kawarp does not drop an older image that finishes loading late, so loads run one at a time.
   function load(target: string) {
+    loading.current = true;
     kawarp.current
       ?.loadImage(target)
       .then(() => {
         shown.current.busyUntil = performance.now() + fadeMs();
-        if (shown.current.src !== target) return load(shown.current.src);
         if (stillFrames.current) kawarp.current?.instance?.renderFrame();
       })
-      .catch(error => console.warn(`Wash failed to load ${target}:`, error));
+      .catch(error => console.warn(`Wash failed to load ${target}:`, error))
+      .finally(() => {
+        loading.current = false;
+      });
   }
 
   useEffect(() => {
@@ -90,7 +95,7 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
     const flush = () => {
-      const wait = shown.current.busyUntil - performance.now();
+      const wait = loading.current ? SETTLE_MS : shown.current.busyUntil - performance.now();
       if (wait > 0) {
         timer = setTimeout(flush, wait);
         return;
