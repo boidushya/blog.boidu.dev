@@ -1485,7 +1485,6 @@ html {
   margin-bottom: 24px;
 }
 
-/* Tape lands anchor end first with a glint, then a swipe from the stuck end presses it flat and clear. */
 .foreword-tape {
   user-select: none;
   position: absolute;
@@ -1744,7 +1743,7 @@ html {
   user-select: none;
   position: relative;
   width: fit-content;
-  margin: 8px max(0px, calc((100% - 640px) / 2)) 0 auto;
+  margin: 8px max(0px, calc((100% - 640px) / 2)) 24px auto;
   padding-right: 8px;
 }
 
@@ -1829,7 +1828,7 @@ html {
 }
 
 /* Below this the column has no side margin left to hold the note. */
-@media (max-width: 800px) {
+@media (max-width: 820px) {
   .margin-note-inline-bracket {
     display: none;
   }

@@ -7,7 +7,6 @@ import { flushSync } from "react-dom";
 
 export interface TThemeContext {
   theme: TThemeName;
-  /** Switches theme with a circular reveal growing from `origin` (viewport px), where supported. */
   switchTheme: (next: TThemeName, origin: { x: number; y: number }) => void;
 }
 
@@ -53,7 +52,10 @@ const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       "--theme-r",
       `${Math.hypot(Math.max(origin.x, innerWidth - origin.x), Math.max(origin.y, innerHeight - origin.y))}px`
     );
-    document.startViewTransition(apply);
+    document.startViewTransition(apply).ready.catch((error: unknown) => {
+      // A second switch mid-reveal skips this one, which rejects `ready` with an AbortError.
+      if (!(error instanceof DOMException && error.name === "AbortError")) console.error(error);
+    });
   };
 
   useLayoutEffect(() => {
