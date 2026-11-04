@@ -126,7 +126,9 @@ function stash(
 
   const render = () => {
     const p = clamp01((stashX - x) / (stashX - openX));
-    const shift = (w / 2 - PEEK / 2) * (1 - p);
+    // The art slides only as far as the window is off screen, so its edge never shows inside the visible card.
+    const hidden = clamp01((x + w - stashX - PEEK) / (w - PEEK));
+    const shift = (w / 2 - PEEK / 2) * hidden;
     const detail = clamp01((p - DETAIL_FROM) / (1 - DETAIL_FROM));
     frame.style.transform = `translate3d(${x}px, ${y}px, 0)`;
     card.style.rotate = `y ${-TILT_DEG * (1 - p)}deg`;
