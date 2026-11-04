@@ -134,8 +134,8 @@ export function GreetingAvatar() {
     const svg = svgRef.current;
     if (!message || !note || !svg) return;
     const side = place(note);
-    const d = `path("${bubblePath(note.offsetWidth, note.offsetHeight, side)}")`;
-    for (const path of Array.from(svg.children) as SVGPathElement[]) path.style.setProperty("d", d);
+    const d = bubblePath(note.offsetWidth, note.offsetHeight, side);
+    for (const path of Array.from(svg.children)) path.setAttribute("d", d);
     if (message.fresh) restart(note, "data-drawn");
   }, [message]);
 
