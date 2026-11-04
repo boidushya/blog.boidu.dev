@@ -159,7 +159,7 @@ export const THEMES = {
 };
 
 /** The homepage sits on a wash of each post's banner, so it uses plain greys whatever theme is picked. */
-export const NEUTRAL_COLORS: (typeof THEMES)[keyof typeof THEMES] = {
+export const NEUTRAL_COLORS: IThemeColors = {
   accent50: "#f6f6f6",
   accent100: "#e8e8e8",
   accent200: "#d4d4d4",

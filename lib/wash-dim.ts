@@ -5,10 +5,11 @@ import sharp from "sharp";
 const TARGET_LUMINANCE = 0.2;
 const MIN_DIM = 0.1;
 const MAX_DIM = 0.7;
+const FETCH_TIMEOUT_MS = 10_000;
 
 async function readImage(src: string) {
   if (src.startsWith("/")) return fs.promises.readFile(join(process.cwd(), "public", src));
-  const res = await fetch(src);
+  const res = await fetch(src, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
   if (!res.ok) throw new Error(`${res.status} fetching ${src}`);
   return Buffer.from(await res.arrayBuffer());
 }
@@ -27,7 +28,6 @@ async function averageLuminance(src: string) {
 
 const cache = new Map<string, Promise<number>>();
 
-/** How much to darken a wash of `src` so every washed page lands at about the same lightness, pale banners included. */
 export function washDim(src: string) {
   let dim = cache.get(src);
   if (!dim) {

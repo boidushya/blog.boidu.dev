@@ -663,7 +663,8 @@ circle[id^="react-sketch-canvas__"]{
     scale: 0 1;
   }
 
-  .chapter[data-armed] .sung-lit {
+  .chapter[data-armed] .sung-lit,
+  .player-line .sung-lit {
     -webkit-mask: linear-gradient(90deg, #000 0 42%, transparent 58% 100%) 100% 0 / 260% 100% no-repeat;
     mask: linear-gradient(90deg, #000 0 42%, transparent 58% 100%) 100% 0 / 260% 100% no-repeat;
   }
@@ -694,25 +695,30 @@ circle[id^="react-sketch-canvas__"]{
     animation: chapter-draw 160ms ease-out calc(var(--ink-end, 600ms) + 380ms) forwards;
   }
 
-  .chapter[data-shown] .sung-lit {
+  .chapter[data-shown] .sung-lit,
+  .player-line[data-active] .sung-lit {
     animation:
       chapter-sweep var(--sweep-duration) linear var(--sweep-start) forwards,
       chapter-glow calc(var(--sweep-duration) + 500ms) ease-out var(--sweep-start) forwards;
   }
 
-  .chapter[data-shown] .sung-letters:not(.sung-lit) {
+  .chapter[data-shown] .sung-letters:not(.sung-lit),
+  .player-line[data-active] .sung-letters:not(.sung-lit) {
     animation: chapter-lit 1ms linear calc(var(--sweep-start) + var(--sweep-duration)) forwards;
   }
 
-  .chapter[data-shown] .sung-letter {
+  .chapter[data-shown] .sung-letter,
+  .player-line[data-active] .sung-letter {
     animation: chapter-wave var(--wave-duration) var(--wave-start) both;
   }
 
-  .chapter[data-shown] .sung-letter--long {
+  .chapter[data-shown] .sung-letter--long,
+  .player-line[data-active] .sung-letter--long {
     animation-name: chapter-wave-long;
   }
 
-  .chapter[data-shown] .sung-lit .sung-letter--long {
+  .chapter[data-shown] .sung-lit .sung-letter--long,
+  .player-line[data-active] .sung-lit .sung-letter--long {
     animation:
       chapter-wave-long var(--wave-duration) var(--wave-start) both,
       chapter-letter-glow var(--wave-duration) ease-out var(--wave-start) both;
@@ -1605,47 +1611,11 @@ html:has(.player) {
   padding: 0.4em;
   color: #f6f7f9;
   visibility: hidden;
-  -webkit-mask: linear-gradient(90deg, #000 0 42%, transparent 58% 100%) 100% 0 / 260% 100% no-repeat;
-  mask: linear-gradient(90deg, #000 0 42%, transparent 58% 100%) 100% 0 / 260% 100% no-repeat;
   text-shadow: 0 0 14px oklch(0.98 0 0 / 0);
 }
 
 .player-line[data-active] .sung-lit {
   visibility: visible;
-  animation:
-    chapter-sweep var(--sweep-duration) linear var(--sweep-start) forwards,
-    chapter-glow calc(var(--sweep-duration) + 500ms) ease-out var(--sweep-start) forwards;
-}
-
-.player-line[data-active] .sung-letters:not(.sung-lit) {
-  animation: chapter-lit 1ms linear calc(var(--sweep-start) + var(--sweep-duration)) forwards;
-}
-
-.player-line[data-active] .sung-letter {
-  animation: chapter-wave var(--wave-duration) var(--wave-start) both;
-}
-
-.player-line[data-active] .sung-letter--long {
-  animation-name: chapter-wave-long;
-}
-
-.player-line[data-active] .sung-lit .sung-letter--long {
-  animation:
-    chapter-wave-long var(--wave-duration) var(--wave-start) both,
-    chapter-letter-glow var(--wave-duration) ease-out var(--wave-start) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .player-line .sung-lit {
-    -webkit-mask: none;
-    mask: none;
-  }
-
-  .player-line[data-active] .sung-lit,
-  .player-line[data-active] .sung-letter,
-  .player-line[data-active] .sung-letters:not(.sung-lit) {
-    animation: none;
-  }
 }
 
 .player-empty {

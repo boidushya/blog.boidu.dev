@@ -1,6 +1,5 @@
 import { useSyncExternalStore } from "react";
 
-/** A module-level value that components can read and subscribe to; `initial` is also the server value. */
 export function createStore<T>(initial: T) {
   let value = initial;
   const listeners = new Set<() => void>();

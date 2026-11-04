@@ -6,7 +6,6 @@ export function recordProgress(id: string, fraction: number) {
   if (fraction > getProgress(id)) localStorage.setItem(key(id), String(Math.min(1, fraction)));
 }
 
-/** A random post other than `current`, preferring ones the reader has not finished. */
 export function pickShuffle(ids: string[], current: string, progress: Record<string, number>, random: number) {
   const others = ids.filter(id => id !== current);
   const unread = others.filter(id => (progress[id] ?? 0) < 1);

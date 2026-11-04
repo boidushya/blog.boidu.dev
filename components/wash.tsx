@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 const SETTLE_MS = 180;
 const FADE_MS = 1200;
 const PAGE_FADE_MS = 600;
+const RESIZE_SETTLE_MS = 150;
 
 type WashImage = { src: string; dim: number };
 
@@ -21,10 +22,11 @@ export function useWash(src: string | undefined, dim: number) {
 /** Mounted once in the layout, so the wash can fade out after the page that asked for it is gone. */
 export function PageWash() {
   const image = pageWash.use();
-  const [last, setLast] = useState(image);
-  if (image && image !== last) setLast(image);
-  if (!last) return null;
-  return <Wash src={last.src} dim={last.dim} shown={!!image} />;
+  const [state, setState] = useState({ image, last: image, visits: 0 });
+  if (image !== state.image)
+    setState({ image, last: image ?? state.last, visits: image && !state.image ? state.visits + 1 : state.visits });
+  if (!state.last) return null;
+  return <Wash key={state.visits} src={state.last.src} dim={state.last.dim} shown={!!image} />;
 }
 
 function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
@@ -45,6 +47,21 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
     return () => clearTimeout(stop);
   }, [ready, reduceMotion, visible]);
 
+  // Resizing clears the canvas, and a stopped wash draws nothing until asked.
+  useEffect(() => {
+    if (!ready || (visible && !reduceMotion)) return;
+    let timer: ReturnType<typeof setTimeout>;
+    const redraw = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => kawarp.current?.instance?.renderFrame(), RESIZE_SETTLE_MS);
+    };
+    window.addEventListener("resize", redraw);
+    return () => {
+      window.removeEventListener("resize", redraw);
+      clearTimeout(timer);
+    };
+  }, [ready, visible, reduceMotion]);
+
   // Kawarp restarts a crossfade from the half-blended frame, so never start one during another.
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
@@ -54,6 +71,7 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
         timer = setTimeout(flush, wait);
         return;
       }
+      setShownDim(dim);
       if (shown.current.src === src) return;
       shown.current = { src, busyUntil: performance.now() + FADE_MS };
       kawarp.current
@@ -63,10 +81,7 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
         })
         .catch(error => console.warn(`Wash failed to load ${src}:`, error));
     };
-    timer = setTimeout(() => {
-      setShownDim(dim);
-      flush();
-    }, SETTLE_MS);
+    timer = setTimeout(flush, SETTLE_MS);
     return () => clearTimeout(timer);
   }, [src, dim, reduceMotion]);
 
