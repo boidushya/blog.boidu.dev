@@ -1712,6 +1712,7 @@ html:has(.player) {
 .pip-glow-in {
   position: absolute;
   inset: 0;
+  opacity: 0.65;
 }
 
 /* The crossfade runs on the post, outside the blur: Chrome crops a blur whose content is mid-animation. */
