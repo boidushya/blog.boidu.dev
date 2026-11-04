@@ -8,6 +8,7 @@ import type { BlogCard } from "@/lib/blogs";
 import type { CSSVars } from "@/utils/css-vars";
 import { clamp01 } from "@/utils/math";
 import { prefersReducedMotion } from "@/utils/motion";
+import { resumeNext } from "@/utils/reading-progress";
 import { pop } from "@/utils/retrigger";
 import Image from "next/image";
 import Link from "next/link";
@@ -25,6 +26,7 @@ const NOTE_GAP = 12;
 const NAV_CLEAR = 96;
 const TAP_SLOP = 6;
 const FLICK = 400;
+const PULL_OPEN = 0.2;
 const PROJECT = 0.18;
 const SAMPLE_MS = 80;
 const STALE_MS = 60;
@@ -32,6 +34,9 @@ const STIFFNESS = 420;
 const DAMPING = 2 * 0.9 * Math.sqrt(STIFFNESS);
 const SUBSTEPS = 4;
 const FADE_MS = 200;
+const HINT_AFTER_MS = 1400;
+const HINT_HOLD_MS = 2400;
+const HINTED_KEY = "pip-hinted";
 const ART_SIZES = `(min-width: ${Math.ceil(MAX_WIDTH_PX / WIDTH)}px) ${MAX_WIDTH_PX}px, ${WIDTH * 100}vw`;
 
 type Parts = Record<"frame" | "card" | "art" | "handle" | "toggle" | "play" | "label" | "glow", HTMLElement>;
@@ -47,6 +52,7 @@ type Drag = {
   mid: number;
   caught: boolean;
   moved: boolean;
+  tucked: boolean;
   samples: Sample[];
 };
 
@@ -75,7 +81,13 @@ function partsIn(root: HTMLElement): Parts | null {
 }
 
 /** Drives the window with a spring: y is the lift above the bottom spot, so 0 rests there. */
-function stash(root: HTMLElement, parts: Parts, anchor: () => Element | null, onOpen: (open: boolean) => void) {
+function stash(
+  root: HTMLElement,
+  parts: Parts,
+  anchor: () => Element | null,
+  onOpen: (open: boolean) => void,
+  onHint?: () => void
+) {
   const { frame, card, art, handle, toggle, play, label, glow } = parts;
   let w = 0;
   let h = 0;
@@ -93,6 +105,7 @@ function stash(root: HTMLElement, parts: Parts, anchor: () => Element | null, on
   let last = 0;
   let drag: Drag | null = null;
   let swallowTap = false;
+  let hintTimer: ReturnType<typeof setTimeout> | undefined;
 
   const measure = () => {
     const width = document.documentElement.clientWidth;
@@ -185,6 +198,7 @@ function stash(root: HTMLElement, parts: Parts, anchor: () => Element | null, on
   };
 
   const onDown = (e: PointerEvent) => {
+    clearTimeout(hintTimer);
     if (drag || e.button !== 0 || (e.target instanceof Element && e.target.closest(".pip-play"))) return;
     const caught = raf !== 0;
     cancelAnimationFrame(raf);
@@ -199,6 +213,7 @@ function stash(root: HTMLElement, parts: Parts, anchor: () => Element | null, on
       mid: midY(),
       caught,
       moved: false,
+      tucked: !open,
       samples: [{ t: e.timeStamp, x: e.clientX, y: e.clientY }],
     };
     frame.setAttribute("data-held", "");
@@ -224,7 +239,7 @@ function stash(root: HTMLElement, parts: Parts, anchor: () => Element | null, on
 
   const onRelease = (e: PointerEvent) => {
     if (!drag || e.pointerId !== drag.id) return;
-    const { moved, caught, samples, mid } = drag;
+    const { moved, caught, samples, mid, tucked } = drag;
     drag = null;
     frame.removeAttribute("data-held");
     if (!moved) {
@@ -244,10 +259,15 @@ function stash(root: HTMLElement, parts: Parts, anchor: () => Element | null, on
     vy = still ? 0 : (latest.y - first.y) / span;
     const projected = (stashX - (x + vx * PROJECT)) / (stashX - openX);
     const landing = y + vy * PROJECT;
-    settle(Math.abs(vx) > FLICK ? vx < 0 : projected > 0.5, Math.abs(landing - mid) < Math.abs(landing));
+    // A short pull on the tucked window's grab bar is enough to open it.
+    settle(
+      Math.abs(vx) > FLICK ? vx < 0 : projected > (tucked ? PULL_OPEN : 0.5),
+      Math.abs(landing - mid) < Math.abs(landing)
+    );
   };
 
   const onClick = (e: MouseEvent) => {
+    clearTimeout(hintTimer);
     if (e.detail === 0) return settle(!open);
     if (swallowTap) {
       swallowTap = false;
@@ -258,6 +278,7 @@ function stash(root: HTMLElement, parts: Parts, anchor: () => Element | null, on
   };
 
   const onKey = (e: KeyboardEvent) => {
+    clearTimeout(hintTimer);
     if (e.key !== "Escape" || !open) return;
     settle(false);
     toggle.focus();
@@ -273,7 +294,18 @@ function stash(root: HTMLElement, parts: Parts, anchor: () => Element | null, on
   frame.addEventListener("keydown", onKey);
   toggle.addEventListener("click", onClick);
   addEventListener("resize", place);
+  // A stranger cannot tell what the tucked edge is, so on a first visit it opens once by itself and tucks back.
+  if (onHint)
+    hintTimer = setTimeout(() => {
+      if (open || drag || !frame.getClientRects().length) return;
+      onHint();
+      settle(true);
+      hintTimer = setTimeout(() => {
+        if (open && !drag) settle(false);
+      }, HINT_HOLD_MS);
+    }, HINT_AFTER_MS);
   return () => {
+    clearTimeout(hintTimer);
     cancelAnimationFrame(raf);
     frame.removeEventListener("pointerdown", onDown);
     frame.removeEventListener("pointermove", onMove);
@@ -324,7 +356,8 @@ export function PipWindow({ posts, post, read, disabled, anchorRef }: Props) {
     const root = rootRef.current;
     const parts = root && partsIn(root);
     if (!root || !parts) return;
-    return stash(root, parts, () => anchorRef.current, setOpen);
+    const onHint = localStorage.getItem(HINTED_KEY) ? undefined : () => localStorage.setItem(HINTED_KEY, "1");
+    return stash(root, parts, () => anchorRef.current, setOpen, onHint);
   }, [anchorRef]);
 
   return (
@@ -366,8 +399,9 @@ export function PipWindow({ posts, post, read, disabled, anchorRef }: Props) {
               inert={!open}
               data-cuelume-navigate={disabled ? undefined : ""}
               onClick={e => {
-                if (disabled) e.preventDefault();
-                else pop(e.currentTarget);
+                if (disabled) return e.preventDefault();
+                pop(e.currentTarget);
+                resumeNext(post.id);
               }}
             >
               <PlayIcon />

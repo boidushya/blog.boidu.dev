@@ -14,7 +14,7 @@ import { handwriting } from "@/utils/fonts";
 import { useResizeObserver, useWaterMark } from "@/utils/hooks";
 import { clamp } from "@/utils/math";
 import { matchesSearch, usePostSearch } from "@/utils/post-search";
-import { getProgress, pickShuffle } from "@/utils/reading-progress";
+import { getProgress, pickShuffle, resumeNext } from "@/utils/reading-progress";
 import { pop, retrigger } from "@/utils/retrigger";
 import { createStore } from "@/utils/store";
 import { timeSweep } from "@/utils/sweep";
@@ -654,8 +654,9 @@ export function Player({ posts }: { posts: BlogCard[] }) {
                 aria-disabled={empty}
                 data-cuelume-navigate={empty ? undefined : ""}
                 onClick={e => {
-                  if (empty) e.preventDefault();
-                  else pop(e.currentTarget);
+                  if (empty) return e.preventDefault();
+                  pop(e.currentTarget);
+                  resumeNext(active.id);
                 }}
               >
                 <PlayIcon />
