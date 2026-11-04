@@ -1086,3 +1086,215 @@ html {
 .card-list > :nth-child(n + 4) {
   --i: 5;
 }
+
+/* Player controls */
+.play-button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 42.5px;
+  height: 42.5px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(var(--color-accent-200));
+  color: rgb(var(--color-accent-900));
+  cursor: pointer;
+  transition: transform 140ms ease;
+}
+
+.play-button:focus-visible {
+  outline: 2px solid color-mix(in oklab, rgb(var(--color-accent-50)) 40%, transparent);
+  outline-offset: 2px;
+}
+
+.play-button svg {
+  position: absolute;
+  width: 46%;
+  height: 46%;
+  transition:
+    opacity 300ms cubic-bezier(0.2, 0, 0, 1),
+    scale 300ms cubic-bezier(0.2, 0, 0, 1),
+    filter 300ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.play-button .i-pause,
+.play-button[data-playing] .i-play {
+  opacity: 0;
+  scale: 0.25;
+  filter: blur(4px);
+}
+
+.play-button[data-playing] .i-pause {
+  opacity: 1;
+  scale: 1;
+  filter: blur(0);
+}
+
+@media (hover: hover) {
+  .play-button:hover {
+    --rest: 1.06;
+    transform: scale(1.06);
+  }
+}
+
+.play-button.control-pop {
+  animation: control-pop 280ms cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+@keyframes control-pop {
+  0% {
+    transform: scale(0.93);
+  }
+  42% {
+    transform: scale(1.13);
+  }
+  100% {
+    transform: scale(var(--rest, 1));
+  }
+}
+
+.progress-bar {
+  position: relative;
+  flex: 1;
+  height: 24px;
+  border-radius: 6px;
+  background: color-mix(in oklab, rgb(var(--color-accent-50)) 9%, transparent);
+  cursor: pointer;
+  touch-action: none;
+}
+
+.progress-bar:focus-visible {
+  outline: 2px solid color-mix(in oklab, rgb(var(--color-accent-50)) 40%, transparent);
+  outline-offset: 3px;
+}
+
+.progress-bar-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background: rgb(var(--color-accent-300));
+  clip-path: inset(0 calc((1 - var(--p, 0)) * 100%) 0 0 round 3px);
+}
+
+.progress-bar-times {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 6px;
+  color: rgb(var(--color-accent-300));
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.progress-bar-fill .progress-bar-times {
+  color: rgb(var(--color-accent-900));
+}
+
+.progress-bar-times .t {
+  display: inline-flex;
+}
+
+.progress-bar-times .pip-line {
+  text-box: trim-both cap alphabetic;
+}
+
+.pip-line {
+  display: grid;
+}
+
+.pip-layer {
+  grid-area: 1 / 1;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.pip-layer[data-front="false"] {
+  opacity: 0;
+}
+
+.pip-line[data-swapping="true"] .pip-layer[data-front="false"] {
+  opacity: 1;
+}
+
+.pip-unit {
+  display: inline-block;
+  white-space: pre;
+}
+
+.pip-line[data-swapping="true"] .pip-layer[data-front="true"] .pip-unit {
+  animation: pip-rise-in 620ms both;
+  animation-timing-function: linear(0, 0.0591, 0.197, 0.3672, 0.5384, 0.6914, 0.8169, 0.9122, 0.979, 1.0214, 1.0445, 1.0535, 1.0531, 1.0471, 1.0384, 1.0289, 1.0201, 1.0126, 1.0068, 1.0025, 0.9997, 0.998, 0.9972, 0.9971, 1);
+  animation-delay: calc(var(--line-delay, 0ms) + var(--i, 0) * 45ms);
+}
+
+.pip-line[data-swapping="true"] .pip-layer[data-front="false"] .pip-unit {
+  animation: pip-rise-out 380ms cubic-bezier(0.32, 0, 0.2, 1) both;
+  animation-delay: calc(var(--line-delay, 0ms) + var(--i, 0) * 22.5ms);
+}
+
+@keyframes pip-rise-in {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pip-rise-out {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes pip-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pip-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .play-button,
+  .play-button:hover {
+    transform: none;
+  }
+
+  .play-button svg {
+    transition: opacity 150ms ease-out;
+    scale: 1 !important;
+    filter: none !important;
+  }
+
+  .play-button.control-pop {
+    animation: none;
+  }
+
+  .pip-line[data-swapping="true"] .pip-layer[data-front="true"] .pip-unit {
+    animation: pip-fade-in 300ms ease both;
+    animation-delay: var(--line-delay, 0ms);
+  }
+
+  .pip-line[data-swapping="true"] .pip-layer[data-front="false"] .pip-unit {
+    animation: pip-fade-out 300ms ease both;
+    animation-delay: var(--line-delay, 0ms);
+  }
+}
