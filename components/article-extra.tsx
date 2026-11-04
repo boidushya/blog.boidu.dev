@@ -16,18 +16,27 @@ function useScrollAway() {
   useEffect(() => {
     const dock = ref.current;
     if (!dock) return;
+    const phone = matchMedia("(max-width: 639px)");
     const hasDialog = () => dock.querySelector('[role="dialog"]') !== null;
+    const setAway = (away: boolean) => {
+      const hide = away && phone.matches && !hasDialog();
+      dock.toggleAttribute("data-away", hide);
+      dock.inert = hide;
+    };
+    const onPhoneChange = () => setAway(false);
     const dialogWatch = new MutationObserver(() => {
-      if (hasDialog()) dock.removeAttribute("data-away");
+      if (hasDialog()) setAway(false);
     });
     dialogWatch.observe(dock, { childList: true, subtree: true });
+    phone.addEventListener("change", onPhoneChange);
     const stopScroll = watchScroll((y, dy) => {
       const atEnd = y + window.innerHeight >= document.documentElement.scrollHeight - END_PX;
-      if (atEnd || dy < -SCROLL_INTENT_PX || hasDialog()) dock.removeAttribute("data-away");
-      else if (dy > SCROLL_INTENT_PX) dock.setAttribute("data-away", "");
+      if (atEnd || dy < -SCROLL_INTENT_PX) setAway(false);
+      else if (dy > SCROLL_INTENT_PX) setAway(true);
     });
     return () => {
       dialogWatch.disconnect();
+      phone.removeEventListener("change", onPhoneChange);
       stopScroll();
     };
   }, []);
