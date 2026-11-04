@@ -4,6 +4,7 @@ import PostSearch from "@/components/post-search";
 import SoundToggle from "@/components/sound-toggle";
 import ThemeSwitcher from "@/components/theme-switcher";
 import { useResizeObserver } from "@/utils/hooks";
+import { prefersReducedMotion } from "@/utils/motion";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -100,7 +101,7 @@ function useWidthShift() {
     const previous = last.current;
     last.current = { edges, viewport: window.innerWidth, still };
     if (!previous || previous.viewport !== window.innerWidth || !still || !previous.still) return;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (prefersReducedMotion()) return;
     ends.forEach((end, i) => {
       const dx = previous.edges[i] - edges[i];
       if (dx)

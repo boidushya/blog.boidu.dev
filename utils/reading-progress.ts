@@ -1,6 +1,8 @@
+import { clamp01 } from "@/utils/math";
+
 const key = (id: string) => `blog-read:${id}`;
 
-export const getProgress = (id: string) => Math.min(1, Math.max(0, Number(localStorage.getItem(key(id))) || 0));
+export const getProgress = (id: string) => clamp01(Number(localStorage.getItem(key(id))) || 0);
 
 export function recordProgress(id: string, fraction: number) {
   if (fraction > getProgress(id)) localStorage.setItem(key(id), String(Math.min(1, fraction)));

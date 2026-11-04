@@ -11,7 +11,7 @@ import { handwriting } from "@/utils/fonts";
 import { useResizeObserver, useWaterMark } from "@/utils/hooks";
 import { matchesSearch, usePostSearch } from "@/utils/post-search";
 import { clock, getProgress, pickShuffle } from "@/utils/reading-progress";
-import { retrigger } from "@/utils/retrigger";
+import { pop, retrigger } from "@/utils/retrigger";
 import { timeSweep } from "@/utils/sweep";
 import { getPaletteVariables } from "@/utils/themeConfig";
 import { isTypingTarget } from "@/utils/typing";
@@ -190,7 +190,7 @@ function Control({
         }
         if (layer.current) ripple(button, layer.current, e);
         if (nudge) retrigger(button, `player-nudge-${nudge}`, 320);
-        retrigger(button, "control-pop", 320);
+        pop(button);
         onPress();
       }}
       {...rest}
@@ -593,7 +593,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
                 data-cuelume-navigate={empty ? undefined : ""}
                 onClick={e => {
                   if (empty) e.preventDefault();
-                  else retrigger(e.currentTarget, "control-pop", 320);
+                  else pop(e.currentTarget);
                 }}
               >
                 <PlayIcon />

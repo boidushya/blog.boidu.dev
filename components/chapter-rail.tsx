@@ -1,5 +1,6 @@
 "use client";
 
+import { clamp01 } from "@/utils/math";
 import { endJump, startJump } from "@/utils/reveal";
 import { motion, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useSpring } from "motion/react";
 import type React from "react";
@@ -74,7 +75,7 @@ export function ChapterRail({ children }: { children: React.ReactNode }) {
     const from = anchor(current);
     const to = current + 1 < items.length ? anchor(current + 1) : list.offsetHeight;
     const chapterEnd = tops[current + 1] ?? bodyRect.bottom;
-    const within = Math.min(1, Math.max(0, (readingLine - tops[current]) / (chapterEnd - tops[current])));
+    const within = clamp01((readingLine - tops[current]) / (chapterEnd - tops[current]));
     progress.set((from + within * (to - from)) / list.offsetHeight);
   }, [chapters, progress]);
 

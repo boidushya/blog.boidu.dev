@@ -1,3 +1,5 @@
+import { clamp01 } from "@/utils/math";
+
 type SweepTiming = { pxPerMs: number; minWordMs: number; overlapMs: number; startMs: number };
 type SungWord = { startMs: number; letters: number };
 
@@ -14,7 +16,7 @@ export function timeSweep(heading: HTMLElement, { pxPerMs, minWordMs, overlapMs,
     const duration = Math.max(minWordMs, box.width / pxPerMs);
     word.style.setProperty("--sweep-start", `${Math.round(start)}ms`);
     word.style.setProperty("--sweep-duration", `${Math.round(duration)}ms`);
-    const at = (progress: number) => start + duration * Math.min(1, Math.max(0, progress));
+    const at = (progress: number) => start + duration * clamp01(progress);
     const [base, lit] = Array.from(word.querySelectorAll(".sung-letters"), group =>
       Array.from(group.querySelectorAll<HTMLElement>(".sung-letter"))
     );

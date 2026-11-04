@@ -12,3 +12,5 @@ export function retrigger(el: HTMLElement, className: string, ms: number) {
     setTimeout(() => el.classList.remove(className), ms)
   );
 }
+
+export const pop = (el: HTMLElement) => retrigger(el, "control-pop", 320);

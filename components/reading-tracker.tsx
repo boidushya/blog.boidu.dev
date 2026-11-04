@@ -1,5 +1,6 @@
 "use client";
 
+import { clamp01 } from "@/utils/math";
 import { recordProgress } from "@/utils/reading-progress";
 import { useEffect } from "react";
 
@@ -11,7 +12,7 @@ export function ReadingTracker({ id }: { id: string }) {
     const measure = () => {
       frame = 0;
       const { top, height } = article.getBoundingClientRect();
-      recordProgress(id, Math.min(1, Math.max(0, (window.innerHeight - top) / height)));
+      recordProgress(id, clamp01((window.innerHeight - top) / height));
     };
     const onScroll = () => {
       frame ||= requestAnimationFrame(measure);

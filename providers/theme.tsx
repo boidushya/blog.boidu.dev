@@ -1,6 +1,7 @@
 "use client";
 
 import { LIGHT_THEMES, TThemeName } from "@/utils/constants";
+import { prefersReducedMotion } from "@/utils/motion";
 import { getThemeVariables } from "@/utils/themeConfig";
 import React, { createContext, useEffect, useLayoutEffect, useState } from "react";
 import { flushSync } from "react-dom";
@@ -44,7 +45,7 @@ const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       applyTheme(next);
       flushSync(() => setTheme(next));
     };
-    if (!document.startViewTransition || matchMedia("(prefers-reduced-motion: reduce)").matches) return apply();
+    if (!document.startViewTransition || prefersReducedMotion()) return apply();
     const root = document.documentElement.style;
     root.setProperty("--theme-x", `${origin.x}px`);
     root.setProperty("--theme-y", `${origin.y}px`);

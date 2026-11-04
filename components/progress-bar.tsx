@@ -1,6 +1,7 @@
 "use client";
 
 import { RollingText } from "@/components/pip-line";
+import { clamp01 } from "@/utils/math";
 import type { CSSProperties, HTMLAttributes, KeyboardEvent, PointerEvent } from "react";
 
 const KEY_STEP_SECONDS = 2;
@@ -20,8 +21,6 @@ type Display = {
 
 type Props = Display & (Seek | { max?: undefined; onSeek?: undefined });
 
-const clamp = (value: number) => Math.min(1, Math.max(0, value));
-
 function Times({ now, total, delay, instant }: { now: string; total: string; delay?: number; instant?: boolean }) {
   return (
     <div className="progress-bar-times" aria-hidden>
@@ -38,7 +37,7 @@ function Times({ now, total, delay, instant }: { now: string; total: string; del
 function sliderProps({ progress, now, total, max, onSeek }: Display & Seek): HTMLAttributes<HTMLDivElement> {
   const seekTo = (e: PointerEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    onSeek(clamp((e.clientX - rect.left) / rect.width));
+    onSeek(clamp01((e.clientX - rect.left) / rect.width));
   };
 
   const onPointerEnd = (e: PointerEvent<HTMLDivElement>) => {
@@ -77,7 +76,7 @@ function sliderProps({ progress, now, total, max, onSeek }: Display & Seek): HTM
       };
       if (!Object.hasOwn(targets, e.key)) return;
       e.preventDefault();
-      onSeek(clamp(targets[e.key]));
+      onSeek(clamp01(targets[e.key]));
     },
   };
 }

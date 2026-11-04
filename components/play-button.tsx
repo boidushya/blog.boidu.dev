@@ -1,7 +1,7 @@
 "use client";
 
 import { PauseIcon, PlayIcon } from "@/components/player-icons";
-import { retrigger } from "@/utils/retrigger";
+import { pop } from "@/utils/retrigger";
 import { useRef } from "react";
 
 type Props = {
@@ -15,7 +15,7 @@ export function PlayButton({ playing, onToggle, label, className }: Props) {
   const ref = useRef<HTMLButtonElement>(null);
 
   const onClick = () => {
-    if (ref.current) retrigger(ref.current, "control-pop", 320);
+    if (ref.current) pop(ref.current);
     onToggle();
   };
 

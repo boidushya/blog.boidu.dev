@@ -1,6 +1,7 @@
 "use client";
 
 import { Handwriting } from "@/components/handwriting";
+import { prefersReducedMotion } from "@/utils/motion";
 import { observeReveal } from "@/utils/reveal";
 import { playWalkNote, walkMelody } from "@/utils/sounds";
 import { timeSweep } from "@/utils/sweep";
@@ -33,7 +34,7 @@ export function Chapter({ n, label, children }: ChapterProps) {
       setArmed(true);
       stopObserving = observeReveal(chapter, 0.8, quiet => {
         setShown(true);
-        if (quiet || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        if (quiet || prefersReducedMotion()) return;
         const melody = walkMelody(words.map(word => word.letters));
         words.forEach((word, i) => notes.push(setTimeout(() => playWalkNote(melody[i]), word.startMs)));
       });

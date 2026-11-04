@@ -1,6 +1,7 @@
 "use client";
 
 import { Handwriting } from "@/components/handwriting";
+import { prefersReducedMotion } from "@/utils/motion";
 import { useReveal } from "@/utils/reveal";
 import { REVEAL } from "@/utils/sounds";
 import { play } from "cuelume";
@@ -18,7 +19,7 @@ type Props = { note: string; children: React.ReactNode } & (
 );
 
 const playReveal = (quiet: boolean) => {
-  if (!quiet && !matchMedia("(prefers-reduced-motion: reduce)").matches) play("open", REVEAL);
+  if (!quiet && !prefersReducedMotion()) play("open", REVEAL);
 };
 
 function Bracket({ className, style }: { className: string; style?: React.CSSProperties }) {

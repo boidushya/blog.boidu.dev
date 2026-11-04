@@ -18,7 +18,7 @@ const PostSearch = () => {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const slash = e.key === "/" && !e.metaKey && !e.ctrlKey && !e.altKey && !isTypingTarget(e.target);
-      const commandK = e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey) && !e.altKey && !e.shiftKey;
+      const commandK = (e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey) && !e.altKey && !e.shiftKey;
       if (!slash && !commandK) return;
       e.preventDefault();
       inputRef.current?.focus();
