@@ -112,12 +112,11 @@ async function getVisiblePosts() {
 
 export async function getAllPosts() {
   const posts = await getVisiblePosts();
-  return posts.sort((post1, post2) => (post1.date > post2.date ? -1 : 1));
+  return posts.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 }
 
 export async function getAllBlogs() {
-  const posts = await getVisiblePosts();
-  posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const posts = await getAllPosts();
   return Promise.all(
     posts.map(async post => ({
       id: post.id,
