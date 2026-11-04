@@ -1228,10 +1228,6 @@ html:has(.player) {
   color: rgb(255 255 255 / 50%);
 }
 
-.player-bar-times .pip-line:last-child {
-  justify-items: end;
-}
-
 .player-track-sub b {
   font-weight: 500;
   color: rgb(255 255 255 / 85%);
@@ -1247,49 +1243,8 @@ html:has(.player) {
   position: relative;
 }
 
-/* isolate: the times' difference blend must only see the bar, not the page wash behind it */
-.player-bar {
-  position: relative;
-  isolation: isolate;
-  height: 24px;
-  border-radius: 6px;
-  background: rgb(255 255 255 / 22%);
-}
-
-.player-bar-clip {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  border-radius: 6px;
-}
-
-.player-bar-fill {
-  position: absolute;
-  inset: 0;
-  border-radius: 3px;
-  background: #fff;
-  transform: scaleX(var(--p, 0));
-  transform-origin: left center;
-  transition: transform 600ms var(--ease);
-}
-
-.player-bar-times {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-inline: 6px;
-  color: #fff;
-  mix-blend-mode: difference;
-  font-size: 11.5px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  pointer-events: none;
-}
-
-.player-bar-times span {
-  text-box: trim-both cap alphabetic;
+.player-bar .progress-bar-fill {
+  transition: clip-path 600ms var(--ease);
 }
 
 .player-controls {
@@ -1363,27 +1318,11 @@ html:has(.player) {
   }
 }
 
-.player-btn.player-play {
-  width: 42.5px;
-  height: 42.5px;
-  background: #fff;
-  color: #111;
-}
-
-.player-btn.player-play svg {
-  width: 46%;
-  height: 46%;
-}
-
 @media (hover: hover) {
   .player-btn:not([aria-disabled="true"]):hover {
     --rest: 1.06;
     background: rgb(255 255 255 / 24%);
     transform: scale(1.06);
-  }
-
-  .player-btn.player-play:hover {
-    background: #fff;
   }
 }
 
@@ -1735,17 +1674,17 @@ html:has(.player) {
     display: none;
   }
 
-  .player-bar {
+  .progress-bar.player-bar {
     grid-area: 2 / 1 / 3 / -1;
     height: 4px;
     border-radius: 999px;
   }
 
-  .player-bar-clip {
-    border-radius: 999px;
+  .player-bar .progress-bar-fill {
+    border-radius: inherit;
   }
 
-  .player-bar-times {
+  .player-bar .progress-bar-times {
     display: none;
   }
 }
@@ -1755,7 +1694,7 @@ html:has(.player) {
   .player-line,
   .player-note,
   .player-note svg,
-  .player-bar-fill {
+  .player-bar .progress-bar-fill {
     transition: opacity 150ms ease-out;
   }
 
@@ -1817,8 +1756,13 @@ html:has(.player) {
   filter: blur(0);
 }
 
+.play-button[aria-disabled="true"] {
+  color: color-mix(in oklab, rgb(var(--color-accent-900)) 32%, transparent);
+  cursor: default;
+}
+
 @media (hover: hover) {
-  .play-button:hover {
+  .play-button:not([aria-disabled="true"]):hover {
     --rest: 1.06;
     transform: scale(1.06);
   }
@@ -1849,6 +1793,11 @@ html:has(.player) {
   background: color-mix(in oklab, rgb(var(--color-accent-50)) 9%, transparent);
   cursor: pointer;
   touch-action: none;
+}
+
+.progress-bar[role="img"] {
+  cursor: default;
+  touch-action: auto;
 }
 
 .progress-bar:focus-visible {

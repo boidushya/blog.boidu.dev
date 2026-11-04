@@ -2,6 +2,7 @@
 
 import { PipLine } from "@/components/pip-line";
 import { NextIcon, PlayIcon, PreviousIcon } from "@/components/player-icons";
+import { ProgressBar } from "@/components/progress-bar";
 import { SungTitle } from "@/components/sung-title";
 import { useWash } from "@/components/wash";
 import type { BlogCard } from "@/lib/blogs";
@@ -548,19 +549,15 @@ export function Player({ posts }: { posts: BlogCard[] }) {
               />
             </div>
           </div>
-          <div
+          <ProgressBar
             className="player-bar"
-            role="img"
-            aria-label={done ? `${Math.round(done * 100)}% read` : `${active.minutes} min read, not started`}
-          >
-            <div className="player-bar-clip">
-              <div className="player-bar-fill" style={cssVars({ "--p": done })} />
-            </div>
-            <div className="player-bar-times" aria-hidden="true">
-              <PipLine units={Array.from(clock(active.minutes * done))} delay={140} instant={!timesReady} />
-              <PipLine units={Array.from(clock(active.minutes))} delay={180} instant={!timesReady} />
-            </div>
-          </div>
+            progress={done}
+            now={clock(active.minutes * done)}
+            total={clock(active.minutes)}
+            label={done ? `${Math.round(done * 100)}% read` : `${active.minutes} min read, not started`}
+            delay={140}
+            instant={!timesReady}
+          />
           <div className="player-controls">
             <Control
               label="Random post"
@@ -595,7 +592,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
                 <PreviousIcon />
               </Control>
               <Link
-                className="player-btn player-play"
+                className="play-button"
                 href={active.link}
                 aria-label="Read"
                 aria-disabled={empty}
