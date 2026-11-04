@@ -306,7 +306,10 @@ function stash(
 
   const onClick = (e: MouseEvent) => {
     clearTimeout(hintTimer);
-    if (e.detail === 0) return settle(!open);
+    if (e.detail === 0) {
+      if (!drag) settle(!open);
+      return;
+    }
     if (swallowTap) {
       swallowTap = false;
       return;
@@ -317,7 +320,7 @@ function stash(
 
   const onKey = (e: KeyboardEvent) => {
     clearTimeout(hintTimer);
-    if (e.key !== "Escape" || !open) return;
+    if (e.key !== "Escape" || !open || drag) return;
     settle(false);
     toggle.focus();
   };
@@ -331,8 +334,8 @@ function stash(
   if (note) noteWatch.observe(note, { attributes: true, childList: true, subtree: true, characterData: true });
   frame.addEventListener("pointerdown", onDown);
   frame.addEventListener("pointermove", onMove);
-  frame.addEventListener("pointerup", onRelease);
-  frame.addEventListener("pointercancel", onRelease);
+  addEventListener("pointerup", onRelease);
+  addEventListener("pointercancel", onRelease);
   frame.addEventListener("keydown", onKey);
   toggle.addEventListener("click", onClick);
   addEventListener("resize", place);
@@ -364,8 +367,8 @@ function stash(
     noteWatch.disconnect();
     frame.removeEventListener("pointerdown", onDown);
     frame.removeEventListener("pointermove", onMove);
-    frame.removeEventListener("pointerup", onRelease);
-    frame.removeEventListener("pointercancel", onRelease);
+    removeEventListener("pointerup", onRelease);
+    removeEventListener("pointercancel", onRelease);
     frame.removeEventListener("keydown", onKey);
     toggle.removeEventListener("click", onClick);
     removeEventListener("resize", place);
