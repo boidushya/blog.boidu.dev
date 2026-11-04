@@ -56,7 +56,7 @@ const ArticleExtra = ({
       <SignProvider>
         <hr className="my-8 border-dashed border-accent-800/50" />
         <SignGallery id={id} />
-        <div ref={likeRef} className="like-dock fixed sm:bottom-12 sm:right-12 bottom-4 right-4">
+        <div ref={likeRef} className="like-dock fixed z-20 sm:bottom-12 sm:right-12 bottom-4 right-4">
           <Like postId={id} />
         </div>
       </SignProvider>
