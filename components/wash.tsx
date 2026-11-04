@@ -1,5 +1,6 @@
 "use client";
 
+import { WASH_KAWARP } from "@/utils/constants";
 import { createStore } from "@/utils/store";
 import { Kawarp, type KawarpRef } from "@kawarp/react";
 import { useReducedMotion } from "motion/react";
@@ -127,10 +128,8 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
         ref={kawarp}
         src={first}
         autoPlay={false}
-        blurPasses={8}
+        {...WASH_KAWARP}
         animationSpeed={1.6}
-        saturation={1.4}
-        warpIntensity={0.9}
         transitionDuration={fadeMs()}
         onLoad={() => {
           kawarp.current?.instance?.renderFrame();

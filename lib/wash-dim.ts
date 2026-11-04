@@ -1,19 +1,10 @@
-import fs from "fs";
-import { join } from "path";
+import { readImage } from "@/lib/image-source";
 import { clamp } from "@/utils/math";
 import sharp from "sharp";
 
 const TARGET_LUMINANCE = 0.2;
 const MIN_DIM = 0.1;
 const MAX_DIM = 0.7;
-const FETCH_TIMEOUT_MS = 10_000;
-
-async function readImage(src: string) {
-  if (src.startsWith("/")) return fs.promises.readFile(join(process.cwd(), "public", src));
-  const res = await fetch(src, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
-  if (!res.ok) throw new Error(`${res.status} fetching ${src}`);
-  return Buffer.from(await res.arrayBuffer());
-}
 
 async function averageLuminance(src: string) {
   const data = await sharp(await readImage(src))
