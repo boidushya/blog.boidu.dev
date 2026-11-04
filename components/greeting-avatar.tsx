@@ -6,8 +6,15 @@ import { play } from "cuelume";
 import Image from "next/image";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-const WAVE_AT_MS = [600, 7000, 14000];
+const WAVE_AT_MS = [600, 5000];
+const GIVE_UP_MS = 10000;
+const SHRUG_MS = 1500;
 const LINGER_MS = 4500;
+// Readers who answered on this many visits, or ignored it this many in a row, are not asked again.
+const ANSWERED_KEY = "greeting-answered";
+const IGNORED_KEY = "greeting-ignored";
+const ENOUGH_ANSWERS = 3;
+const ENOUGH_IGNORES = 2;
 const FAINT_MS = 2600;
 const SULK_MS = 10000;
 // Each click adds one to the annoyance; a calm stretch drains it one step every CALM_MS.
@@ -18,6 +25,8 @@ const GRUDGE = ["you again?", "that wasn't nice, y'know?"];
 const FED_UP = ["this is a hostile workplace", "okay, i'm telling my mom", "wait till HR hears about this"];
 
 const pick = (lines: string[]) => lines[Math.floor(Math.random() * lines.length)];
+
+const count = (key: string) => Number(localStorage.getItem(key)) || 0;
 
 function hello() {
   const hour = new Date().getHours();
@@ -132,6 +141,7 @@ export function GreetingAvatar() {
   const [message, setMessage] = useState<{ text: string; id: number; fresh: boolean } | null>(null);
   const state = useRef({
     chat: -1,
+    answered: false,
     idle: 0,
     annoyance: 0,
     lastClick: 0,
@@ -141,11 +151,16 @@ export function GreetingAvatar() {
     sulking: false,
     current: "",
   });
-  const timers = useRef<{ waves: ReturnType<typeof setTimeout>[]; hide?: ReturnType<typeof setTimeout> }>({
-    waves: [],
+  const timers = useRef<{ intro: ReturnType<typeof setTimeout>[]; hide?: ReturnType<typeof setTimeout> }>({
+    intro: [],
   });
 
   const act = (name: "wave" | "spin" | "getup") => restart(buttonRef.current, "data-act", name);
+
+  const hide = () => {
+    noteRef.current?.setAttribute("data-off", "");
+    state.current.current = "";
+  };
 
   const say = (text: string, linger = LINGER_MS) => {
     clearTimeout(timers.current.hide);
@@ -155,11 +170,7 @@ export function GreetingAvatar() {
       state.current.current = text;
       setMessage(previous => ({ text, id: (previous?.id ?? 0) + 1, fresh }));
     }
-    if (linger)
-      timers.current.hide = setTimeout(() => {
-        noteRef.current?.setAttribute("data-off", "");
-        state.current.current = "";
-      }, linger);
+    if (linger) timers.current.hide = setTimeout(hide, linger);
   };
 
   useLayoutEffect(() => {
@@ -177,14 +188,27 @@ export function GreetingAvatar() {
 
   useEffect(() => {
     const t = timers.current;
-    t.waves = WAVE_AT_MS.map((at, i) =>
-      setTimeout(() => {
-        act("wave");
-        if (i === 0) say("wave back?", 0);
-      }, at)
-    );
+    const asked = count(ANSWERED_KEY) < ENOUGH_ANSWERS && count(IGNORED_KEY) < ENOUGH_IGNORES;
+    if (!asked) {
+      t.intro = [setTimeout(() => act("wave"), WAVE_AT_MS[0])];
+    } else {
+      t.intro = WAVE_AT_MS.map((at, i) =>
+        setTimeout(() => {
+          act("wave");
+          if (i === 0) say("wave back?", 0);
+        }, at)
+      );
+      t.intro.push(
+        setTimeout(() => {
+          localStorage.setItem(IGNORED_KEY, String(count(IGNORED_KEY) + 1));
+          const box = buttonRef.current?.getBoundingClientRect();
+          if (box && box.bottom > 0 && box.top < window.innerHeight) say("fair enough", SHRUG_MS);
+          else hide();
+        }, GIVE_UP_MS)
+      );
+    }
     return () => {
-      t.waves.forEach(clearTimeout);
+      t.intro.forEach(clearTimeout);
       clearTimeout(t.hide);
     };
   }, []);
@@ -218,7 +242,12 @@ export function GreetingAvatar() {
 
   const onClick = () => {
     const s = state.current;
-    timers.current.waves.forEach(clearTimeout);
+    timers.current.intro.forEach(clearTimeout);
+    if (!s.answered) {
+      s.answered = true;
+      localStorage.setItem(ANSWERED_KEY, String(count(ANSWERED_KEY) + 1));
+      localStorage.removeItem(IGNORED_KEY);
+    }
     if (s.fainted || s.sulking) return play("tap", { theme: "bubble", emphasis: "subtle" });
     const now = performance.now();
     s.annoyance = Math.max(0, s.annoyance - (now - s.lastClick) / CALM_MS) + 1;
