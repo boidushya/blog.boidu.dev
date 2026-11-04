@@ -1,5 +1,6 @@
 ---
 title: "How I Fixed YouTube Music's Biggest Flaw: Better Lyrics"
+short: "where it all started"
 date: "2024-07-12"
 banner: "https://www.youtube.com/watch?v=GACsqMfhDVE"
 cover: "https://res.cloudinary.com/boidu/image/upload/t_banner/v1759536833/bl/banner.png"
