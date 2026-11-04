@@ -1,23 +1,14 @@
 "use client";
 
 import { Handwriting } from "@/components/handwriting";
-import { observeReveal } from "@/utils/reveal";
+import { useReveal } from "@/utils/reveal";
 import { type CustomStyle, layTapes } from "@/utils/tape-layout";
 import type React from "react";
-import { type CSSProperties, type RefObject, useEffect, useRef, useState } from "react";
-
-function useRevealed(ref: RefObject<HTMLElement | null>, amount: number) {
-  const [shown, setShown] = useState(false);
-  useEffect(() => {
-    if (!ref.current) return;
-    return observeReveal(ref.current, amount, () => setShown(true));
-  }, [ref, amount]);
-  return shown;
-}
+import { useEffect, useRef, useState } from "react";
 
 function Signature({ name }: { name: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const shown = useRevealed(ref, 0.6);
+  const shown = useReveal(ref, 0.6);
   return (
     <div ref={ref} role="img" aria-label={name} className="foreword-sig" data-shown={shown || undefined}>
       <Handwriting
@@ -47,7 +38,7 @@ export function Foreword({
 }) {
   const ref = useRef<HTMLElement>(null);
   const outroRef = useRef<HTMLParagraphElement>(null);
-  const outroShown = useRevealed(outroRef, 0.6);
+  const outroShown = useReveal(outroRef, 0.6);
   const [labelledBy, setLabelledBy] = useState<string>();
   const [taped, setTaped] = useState(false);
   const { style, crease } = layTapes(seed);

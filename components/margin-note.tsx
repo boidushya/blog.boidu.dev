@@ -1,36 +1,25 @@
 "use client";
 
 import { Handwriting } from "@/components/handwriting";
-import { observeReveal } from "@/utils/reveal";
+import { useReveal } from "@/utils/reveal";
 import { REVEAL } from "@/utils/sounds";
 import { play } from "cuelume";
 import { motion, useReducedMotion } from "motion/react";
 import type React from "react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 const BRACKET_PATH = "M2 2.5 C5 1.8 8 1.6 10.5 2 C10.2 30 10.9 70 10.4 98 C7.5 98.6 4.5 98.4 1.5 98.9";
 const NOTE_DELAY = 0.45;
 
-type Props = {
-  note: string;
-  /** Inline notes only: an image shown instead of the handwriting, with `note` as its alt text. */
-  icon?: string;
-  /** Brackets a phrase inside a paragraph instead of whole blocks. */
-  inline?: boolean;
-  children: React.ReactNode;
-};
+type Props = { note: string; children: React.ReactNode } & (
+  | { inline?: false; icon?: never }
+  // An inline note brackets a phrase inside a paragraph; `icon` swaps its handwriting for an image with `note` as alt.
+  | { inline: true; icon?: string }
+);
 
-function useReveal(ref: React.RefObject<HTMLElement | null>) {
-  const [shown, setShown] = useState(false);
-  useEffect(() => {
-    if (!ref.current) return;
-    return observeReveal(ref.current, 0.6, quiet => {
-      setShown(true);
-      if (!quiet && !matchMedia("(prefers-reduced-motion: reduce)").matches) play("open", REVEAL);
-    });
-  }, [ref]);
-  return shown;
-}
+const playReveal = (quiet: boolean) => {
+  if (!quiet && !matchMedia("(prefers-reduced-motion: reduce)").matches) play("open", REVEAL);
+};
 
 function Bracket({ className, style }: { className: string; style?: React.CSSProperties }) {
   return (
@@ -74,11 +63,11 @@ function Icon({
   );
 }
 
-function InlineMarginNote({ note, icon, children }: Omit<Props, "inline">) {
+function InlineMarginNote({ note, icon, children }: { note: string; icon?: string; children: React.ReactNode }) {
   const reduceMotion = useReducedMotion();
   const draw = !reduceMotion;
   const ref = useRef<HTMLSpanElement>(null);
-  const shown = useReveal(ref);
+  const shown = useReveal(ref, 0.6, playReveal);
   const [span, setSpan] = useState<{ top: number; height: number }>();
 
   useLayoutEffect(() => {
@@ -94,6 +83,7 @@ function InlineMarginNote({ note, icon, children }: Omit<Props, "inline">) {
       setSpan({ top: first.top - origin, height: last.bottom - first.top });
     };
     measure();
+    document.fonts.ready.then(measure);
     const observer = new ResizeObserver(measure);
     observer.observe(block);
     return () => observer.disconnect();
@@ -122,11 +112,11 @@ function InlineMarginNote({ note, icon, children }: Omit<Props, "inline">) {
   );
 }
 
-function BlockMarginNote({ note, children }: Pick<Props, "note" | "children">) {
+function BlockMarginNote({ note, children }: { note: string; children: React.ReactNode }) {
   const reduceMotion = useReducedMotion();
   const draw = !reduceMotion;
   const ref = useRef<HTMLDivElement>(null);
-  const shown = useReveal(ref);
+  const shown = useReveal(ref, 0.6, playReveal);
 
   return (
     <motion.div

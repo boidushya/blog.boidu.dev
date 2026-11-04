@@ -45,7 +45,13 @@ function timeSweep(heading: HTMLElement): SungWord[] {
   return words;
 }
 
-export function Chapter({ n, label, children }: { n?: string; label?: string; children: React.ReactNode }) {
+type ChapterProps = { children: React.ReactNode } & (
+  | { n: string; label?: never }
+  // Labelled chapters (a foreword) stay out of the chapter rail, which counts only numbered ones.
+  | { label: string; n?: never }
+);
+
+export function Chapter({ n, label, children }: ChapterProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [armed, setArmed] = useState(false);
   const [shown, setShown] = useState(false);

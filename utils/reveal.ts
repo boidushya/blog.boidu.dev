@@ -1,3 +1,5 @@
+import { type RefObject, useEffect, useRef, useState } from "react";
+
 // Reveals within this gap of the last audible one stay silent, so reveals landing together never stack.
 const QUIET_GAP_MS = 1200;
 // Scrolling faster than a screen height in this long skims past reveals instead of reading them.
@@ -79,4 +81,19 @@ export function observeReveal(el: Element, amount: number, onReveal: (quiet: boo
   observer.observe(el);
   waiting.add(reveal);
   return stop;
+}
+
+/** `observeReveal` as React state: true once `ref` has been revealed. */
+export function useReveal(ref: RefObject<HTMLElement | null>, amount: number, onReveal?: (quiet: boolean) => void) {
+  const [shown, setShown] = useState(false);
+  const latest = useRef(onReveal);
+  latest.current = onReveal;
+  useEffect(() => {
+    if (!ref.current) return;
+    return observeReveal(ref.current, amount, quiet => {
+      setShown(true);
+      latest.current?.(quiet);
+    });
+  }, [ref, amount]);
+  return shown;
 }
