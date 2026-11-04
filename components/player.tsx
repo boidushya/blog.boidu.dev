@@ -1,7 +1,7 @@
 "use client";
 
 import { SungTitle } from "@/components/sung-title";
-import { Wash } from "@/components/wash";
+import { useWash } from "@/components/wash";
 import type { BlogCard } from "@/lib/blogs";
 import { handwriting } from "@/utils/fonts";
 import { useResizeObserver, useWaterMark } from "@/utils/hooks";
@@ -91,7 +91,7 @@ function placeNote(
   ink: HTMLElement
 ) {
   const words = Array.from(line.querySelectorAll<HTMLElement>(".sung-word"));
-  const width = lyrics.clientWidth;
+  const width = scroller.clientWidth;
   const lineTop = line.offsetTop;
   const lineCentre = lineTop + scrollOffset + scroller.offsetTop;
   const last = words[words.length - 1];
@@ -515,6 +515,8 @@ export function Player({ posts }: { posts: BlogCard[] }) {
     [visible, index, hover, unhover, select]
   );
 
+  useWash(active?.image, active?.dim ?? 0);
+
   if (!active) return null;
 
   const done = progress?.[active.id] ?? 0;
@@ -545,7 +547,6 @@ export function Player({ posts }: { posts: BlogCard[] }) {
 
   return (
     <div className="player">
-      <Wash src={active.image} dim={active.dim} />
       <h1 className="sr-only">Posts</h1>
       <div className="player-stage">
         <section className="player-art enter [--i:1]" aria-label="Selected post">

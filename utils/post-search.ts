@@ -1,26 +1,9 @@
-import { useSyncExternalStore } from "react";
+import { createStore } from "@/utils/store";
 
-let query = "";
-const listeners = new Set<() => void>();
+const query = createStore("");
 
-export function setPostSearch(next: string) {
-  query = next;
-  for (const listener of Array.from(listeners)) listener();
-}
-
-const subscribe = (listener: () => void) => {
-  listeners.add(listener);
-  return () => {
-    listeners.delete(listener);
-  };
-};
-
-export const usePostSearch = () =>
-  useSyncExternalStore(
-    subscribe,
-    () => query,
-    () => ""
-  );
+export const setPostSearch = query.set;
+export const usePostSearch = query.use;
 
 type Searchable = { title: string; short: string; description: string; labels: string[] };
 

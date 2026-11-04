@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import Footer from "@/components/footer";
 import Navbar from "@/components/nav";
+import { PageWash } from "@/components/wash";
 import Providers from "@/providers";
 import { colors } from "@/utils/theme";
 import Script from "next/script";
@@ -56,6 +57,7 @@ export default function RootLayout({
         <div className="site relative box-content max-w-3xl px-4 mx-auto sm:px-6">
           <Providers>
             <NextTopLoader color={topLoaderColor} />
+            <PageWash />
             <Navbar />
             <main>{children}</main>
             <Footer />
