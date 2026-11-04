@@ -10,6 +10,7 @@ const WAVE_AT_MS = [600, 5000];
 const GIVE_UP_MS = 10000;
 const SHRUG_MS = 1500;
 const LINGER_MS = 4500;
+const LINGER_PER_CHAR_MS = 100;
 // Readers who answered on this many visits, or ignored it this many in a row, are not asked again.
 const ANSWERED_KEY = "greeting-answered";
 const IGNORED_KEY = "greeting-ignored";
@@ -19,7 +20,8 @@ const FAINT_MS = 2600;
 const SULK_MS = 10000;
 // Each click adds one to the annoyance; a calm stretch drains it one step every CALM_MS.
 const CALM_MS = 1250;
-const CHAT = ["the post is down there, fyi", "sup?", "i'm flattered, really", "quit lollygagging"];
+const CHAT = ["sup?", "i'm flattered, really", "quit lollygagging"];
+const INTRO = "hi :) i'm boidu. i make stuff, and this is where i ramble about the fun ones";
 const IDLE = ["boop", "hehe", "yes?", "still here"];
 const GRUDGE = ["you again?", "that wasn't nice, y'know?"];
 const FED_UP = ["this is a hostile workplace", "okay, i'm telling my mom", "wait till HR hears about this"];
@@ -68,8 +70,10 @@ function fits(note: HTMLElement, side: Side, oneLine: boolean) {
 function place(note: HTMLElement, avatar: HTMLElement, stayBelow: boolean): Tail {
   note.style.top = "";
   if (!stayBelow && (fits(note, "left", true) || fits(note, "left", false))) return { side: "left" };
-  const row = avatar.closest(".blog__meta") ?? avatar;
-  const rowBottom = Math.max(...Array.from(row.children, child => child.getBoundingClientRect().bottom));
+  const row = avatar.closest(".blog__meta");
+  const rowBottom = row
+    ? Math.max(...Array.from(row.children, child => child.getBoundingClientRect().bottom))
+    : avatar.getBoundingClientRect().bottom;
   const tip = avatar.offsetHeight + TAIL_GAP_PX;
   const top = Math.max(tip + MIN_TAIL_PX, rowBottom + TAIL_GAP_PX - avatar.getBoundingClientRect().top);
   note.style.top = `${top}px`;
@@ -132,12 +136,13 @@ function restart(el: HTMLElement | null, attribute: string, value = "") {
   el.setAttribute(attribute, value);
 }
 
-/** The author's avatar on a post: it waves at new readers and talks back when poked. */
-export function GreetingAvatar() {
+/** The author's avatar: it waves at new readers and talks back when poked. On the homepage it introduces the author. */
+export function GreetingAvatar({ home = false }: { home?: boolean }) {
+  const chat = [home ? "pick a post, any post" : "the post is down there, fyi", ...CHAT];
   const buttonRef = useRef<HTMLButtonElement>(null);
   const noteRef = useRef<HTMLSpanElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  const below = useRef(false);
+  const below = useRef(home);
   const [message, setMessage] = useState<{ text: string; id: number; fresh: boolean } | null>(null);
   const state = useRef({
     chat: -1,
@@ -162,7 +167,7 @@ export function GreetingAvatar() {
     state.current.current = "";
   };
 
-  const say = (text: string, linger = LINGER_MS) => {
+  const say = (text: string, linger = Math.max(LINGER_MS, text.length * LINGER_PER_CHAR_MS)) => {
     clearTimeout(timers.current.hide);
     noteRef.current?.removeAttribute("data-off");
     if (text !== state.current.current) {
@@ -264,7 +269,8 @@ export function GreetingAvatar() {
       return say(pick(GRUDGE));
     }
     s.chat += 1;
-    say(s.chat === 0 ? hello() : s.chat <= CHAT.length ? CHAT[s.chat - 1] : IDLE[s.idle++ % IDLE.length]);
+    const greeting = home ? INTRO : hello();
+    say(s.chat === 0 ? greeting : s.chat <= chat.length ? chat[s.chat - 1] : IDLE[s.idle++ % IDLE.length]);
   };
 
   return (

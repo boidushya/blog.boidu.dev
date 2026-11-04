@@ -1,5 +1,6 @@
 "use client";
 
+import { GreetingAvatar } from "@/components/greeting-avatar";
 import PostSearch from "@/components/post-search";
 import SoundToggle from "@/components/sound-toggle";
 import ThemeSwitcher from "@/components/theme-switcher";
@@ -106,13 +107,24 @@ const Navbar = () => {
   return (
     <header ref={headerRef} data-mode="top" className="site-nav">
       <nav ref={navRef} className="flex items-center justify-between w-full py-5 mx-auto sm:py-8">
-        <Link
-          href="/"
-          data-cuelume-navigate
-          className="min-w-0 text-2xl font-bold tracking-tight truncate site-nav__logo text-accent-400"
-        >
-          Boidu's Blog
-        </Link>
+        <div className="flex items-center min-w-0">
+          <AnimatePresence initial={false}>
+            {isHome && (
+              <Collapse key="avatar">
+                <div className="flex pr-3">
+                  <GreetingAvatar home />
+                </div>
+              </Collapse>
+            )}
+          </AnimatePresence>
+          <Link
+            href="/"
+            data-cuelume-navigate
+            className="min-w-0 text-2xl font-bold tracking-tight truncate site-nav__logo text-accent-400"
+          >
+            Boidu's Blog
+          </Link>
+        </div>
 
         <div className="flex items-center h-10">
           <AnimatePresence initial={false}>

@@ -1131,6 +1131,32 @@ html:has(.player) .radix-tooltip__content {
   color: rgb(255 255 255 / 0.45);
 }
 
+.site:has(.player) .greeting-avatar img {
+  border-color: rgb(255 255 255 / 0.16);
+}
+
+.site:has(.player) .greeting-avatar__note {
+  color: rgb(255 255 255 / 0.8);
+}
+
+.site:has(.player) .greeting-avatar__note[data-side="below"] {
+  left: 0;
+}
+
+/* The intro is long, so the homepage bubble always wraps at a reading width. */
+.site:has(.player) .greeting-avatar__note:is(*, [data-one-line]) {
+  max-width: 19rem;
+  white-space: normal;
+}
+
+.site:has(.player) .greeting-avatar__fill {
+  fill: var(--player-chrome);
+}
+
+.site:has(.player) .greeting-avatar__stroke {
+  stroke: rgb(255 255 255 / 0.16);
+}
+
 .site:has(.player) footer a:hover {
   color: rgb(255 255 255 / 0.85);
 }
