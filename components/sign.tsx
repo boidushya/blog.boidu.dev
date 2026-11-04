@@ -96,7 +96,7 @@ const Sign = ({ id }: SignProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 8, scale: 0.9, filter: "blur(4px)" }}
-      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
       exit={{ opacity: 0, y: 4, scale: 0.96, filter: "blur(4px)", transition: { duration: 0.15, ease: "easeOut" } }}
       transition={{ type: "spring", duration: 0.35, bounce: 0 }}
       style={{ originX: 1, originY: 1 }}
