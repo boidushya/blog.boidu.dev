@@ -27,9 +27,12 @@ function hello() {
   return "evening!";
 }
 
-type Side = "left" | "right";
+type Side = "left" | "below";
+type Tail = { side: "left" } | { side: "below"; x: number; y: number };
 
 const EDGE_PX = 8;
+const TAIL_GAP_PX = 4;
+const MIN_TAIL_PX = 8;
 
 // Shrinks the note to its widest wrapped line, so the bubble hugs the words instead of the max width.
 function fitToWords(note: HTMLElement) {
@@ -44,30 +47,63 @@ function fitToWords(note: HTMLElement) {
   note.style.width = `${Math.ceil(right - left - wordPadding + padding) + 1}px`;
 }
 
-// One line to the left of the avatar when it fits, then wrapped, then to the right over the byline.
-function place(note: HTMLElement): Side {
-  const attempts = [
-    ["left", true],
-    ["left", false],
-    ["right", false],
-  ] as const;
-  for (const [side, oneLine] of attempts) {
-    note.dataset.side = side;
-    note.toggleAttribute("data-one-line", oneLine);
-    fitToWords(note);
-    const box = note.getBoundingClientRect();
-    if (side === "left" ? box.left >= EDGE_PX : box.right <= window.innerWidth - EDGE_PX) return side;
-  }
-  return "right";
+function fits(note: HTMLElement, side: Side, oneLine: boolean) {
+  note.dataset.side = side;
+  note.toggleAttribute("data-one-line", oneLine);
+  fitToWords(note);
+  const box = note.getBoundingClientRect();
+  return box.left >= EDGE_PX && box.right <= window.innerWidth - EDGE_PX;
 }
 
-// A hand-drawn speech bubble around a w by h box, its tail on the side facing the avatar. Coordinates
-// are relative to the tail tip, so a change of size grows the bubble away from the avatar. The stroke
-// closes a little past where it began, the way a pen loop does.
-function bubblePath(w: number, h: number, side: Side) {
+// One line to the left of the avatar when it fits, then wrapped, then under the byline row, so the
+// bubble never covers the byline.
+function place(note: HTMLElement, avatar: HTMLElement): Tail {
+  note.style.top = "";
+  if (fits(note, "left", true) || fits(note, "left", false)) return { side: "left" };
+  const row = avatar.closest(".blog__meta") ?? avatar;
+  const rowBottom = Math.max(...Array.from(row.children, child => child.getBoundingClientRect().bottom));
+  const tip = avatar.offsetHeight + TAIL_GAP_PX;
+  const top = Math.max(tip + MIN_TAIL_PX, rowBottom + TAIL_GAP_PX - avatar.getBoundingClientRect().top);
+  note.style.top = `${top}px`;
+  if (!fits(note, "below", true)) fits(note, "below", false);
+  return { side: "below", x: avatar.offsetWidth / 2 - note.offsetLeft, y: tip - top };
+}
+
+type Point = [string, ...number[]];
+
+const draw = (points: Point[], at: (x: number, y: number) => [number, number]) =>
+  points
+    .map(([command, ...xy]) => {
+      const coords: number[] = [];
+      for (let i = 0; i < xy.length; i += 2) coords.push(...at(xy[i], xy[i + 1]));
+      return `${command} ${coords.map(v => v.toFixed(1)).join(" ")}`;
+    })
+    .join(" ");
+
+// A hand-drawn speech bubble around a w by h box, its tail pointing at the avatar. Beside the avatar,
+// coordinates are relative to the tail tip, so a change of size grows the bubble away from the avatar.
+// The stroke closes a little past where it began, the way a pen loop does.
+function bubblePath(w: number, h: number, tail: Tail) {
   const r = h * 0.45;
   const mid = h / 2;
-  const points: [string, ...number[]][] = [
+  if (tail.side === "below") {
+    const t = tail.x;
+    return draw(
+      [
+        ["M", t + 5, 1.6],
+        ["C", w * 0.45, 0.6, w * 0.75, 2, w - r, 1.4],
+        ["Q", w - 0.8, 1, w - 1, mid],
+        ["Q", w - 0.8, h - 1, w - r, h - 1.4],
+        ["C", w * 0.7, h - 0.4, w * 0.35, h - 2, r, h - 1.2],
+        ["Q", 0.8, h - 1, 1, mid],
+        ["Q", 1.2, 1.4, t - 5, 1.5],
+        ["L", t - 1, tail.y],
+        ["L", t + 5.5, 2.4],
+      ],
+      (x, y) => [x, y]
+    );
+  }
+  const points: Point[] = [
     ["M", r + 2, 1.5],
     ["C", w * 0.4, 0.6, w * 0.7, 2, w - 9 - r, 1.4],
     ["Q", w - 8.4, 1, w - 8.6, mid - 4],
@@ -78,10 +114,7 @@ function bubblePath(w: number, h: number, side: Side) {
     ["Q", 0.8, h - 1, 1, mid],
     ["Q", 1.2, 1.6, r + 7, 2.6],
   ];
-  const x = side === "left" ? (v: number) => v - w : (v: number) => w - v;
-  return points
-    .map(([command, ...xy]) => `${command} ${xy.map((v, i) => (i % 2 ? v - mid : x(v)).toFixed(1)).join(" ")}`)
-    .join(" ");
+  return draw(points, (x, y) => [x - w, y - mid]);
 }
 
 function restart(el: HTMLElement | null, attribute: string, value = "") {
@@ -132,9 +165,10 @@ export function GreetingAvatar() {
   useLayoutEffect(() => {
     const note = noteRef.current;
     const svg = svgRef.current;
-    if (!message || !note || !svg) return;
-    const side = place(note);
-    const d = bubblePath(note.offsetWidth, note.offsetHeight, side);
+    const avatar = buttonRef.current;
+    if (!message || !note || !svg || !avatar) return;
+    const tail = place(note, avatar);
+    const d = bubblePath(note.offsetWidth, note.offsetHeight, tail);
     for (const path of Array.from(svg.children)) path.setAttribute("d", d);
     if (message.fresh) restart(note, "data-drawn");
   }, [message]);

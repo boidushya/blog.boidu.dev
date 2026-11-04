@@ -902,19 +902,20 @@ html {
   @apply max-w-none whitespace-nowrap;
 }
 
-.greeting-avatar__note[data-side="right"] {
-  @apply right-auto left-[calc(100%+6px)] text-left;
-  padding: 3px 12px 6px 20px;
-  rotate: 2deg;
-  transform-origin: left center;
+.greeting-avatar__note[data-side="below"] {
+  @apply right-auto -left-1.5 text-left;
+  padding: 3px 12px 6px;
+  translate: none;
+  rotate: 1.5deg;
+  transform-origin: 22px 0;
 }
 
 .greeting-avatar__note svg {
   @apply absolute top-1/2 right-0 w-px h-px overflow-visible;
 }
 
-.greeting-avatar__note[data-side="right"] svg {
-  @apply left-0 right-auto;
+.greeting-avatar__note[data-side="below"] svg {
+  @apply top-0 left-0 right-auto;
 }
 
 .greeting-avatar__note path {
