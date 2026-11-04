@@ -34,6 +34,7 @@ export function Peek({ src, alt, width: wantedWidth, children }: Props) {
   const [mounted, setMounted] = useState(false);
   const [near, setNear] = useState(false);
   const [open, setOpen] = useState(false);
+  const tapped = useRef(false);
   const [below, setBelow] = useState(false);
 
   const [ratio, setRatio] = useState(16 / 9);
@@ -146,8 +147,12 @@ export function Peek({ src, alt, width: wantedWidth, children }: Props) {
           place(false);
         }}
         onPointerLeave={e => e.pointerType !== "touch" && hide(CLOSE_DELAY)}
+        onPointerDown={e => {
+          tapped.current = e.pointerType === "touch";
+        }}
         onClick={e => {
-          if ((e.nativeEvent as PointerEvent).pointerType !== "touch") return;
+          // Safari before 18 sends click as a plain MouseEvent, so the press decides whether it was a tap.
+          if (!tapped.current) return;
           pointer.current = { x: e.clientX, y: e.clientY };
           open ? hide() : show();
         }}
