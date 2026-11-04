@@ -545,7 +545,15 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   };
 
   return (
-    <div className="player">
+    <div
+      className="player"
+      onClickCapture={e => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        const link = e.target instanceof Element ? e.target.closest("a") : null;
+        const opened = link && visible.find(post => post.link === link.getAttribute("href"));
+        if (opened) picked.set(opened.id);
+      }}
+    >
       <h1 className="sr-only">Posts</h1>
       <div className="player-stage">
         <section className="player-art enter [--i:1]" aria-label="Selected post">
