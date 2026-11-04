@@ -1,7 +1,7 @@
 "use client";
 
-import { setRollingText } from "@/utils/pip-swap";
-import { type CSSProperties, type KeyboardEvent, type PointerEvent, useLayoutEffect, useRef } from "react";
+import { RollingText } from "@/components/pip-line";
+import type { CSSProperties, KeyboardEvent, PointerEvent } from "react";
 
 const KEY_STEP_SECONDS = 2;
 const PAGE_STEPS = 5;
@@ -18,20 +18,20 @@ type Props = {
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
 
+function Times({ now, total }: { now: string; total: string }) {
+  return (
+    <div className="progress-bar-times" aria-hidden>
+      <span className="t">
+        <RollingText text={now} />
+      </span>
+      <span className="t">
+        <RollingText text={total} />
+      </span>
+    </div>
+  );
+}
+
 export function ProgressBar({ progress, now, total, max, label, onSeek, className }: Props) {
-  const nowTrack = useRef<HTMLSpanElement>(null);
-  const totalTrack = useRef<HTMLSpanElement>(null);
-  const nowFill = useRef<HTMLSpanElement>(null);
-  const totalFill = useRef<HTMLSpanElement>(null);
-
-  useLayoutEffect(() => {
-    for (const el of [nowTrack.current, nowFill.current]) if (el) setRollingText(el, now);
-  }, [now]);
-
-  useLayoutEffect(() => {
-    for (const el of [totalTrack.current, totalFill.current]) if (el) setRollingText(el, total);
-  }, [total]);
-
   const seekTo = (e: PointerEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     onSeek(clamp((e.clientX - rect.left) / rect.width));
@@ -88,15 +88,9 @@ export function ProgressBar({ progress, now, total, max, label, onSeek, classNam
       onPointerCancel={onPointerEnd}
       onKeyDown={onKeyDown}
     >
-      <div className="progress-bar-times" aria-hidden>
-        <span ref={nowTrack} className="t" />
-        <span ref={totalTrack} className="t" />
-      </div>
+      <Times now={now} total={total} />
       <div className="progress-bar-fill">
-        <div className="progress-bar-times" aria-hidden>
-          <span ref={nowFill} className="t" />
-          <span ref={totalFill} className="t" />
-        </div>
+        <Times now={now} total={total} />
       </div>
     </div>
   );

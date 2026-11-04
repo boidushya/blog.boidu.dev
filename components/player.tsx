@@ -1,5 +1,6 @@
 "use client";
 
+import { PipLine } from "@/components/pip-line";
 import { SungTitle } from "@/components/sung-title";
 import { useWash } from "@/components/wash";
 import type { BlogCard } from "@/lib/blogs";
@@ -19,7 +20,6 @@ import {
   type ComponentPropsWithoutRef,
   type MouseEvent,
   type PointerEvent,
-  type ReactNode,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -161,69 +161,6 @@ function ripple(button: HTMLElement, layer: HTMLElement, e: MouseEvent) {
   layer.appendChild(wave);
   requestAnimationFrame(() => wave.classList.add("player-ripple--go"));
   setTimeout(() => wave.remove(), 520);
-}
-
-const sameUnits = (a: string[], b: string[]) => a.length === b.length && a.every((unit, i) => unit === b[i]);
-
-type Layers = { front: 0 | 1; content: [string[], string[]]; animate: boolean };
-
-function PipLine({
-  units,
-  delay = 0,
-  instant = false,
-  className = "",
-  renderUnit = unit => unit,
-}: {
-  units: string[];
-  delay?: number;
-  instant?: boolean;
-  className?: string;
-  renderUnit?: (unit: string, i: number) => ReactNode;
-}) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const timer = useRef<Timer>(undefined);
-  const [layers, setLayers] = useState<Layers>({ front: 0, content: [units, []], animate: false });
-
-  const shown = layers.content[layers.front];
-  if (!sameUnits(shown, units)) {
-    setLayers({
-      front: layers.front === 0 ? 1 : 0,
-      content: layers.front === 0 ? [shown, units] : [units, shown],
-      animate: !instant,
-    });
-  }
-
-  useLayoutEffect(() => {
-    const row = ref.current;
-    if (!row) return;
-    clearTimeout(timer.current);
-    if (!layers.animate) {
-      row.removeAttribute("data-swapping");
-      return;
-    }
-    row.setAttribute("data-swapping", "false");
-    void row.offsetWidth;
-    row.style.setProperty("--line-delay", `${delay}ms`);
-    row.setAttribute("data-swapping", "true");
-    const count = layers.content[layers.front].length;
-    timer.current = setTimeout(() => row.removeAttribute("data-swapping"), 620 + count * 45 + delay + 50);
-  }, [layers, delay]);
-
-  useEffect(() => () => clearTimeout(timer.current), []);
-
-  return (
-    <span ref={ref} className={`player-pip-line ${className}`}>
-      {layers.content.map((layer, n) => (
-        <span key={n} className="player-pip-layer" data-front={String(layers.front === n)}>
-          {layer.map((unit, i) => (
-            <span key={i} className="player-pip-unit" style={cssVars({ "--i": i })}>
-              {renderUnit(unit, i)}
-            </span>
-          ))}
-        </span>
-      ))}
-    </span>
-  );
 }
 
 function Control({
