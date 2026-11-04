@@ -8,7 +8,8 @@ import { useResizeObserver, useWaterMark } from "@/utils/hooks";
 import { matchesSearch, usePostSearch } from "@/utils/post-search";
 import { clock, getProgress, pickShuffle } from "@/utils/reading-progress";
 import { timeSweep } from "@/utils/sweep";
-import { getThemeVariables } from "@/utils/themeConfig";
+import { NEUTRAL_COLORS } from "@/utils/constants";
+import { getPaletteVariables } from "@/utils/themeConfig";
 import { play } from "cuelume";
 import Image from "next/image";
 import Link from "next/link";
@@ -365,7 +366,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const unhover = useCallback(() => clearTimeout(hoverTimer.current), []);
 
   useLayoutEffect(() => {
-    const vars = Object.entries(getThemeVariables("obsidian"));
+    const vars = Object.entries(getPaletteVariables(NEUTRAL_COLORS));
     for (const [name, value] of vars) document.body.style.setProperty(name, value);
     return () => {
       for (const [name] of vars) document.body.style.removeProperty(name);
@@ -464,14 +465,14 @@ export function Player({ posts }: { posts: BlogCard[] }) {
     const lines = linesIn(listRef.current);
     const observer = new IntersectionObserver(
       entries => {
-        if (!phone.matches) return;
-        for (const entry of entries) {
-          if (entry.isIntersecting)
-            select(
-              lines.findIndex(line => line === entry.target),
-              false
-            );
-        }
+        if (!phone.matches || !entries.some(entry => entry.isIntersecting)) return;
+        const middle = window.innerHeight / 2;
+        const distance = (line: HTMLElement) => {
+          const { top, bottom } = line.getBoundingClientRect();
+          return Math.abs((top + bottom) / 2 - middle);
+        };
+        const nearest = lines.reduce((best, line, i) => (distance(line) < distance(lines[best]) ? i : best), 0);
+        select(nearest, false);
       },
       { rootMargin: "-45% 0px -45% 0px" }
     );

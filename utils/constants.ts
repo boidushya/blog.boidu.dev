@@ -158,6 +158,21 @@ export const THEMES = {
   },
 };
 
+/** The homepage sits on a wash of each post's banner, so it uses plain greys whatever theme is picked. */
+export const NEUTRAL_COLORS: (typeof THEMES)[keyof typeof THEMES] = {
+  accent50: "#f6f6f6",
+  accent100: "#e8e8e8",
+  accent200: "#d4d4d4",
+  accent300: "#b4b4b4",
+  accent400: "#8f8f8f",
+  accent500: "#737373",
+  accent600: "#5e5e5e",
+  accent700: "#4d4d4d",
+  accent800: "#404040",
+  accent850: "#363636",
+  accent900: "#0e0e0e",
+};
+
 export const LIGHT_THEMES = ["daybreak", "frost", "aurora", "dawn", "pastel"];
 
 export type TThemeName = keyof typeof THEMES;

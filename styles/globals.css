@@ -1069,6 +1069,23 @@ html:has(.player) {
   color-scheme: dark;
 }
 
+/* The homepage chrome sits on a wash of each banner, so it takes white at an alpha instead of theme colours. */
+.site:has(.player) :is(.site-nav__logo, .sound-toggle) {
+  color: rgb(255 255 255 / 0.6);
+}
+
+.site:has(.player) .sound-toggle:hover {
+  color: rgb(255 255 255 / 0.85);
+}
+
+.site:has(.player) footer {
+  color: rgb(255 255 255 / 0.45);
+}
+
+.site:has(.player) footer a:hover {
+  color: rgb(255 255 255 / 0.85);
+}
+
 @media (min-width: 861px) {
   html:has(.player) {
     overflow: hidden;

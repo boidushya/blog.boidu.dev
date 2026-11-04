@@ -3,10 +3,10 @@
 import PostSearch from "@/components/post-search";
 import SoundToggle from "@/components/sound-toggle";
 import ThemeSwitcher from "@/components/theme-switcher";
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 
 type NavMode = "top" | "hidden" | "pill";
 
@@ -66,6 +66,21 @@ function useNavMode() {
 }
 
 const SHIFT_MS = 400;
+const HIDDEN = { width: 0, opacity: 0, filter: "blur(4px)", overflow: "hidden" };
+
+function Collapse({ children }: { children: ReactNode }) {
+  return (
+    <motion.div
+      initial={HIDDEN}
+      animate={{ width: "auto", opacity: 1, filter: "blur(0px)", transitionEnd: { overflow: "visible" } }}
+      exit={HIDDEN}
+      transition={{ type: "spring", duration: 0.4, bounce: 0 }}
+      className="shrink-0"
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 function useWidthShift() {
   const navRef = useRef<HTMLElement>(null);
@@ -118,10 +133,24 @@ const Navbar = () => {
           Boidu's Blog
         </Link>
 
-        <div className="flex items-center h-10 gap-2">
-          <AnimatePresence initial={false}>{isHome && <PostSearch key="search" />}</AnimatePresence>
+        <div className="flex items-center h-10">
+          <AnimatePresence initial={false}>
+            {isHome && (
+              <Collapse key="search">
+                <PostSearch />
+              </Collapse>
+            )}
+          </AnimatePresence>
           <SoundToggle />
-          <ThemeSwitcher />
+          <AnimatePresence initial={false}>
+            {!isHome && (
+              <Collapse key="theme">
+                <div className="flex pl-2">
+                  <ThemeSwitcher />
+                </div>
+              </Collapse>
+            )}
+          </AnimatePresence>
         </div>
       </nav>
     </header>
