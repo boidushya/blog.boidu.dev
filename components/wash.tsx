@@ -9,6 +9,7 @@ const SETTLE_MS = 180;
 const FADE_MS = 1200;
 const PAGE_FADE_MS = 600;
 const RESIZE_SETTLE_MS = 150;
+const LOAD_TIMEOUT_MS = 10_000;
 
 type WashImage = { src: string; dim: number };
 
@@ -54,6 +55,9 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
   // Kawarp does not drop an older image that finishes loading late, so loads run one at a time.
   function load(target: string) {
     loading.current = true;
+    const stalled = setTimeout(() => {
+      loading.current = false;
+    }, LOAD_TIMEOUT_MS);
     kawarp.current
       ?.loadImage(target)
       .then(() => {
@@ -62,6 +66,7 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
       })
       .catch(error => console.warn(`Wash failed to load ${target}:`, error))
       .finally(() => {
+        clearTimeout(stalled);
         loading.current = false;
       });
   }
