@@ -76,7 +76,7 @@ const ThemeSwitcher = () => {
       </DropdownMenuTrigger>
       <DropdownMenuPortal>
         <DropdownMenuContent
-          className="p-2 border rounded-lg shadow min-w-[10rem] bg-accent-900 border-accent-800/50 radix-dropdown__content"
+          className="z-50 p-2 border rounded-lg shadow min-w-[10rem] bg-accent-900 border-accent-800/50 radix-dropdown__content"
           sideOffset={10}
           align="end"
           onPointerDown={() => {
