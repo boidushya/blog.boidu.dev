@@ -1,8 +1,8 @@
+import { sungWords } from "@/utils/sung";
 import type { Element, ElementContent, Root } from "hast";
 import { toText } from "hast-util-to-text";
 import type { Plugin } from "unified";
 import { visit } from "unist-util-visit";
-import { sungWords } from "@/utils/sung";
 
 const span = (className: string, children: ElementContent[]): Element => ({
   type: "element",

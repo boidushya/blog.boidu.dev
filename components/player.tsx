@@ -3,12 +3,12 @@
 import { SungTitle } from "@/components/sung-title";
 import { useWash } from "@/components/wash";
 import type { BlogCard } from "@/lib/blogs";
+import { NEUTRAL_COLORS } from "@/utils/constants";
 import { handwriting } from "@/utils/fonts";
 import { useResizeObserver, useWaterMark } from "@/utils/hooks";
 import { matchesSearch, usePostSearch } from "@/utils/post-search";
 import { clock, getProgress, pickShuffle } from "@/utils/reading-progress";
 import { timeSweep } from "@/utils/sweep";
-import { NEUTRAL_COLORS } from "@/utils/constants";
 import { getPaletteVariables } from "@/utils/themeConfig";
 import { play } from "cuelume";
 import Image from "next/image";

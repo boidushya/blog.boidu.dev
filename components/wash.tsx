@@ -1,8 +1,8 @@
 "use client";
 
+import { createStore } from "@/utils/store";
 import { Kawarp, type KawarpRef } from "@kawarp/react";
 import { useReducedMotion } from "motion/react";
-import { createStore } from "@/utils/store";
 import { useEffect, useRef, useState } from "react";
 
 const SETTLE_MS = 180;
