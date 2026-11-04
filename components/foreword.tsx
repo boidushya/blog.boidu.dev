@@ -2,7 +2,6 @@
 
 import { Handwriting } from "@/components/handwriting";
 import { observeReveal } from "@/utils/reveal";
-import Image from "next/image";
 import type React from "react";
 import { type CSSProperties, type RefObject, useEffect, useRef, useState } from "react";
 
@@ -166,19 +165,17 @@ export function Foreword({
 export function Byline({
   name,
   href,
-  avatar,
+  color,
   children,
 }: {
   name: string;
   href: string;
-  avatar: string;
+  color: string;
   children: React.ReactNode;
 }) {
   return (
     <div className="byline">
-      <a className="byline-avatar" href={href} tabIndex={-1} aria-hidden="true">
-        <Image src={avatar} alt="" width={40} height={40} />
-      </a>
+      <a className="byline-avatar" href={href} tabIndex={-1} aria-hidden="true" style={{ background: color }} />
       <div>
         <a className="byline-name" href={href}>
           {name}

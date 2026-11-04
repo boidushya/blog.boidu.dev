@@ -1706,21 +1706,9 @@ html {
   flex: none;
   width: 40px;
   height: 40px;
-  overflow: hidden;
   border-radius: 50%;
-  background: rgb(var(--color-accent-700));
   outline: 1px solid oklch(1 0 0 / 0.1);
   outline-offset: -1px;
-}
-
-.byline-avatar img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 0;
-  outline: none;
 }
 
 .byline .byline-name {
