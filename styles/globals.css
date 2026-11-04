@@ -1433,7 +1433,7 @@ html {
   --torn: polygon(1px 0, calc(100% - 2px) 0, 100% 22%, calc(100% - 3px) 41%, 100% 63%, calc(100% - 2px) 82%, calc(100% - 1px) 100%, 2px 100%, 0 79%, 3px 58%, 0 37%, 2px 18%);
   position: relative;
   max-width: 768px;
-  margin: 64px auto 72px;
+  margin: 52px auto 72px;
   padding: 48px 32px 40px;
   border-radius: 3px;
   background:
