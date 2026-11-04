@@ -1223,7 +1223,7 @@ html {
   display: inline-flex;
 }
 
-.progress-bar-times .pip-line {
+.progress-bar-times .pip-layer {
   text-box: trim-both cap alphabetic;
 }
 
