@@ -1976,6 +1976,10 @@ html:has(.player) {
     transition: none;
   }
 
+  .pip-glow-post {
+    transition-duration: 0s;
+  }
+
   .pip-card .pip-play,
   .pip-handle {
     transition: opacity 200ms ease-out;
