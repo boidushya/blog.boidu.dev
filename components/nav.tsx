@@ -5,14 +5,13 @@ import SoundToggle from "@/components/sound-toggle";
 import ThemeSwitcher from "@/components/theme-switcher";
 import { useResizeObserver } from "@/utils/hooks";
 import { prefersReducedMotion } from "@/utils/motion";
+import { SCROLL_INTENT_PX, watchScroll } from "@/utils/scroll-intent";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useCallback, useEffect, useRef } from "react";
 
 type NavMode = "top" | "hidden" | "pill";
-
-const SCROLL_INTENT_PX = 6;
 
 /**
  * At the top the nav sits in the page and scrolls away with it. Out of view it becomes a pill off
@@ -38,30 +37,14 @@ function useNavMode() {
       }
     };
 
-    let last = window.scrollY;
-    let frame = 0;
-    const onScroll = () => {
-      if (frame) return;
-      frame = requestAnimationFrame(() => {
-        frame = 0;
-        const y = window.scrollY;
-        const dy = y - last;
-        last = y;
-        const mode = header.dataset.mode as NavMode;
-        if (y <= 2) setMode("top");
-        else if (mode === "top") {
-          if (y > header.offsetHeight + 24) setMode("hidden", true);
-        } else if (mode === "pill" && dy > SCROLL_INTENT_PX) setMode("hidden");
-        else if (mode === "hidden" && dy < -SCROLL_INTENT_PX) setMode("pill");
-      });
-    };
-
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(frame);
-    };
+    return watchScroll((y, dy) => {
+      const mode = header.dataset.mode as NavMode;
+      if (y <= 2) setMode("top");
+      else if (mode === "top") {
+        if (y > header.offsetHeight + 24) setMode("hidden", true);
+      } else if (mode === "pill" && dy > SCROLL_INTENT_PX) setMode("hidden");
+      else if (mode === "hidden" && dy < -SCROLL_INTENT_PX) setMode("pill");
+    });
   }, []);
 
   return headerRef;

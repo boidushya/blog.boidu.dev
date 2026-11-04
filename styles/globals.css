@@ -2748,3 +2748,32 @@ html:has(.player) .radix-tooltip__content {
     clip-path: circle(var(--theme-r) at var(--theme-x) var(--theme-y));
   }
 }
+
+/* Animated on the pill itself: opacity or a filter on an ancestor would cut off its backdrop blur mid-fade. */
+.like-pill {
+  transition-property: opacity, transform, translate, filter;
+  transition-duration: 300ms;
+  transition-timing-function: ease-out;
+}
+
+/* On phones the like button sits over the text, so it steps aside while the reader scrolls down. */
+@media (max-width: 639px) {
+  .like-dock[data-away] {
+    pointer-events: none;
+  }
+
+  .like-dock[data-away] .like-pill {
+    opacity: 0;
+    translate: 0 12px;
+    filter: blur(4px);
+    transition-duration: 150ms;
+    transition-timing-function: ease-in;
+  }
+}
+
+@media (max-width: 639px) and (prefers-reduced-motion: reduce) {
+  .like-dock[data-away] .like-pill {
+    translate: none;
+    filter: none;
+  }
+}
