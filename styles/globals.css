@@ -1165,8 +1165,14 @@ html:has(.player) .radix-tooltip__content {
 }
 
 @media (max-width: 860px) {
+  html:has(.player) {
+    scroll-padding-top: 0;
+    scroll-snap-type: y mandatory;
+  }
+
   .site:has(.player) footer {
-    margin-bottom: calc(120px + env(safe-area-inset-bottom));
+    margin-bottom: calc(120px + env(safe-area-inset-bottom) + var(--player-tail, 0px));
+    scroll-snap-align: end;
   }
 }
 
@@ -1455,6 +1461,10 @@ html:has(.player) .radix-tooltip__content {
   list-style: none;
 }
 
+.player-band {
+  display: none;
+}
+
 .player-line {
   position: relative;
   display: block;
@@ -1621,9 +1631,22 @@ html:has(.player) .radix-tooltip__content {
   }
 
   .player-scroller {
-    position: relative;
-    inset: 0;
-    translate: none !important;
+    position: sticky;
+    inset: auto;
+    top: var(--player-stick, 0px);
+    transition: none;
+  }
+
+  .player-band {
+    display: block;
+    height: 28svh;
+    scroll-margin-top: var(--player-focus, 0px);
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .player-band:last-child {
+    height: 0;
   }
 
   .player-empty {

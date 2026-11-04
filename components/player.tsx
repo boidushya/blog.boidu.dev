@@ -58,6 +58,13 @@ const linesIn = (list: HTMLElement | null) => Array.from(list?.querySelectorAll<
 
 const isDesktop = () => innerWidth > PHONE_MAX_PX;
 
+// Offsets skip transforms, so the entrance slide does not shift the measured layout.
+function pageTop(el: HTMLElement) {
+  let top = 0;
+  for (let at: Element | null = el; at instanceof HTMLElement; at = at.offsetParent) top += at.offsetTop;
+  return top;
+}
+
 function falloff(distance: number) {
   const opacity = 1 - distance * 0.1 - distance * distance * 0.02;
   return {
@@ -245,9 +252,9 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const centre = useCallback((i: number) => {
     const line = linesIn(listRef.current)[i];
     const scroller = scrollerRef.current;
-    if (!line || !scroller) return;
-    scrollOffset.current = isDesktop() ? -line.offsetTop - line.offsetHeight / 2 : 0;
-    if (isDesktop()) scroller.style.translate = `0 ${scrollOffset.current}px`;
+    if (!line || !scroller || !isDesktop()) return;
+    scrollOffset.current = -line.offsetTop - line.offsetHeight / 2;
+    scroller.style.translate = `0 ${scrollOffset.current}px`;
   }, []);
 
   const measure = useCallback(() => {
@@ -432,23 +439,60 @@ export function Player({ posts }: { posts: BlogCard[] }) {
 
   useEffect(() => {
     const phone = matchMedia(`(max-width: ${PHONE_MAX_PX}px)`);
-    const lines = linesIn(listRef.current);
-    const observer = new IntersectionObserver(
-      () => {
-        if (!phone.matches) return;
-        const middle = window.innerHeight / 2;
-        const distance = (line: HTMLElement) => {
-          const { top, bottom } = line.getBoundingClientRect();
-          return Math.abs((top + bottom) / 2 - middle);
-        };
-        const nearest = lines.reduce((best, line, i) => (distance(line) < distance(lines[best]) ? i : best), 0);
-        select(nearest, false, false);
-      },
-      { rootMargin: "-45% 0px -45% 0px" }
-    );
-    for (const line of lines) observer.observe(line);
-    return () => observer.disconnect();
-  }, [visible, select]);
+    const list = listRef.current;
+    const scroller = scrollerRef.current;
+    const lyrics = lyricsRef.current;
+    const band = lyrics?.querySelector<HTMLElement>(".player-band");
+    if (!list || !scroller || !lyrics || !band) return;
+    const { body } = document;
+    let frame = 0;
+
+    // One band of page scroll moves the list one title, so every swipe snaps exactly one post on.
+    const follow = () => {
+      frame = 0;
+      const lines = linesIn(list);
+      if (!phone.matches || !lines.length) return;
+      const at = clamp(scrollY / band.offsetHeight, 0, lines.length - 1);
+      const from = Math.floor(at);
+      const to = Math.min(from + 1, lines.length - 1);
+      const top = (i: number) => lines[i].offsetTop - lines[0].offsetTop;
+      scrollOffset.current = -(top(from) + (top(to) - top(from)) * (at - from));
+      scroller.style.translate = `0 ${scrollOffset.current}px`;
+      select(Math.round(at), false, false);
+    };
+
+    const fit = () => {
+      if (!phone.matches) {
+        body.style.removeProperty("--player-tail");
+        return;
+      }
+      lyrics.style.setProperty(
+        "--player-stick",
+        `${pageTop(lyrics) + Number.parseFloat(getComputedStyle(lyrics).paddingTop)}px`
+      );
+      lyrics.style.setProperty("--player-focus", `${pageTop(band)}px`);
+      const travel = (linesIn(list).length - 1) * band.offsetHeight;
+      const tail = Number.parseFloat(body.style.getPropertyValue("--player-tail")) || 0;
+      const room = document.documentElement.scrollHeight - tail - innerHeight;
+      body.style.setProperty("--player-tail", `${Math.max(0, travel - room)}px`);
+      follow();
+    };
+
+    const onScroll = () => {
+      frame ||= requestAnimationFrame(follow);
+    };
+    const observer = new ResizeObserver(fit);
+    observer.observe(list);
+    addEventListener("resize", fit);
+    addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      observer.disconnect();
+      removeEventListener("resize", fit);
+      removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+      body.style.removeProperty("--player-tail");
+    };
+  }, [visible, select, lyricsRef]);
 
   useEffect(
     () => () => {
@@ -666,6 +710,9 @@ export function Player({ posts }: { posts: BlogCard[] }) {
               <span ref={inkRef} className="player-ink" />
             </div>
           </div>
+          {visible.map(post => (
+            <span key={post.id} className="player-band" aria-hidden="true" />
+          ))}
         </section>
       </div>
       <PipWindow posts={posts} post={active} read={done} disabled={empty} anchorRef={noteRef} />
