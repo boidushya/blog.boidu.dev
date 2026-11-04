@@ -1,9 +1,9 @@
 "use client";
 
-import { PipLine } from "@/components/pip-line";
 import { NextIcon, PlayIcon, PreviousIcon } from "@/components/player-icons";
 import { ProgressBar } from "@/components/progress-bar";
 import { SungTitle } from "@/components/sung-title";
+import { TrackName, TrackTags } from "@/components/track-lines";
 import { useWash } from "@/components/wash";
 import type { BlogCard } from "@/lib/blogs";
 import { clock } from "@/utils/clock";
@@ -536,13 +536,8 @@ export function Player({ posts }: { posts: BlogCard[] }) {
           </Link>
           <div className="player-track">
             <div>
-              <PipLine className={`player-track-name ${handwriting.className}`} units={active.short.split(/(?<= )/)} />
-              <PipLine
-                className="player-track-sub"
-                units={active.labels.flatMap((label, j) => (j ? ["·", label] : [label]))}
-                delay={90}
-                renderUnit={(unit, i) => (i === 0 ? <b>{unit}</b> : i % 2 ? <i>{unit}</i> : unit)}
-              />
+              <TrackName post={active} className="player-track-name" />
+              <TrackTags post={active} className="player-track-sub" />
             </div>
           </div>
           <ProgressBar
