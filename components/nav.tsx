@@ -84,15 +84,22 @@ function Collapse({ children }: { children: ReactNode }) {
 }
 
 function useWidthShift() {
-  const last = useRef<{ edges: number[]; viewport: number } | null>(null);
+  const last = useRef<{ edges: number[]; viewport: number; still: boolean } | null>(null);
 
   const shift = useCallback((nav: HTMLElement) => {
     const ends = Array.from(nav.children) as HTMLElement[];
     const navLeft = nav.getBoundingClientRect().left - nav.offsetLeft;
     const edges = ends.map((end, i) => navLeft + end.offsetLeft + (i ? end.offsetWidth : 0));
+    // The pill and its return to the bar move the ends too; only a page width change between two settled bars slides them.
+    const header = nav.parentElement;
+    const still =
+      header?.dataset.mode === "top" &&
+      !header
+        .getAnimations({ subtree: true })
+        .some(animation => animation instanceof CSSTransition && !/color|shadow/.test(animation.transitionProperty));
     const previous = last.current;
-    last.current = { edges, viewport: window.innerWidth };
-    if (!previous || previous.viewport !== window.innerWidth) return;
+    last.current = { edges, viewport: window.innerWidth, still };
+    if (!previous || previous.viewport !== window.innerWidth || !still || !previous.still) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     ends.forEach((end, i) => {
       const dx = previous.edges[i] - edges[i];
