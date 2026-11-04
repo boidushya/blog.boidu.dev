@@ -64,7 +64,10 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
         shown.current.busyUntil = performance.now() + fadeMs();
         if (stillFrames.current) kawarp.current?.instance?.renderFrame();
       })
-      .catch(error => console.warn(`Wash failed to load ${target}:`, error))
+      .catch(error => {
+        console.warn(`Wash failed to load ${target}:`, error);
+        if (shown.current.src === target) shown.current.src = "";
+      })
       .finally(() => {
         clearTimeout(stalled);
         loading.current = false;

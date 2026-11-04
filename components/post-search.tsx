@@ -2,7 +2,7 @@
 
 import { setPostSearch, usePostSearch } from "@/utils/post-search";
 import { isTypingTarget } from "@/utils/typing";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useIsPresent } from "motion/react";
 import { useEffect, useRef } from "react";
 
 const ICON_SPRING = { type: "spring", duration: 0.3, bounce: 0 } as const;
@@ -12,10 +12,12 @@ const ICON_SHOWN = { opacity: 1, scale: 1, filter: "blur(0px)" };
 const PostSearch = () => {
   const query = usePostSearch();
   const inputRef = useRef<HTMLInputElement>(null);
+  const present = useIsPresent();
 
   useEffect(() => () => setPostSearch(""), []);
 
   useEffect(() => {
+    if (!present) return;
     const onKey = (e: KeyboardEvent) => {
       const slash = e.key === "/" && !e.metaKey && !e.ctrlKey && !e.altKey && !isTypingTarget(e.target);
       const commandK = (e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey) && !e.altKey && !e.shiftKey;
@@ -26,7 +28,7 @@ const PostSearch = () => {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [present]);
 
   return (
     <label className="relative flex items-center mr-4 h-9 rounded-full bg-[var(--player-chrome)] text-white/60 [box-shadow:var(--player-chrome-ring)] transition-[background-color,box-shadow,color] duration-200 ease-out hover:bg-white/[0.09] focus-within:bg-white/[0.1] focus-within:text-white/80 focus-within:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.16)]">

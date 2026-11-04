@@ -1,8 +1,9 @@
 "use client";
 
 import { Handwriting } from "@/components/handwriting";
+import type { CSSVars } from "@/utils/css-vars";
 import { useReveal } from "@/utils/reveal";
-import { type CustomStyle, layTapes } from "@/utils/tape-layout";
+import { layTapes } from "@/utils/tape-layout";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 
@@ -42,7 +43,7 @@ export function Foreword({
   const [labelledBy, setLabelledBy] = useState<string>();
   const [taped, setTaped] = useState(false);
   const { style, crease } = layTapes(seed);
-  const creaseStyle: CustomStyle | undefined = crease && { "--d": `${crease.at}ms` };
+  const creaseStyle: CSSVars | undefined = crease && { "--d": `${crease.at}ms` };
 
   useEffect(() => {
     const sheet = ref.current;

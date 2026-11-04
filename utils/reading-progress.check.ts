@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { clock, pickShuffle } from "./reading-progress";
+import { clock } from "./clock";
+import { pickShuffle } from "./reading-progress";
 
 const ids = ["composer", "intentional-design", "better-lyrics"];
 const progress = { composer: 0.3, "intentional-design": 1, "better-lyrics": 1 };

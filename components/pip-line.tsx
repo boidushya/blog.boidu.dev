@@ -1,12 +1,13 @@
 "use client";
 
-import { type CSSProperties, type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
+import type { CSSVars } from "@/utils/css-vars";
+import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 type Layers = { front: 0 | 1; content: [string[], string[]]; animate: boolean };
 
 const sameUnits = (a: string[], b: string[]) => a.length === b.length && a.every((unit, i) => unit === b[i]);
 
-const unitStyle = (i: number): CSSProperties & { "--i": number } => ({ "--i": i });
+const unitStyle = (i: number): CSSVars => ({ "--i": i });
 
 export function PipLine({
   units,

@@ -5,8 +5,8 @@ import "@braccato/core/styles/lyrics.css";
 import { Handwriting } from "@/components/handwriting";
 import { PlayButton } from "@/components/play-button";
 import { ProgressBar } from "@/components/progress-bar";
+import { clock } from "@/utils/clock";
 import { IS_DEV } from "@/utils/constants";
-import { clock } from "@/utils/reading-progress";
 import type { BraccatoLyricsElement } from "@braccato/core/element";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -129,9 +129,11 @@ export function SungQuote({ lyrics, audio, children }: Props) {
       { signal }
     );
 
-    const metadata = new Promise(resolve => sound.addEventListener("loadedmetadata", resolve, { once: true, signal }));
-
-    metadata.then(() => setDuration(sound.duration));
+    sound.addEventListener("loadedmetadata", () => setDuration(sound.duration), { signal });
+    const metadata = new Promise((resolve, reject) => {
+      sound.addEventListener("loadedmetadata", resolve, { once: true, signal });
+      sound.addEventListener("error", () => reject(sound.error), { once: true, signal });
+    });
 
     (async () => {
       const [, { detectParser }, ttml] = await Promise.all([

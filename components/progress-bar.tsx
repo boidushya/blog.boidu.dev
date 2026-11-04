@@ -1,8 +1,9 @@
 "use client";
 
 import { RollingText } from "@/components/pip-line";
+import type { CSSVars } from "@/utils/css-vars";
 import { clamp01 } from "@/utils/math";
-import type { CSSProperties, HTMLAttributes, KeyboardEvent, PointerEvent } from "react";
+import type { HTMLAttributes, KeyboardEvent, PointerEvent } from "react";
 
 const KEY_STEP_SECONDS = 2;
 const PAGE_STEPS = 5;
@@ -84,7 +85,7 @@ function sliderProps({ progress, now, total, max, onSeek }: Display & Seek): HTM
 export function ProgressBar(props: Props) {
   const { progress, now, total, label, className, delay, instant } = props;
   const interaction = props.onSeek ? sliderProps(props) : { role: "img" };
-  const style: CSSProperties & { "--p": number } = { "--p": progress };
+  const style: CSSVars = { "--p": progress };
 
   return (
     <div

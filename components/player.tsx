@@ -6,11 +6,13 @@ import { ProgressBar } from "@/components/progress-bar";
 import { SungTitle } from "@/components/sung-title";
 import { useWash } from "@/components/wash";
 import type { BlogCard } from "@/lib/blogs";
+import { clock } from "@/utils/clock";
 import { NEUTRAL_COLORS } from "@/utils/constants";
+import type { CSSVars } from "@/utils/css-vars";
 import { handwriting } from "@/utils/fonts";
 import { useResizeObserver, useWaterMark } from "@/utils/hooks";
 import { matchesSearch, usePostSearch } from "@/utils/post-search";
-import { clock, getProgress, pickShuffle } from "@/utils/reading-progress";
+import { getProgress, pickShuffle } from "@/utils/reading-progress";
 import { pop, retrigger } from "@/utils/retrigger";
 import { timeSweep } from "@/utils/sweep";
 import { getPaletteVariables } from "@/utils/themeConfig";
@@ -20,7 +22,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  type CSSProperties,
   type ComponentPropsWithoutRef,
   type MouseEvent,
   type PointerEvent,
@@ -50,8 +51,6 @@ const KEY_STEPS = new Map([
 
 type Timer = ReturnType<typeof setTimeout> | undefined;
 type NoteSide = "right" | "below" | "below-left" | "above";
-
-const cssVars = (vars: Record<`--${string}`, string | number>): CSSProperties => vars;
 
 const linesIn = (list: HTMLElement | null) => Array.from(list?.querySelectorAll<HTMLElement>(".player-line") ?? []);
 
@@ -461,6 +460,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
     () =>
       visible.map((post, i) => {
         const { opacity, blur, hidden } = falloff(Math.abs(i - index));
+        const style: CSSVars = { "--o": opacity, "--b": `${blur}px`, visibility: hidden ? "hidden" : undefined };
         return (
           <li key={post.id}>
             <Link
@@ -469,7 +469,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
               aria-label={post.title}
               data-cuelume-navigate
               data-active={i === index || undefined}
-              style={{ ...cssVars({ "--o": opacity, "--b": `${blur}px` }), visibility: hidden ? "hidden" : undefined }}
+              style={style}
               onPointerMove={e => hover(i, e)}
               onPointerLeave={unhover}
               onFocus={e => focusTitle(i, e.currentTarget.matches(":focus-visible"))}

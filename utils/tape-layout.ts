@@ -1,8 +1,7 @@
-import type { CSSProperties } from "react";
+import type { CSSVars } from "@/utils/css-vars";
 
 export type Crease = { tape: 0 | 1; d: string; at: number };
-export type CustomStyle = CSSProperties & Record<`--${string}`, string>;
-export type Tapes = { style: CustomStyle; crease?: Crease };
+export type Tapes = { style: CSSVars<string>; crease?: Crease };
 
 export function seededRandom(seed: string) {
   let hash = 2166136261;
@@ -45,7 +44,7 @@ export function layTapes(seed: string): Tapes {
     press.push(Math.round(jitter(520, 140)));
     swipe.push(Math.round(jitter(560, 90)));
   }
-  const style: CustomStyle = {};
+  const style: CSSVars<string> = {};
   for (let i = 0; i < 2; i++) {
     style[`--t${i + 1}-rot`] = `${rotations[i].toFixed(2)}deg`;
     style[`--t${i + 1}-at`] = `${at[i]}ms`;
