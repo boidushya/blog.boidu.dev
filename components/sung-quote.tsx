@@ -21,6 +21,15 @@ declare module "react" {
 
 const THEME = "/* blyrics-letter-wave = false; */";
 const END_SLACK_SECONDS = 0.05;
+// Chromium crawls the audio clock for a moment after play or seek, so the sweep only runs once the clock keeps pace.
+const PROOF_MS = 150;
+const MIN_PACE = 0.5;
+
+const cssSeconds = (value: string) => {
+  const amount = Number.parseFloat(value);
+  if (!Number.isFinite(amount)) return 0;
+  return value.trim().endsWith("ms") ? amount / 1000 : amount;
+};
 
 const normalizeWords = (text: string) => text.trim().split(/\s+/).join(" ");
 
@@ -56,16 +65,53 @@ export function SungQuote({ lyrics, audio, children }: Props) {
     sound.preload = "metadata";
     let frame = 0;
     let sungEnd = 0;
+    let proof: { at: number; time: number } | null = null;
+    let following = false;
+    let animating: boolean | null = null;
+
+    const resetProof = () => {
+      proof = null;
+      following = false;
+    };
+
+    const follows = (time: number) => {
+      if (following) return true;
+      const now = performance.now();
+      if (!proof || now - proof.at < PROOF_MS) {
+        proof ??= { at: now, time };
+        return false;
+      }
+      following = ((time - proof.time) * 1000) / (now - proof.at) >= MIN_PACE;
+      proof = following ? null : { at: now, time };
+      return following;
+    };
 
     const write = (time: number, isPlaying: boolean) => {
-      view.currentTime = time;
-      view.playing = isPlaying;
+      if (isPlaying !== animating) {
+        animating = isPlaying;
+        // Braccato leads the sweep while it animates; a still frame shows the exact time instead.
+        const style = getComputedStyle(view);
+        view.tickOptions = isPlaying
+          ? {}
+          : {
+              richsyncOffsetTrim: cssSeconds(style.getPropertyValue("--blyrics-richsync-timing-offset")),
+              lineOffsetTrim: cssSeconds(style.getPropertyValue("--blyrics-timing-offset")),
+            };
+      }
+      // Braccato resyncs a still sweep only on a paused seek, so it pauses before the time write.
+      if (isPlaying) {
+        view.currentTime = time;
+        view.playing = true;
+      } else {
+        view.playing = false;
+        view.currentTime = time;
+      }
       setSung(time >= sungEnd);
     };
 
     const writeAudio = () => {
       const time = sound.currentTime;
-      write(time, !sound.paused);
+      write(time, !sound.paused && follows(time));
       setProgress(sound.duration ? time / sound.duration : 0);
       setNow(clock(time / 60));
     };
@@ -82,6 +128,7 @@ export function SungQuote({ lyrics, audio, children }: Props) {
       "play",
       () => {
         setPlaying(true);
+        resetProof();
         loop(() => {
           writeAudio();
           return !sound.paused;
@@ -98,6 +145,8 @@ export function SungQuote({ lyrics, audio, children }: Props) {
       },
       { signal }
     );
+
+    sound.addEventListener("seeking", resetProof, { signal });
 
     controls.current = {
       toggle: () => {
