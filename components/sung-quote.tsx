@@ -186,7 +186,7 @@ export function SungQuote({ lyrics, audio, children }: Props) {
         <PlayButton
           playing={playing}
           onToggle={() => controls.current?.toggle()}
-          label={playing ? "Pause" : "Play the quote"}
+          label={playing ? "Pause the quote" : "Play the quote"}
         />
         <ProgressBar
           progress={progress}

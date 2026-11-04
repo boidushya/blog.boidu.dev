@@ -4,6 +4,7 @@ import { setRollingText } from "@/utils/pip-swap";
 import { type CSSProperties, type KeyboardEvent, type PointerEvent, useLayoutEffect, useRef } from "react";
 
 const KEY_STEP_SECONDS = 2;
+const PAGE_STEPS = 5;
 
 type Props = {
   progress: number;
@@ -50,10 +51,20 @@ export function ProgressBar({ progress, now, total, max, label, onSeek, classNam
   };
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
-    e.preventDefault();
     const step = max > 0 ? KEY_STEP_SECONDS / max : 0;
-    onSeek(clamp(progress + (e.key === "ArrowRight" ? step : -step)));
+    const targets: Record<string, number> = {
+      ArrowLeft: progress - step,
+      ArrowDown: progress - step,
+      ArrowRight: progress + step,
+      ArrowUp: progress + step,
+      PageDown: progress - step * PAGE_STEPS,
+      PageUp: progress + step * PAGE_STEPS,
+      Home: 0,
+      End: 1,
+    };
+    if (!Object.hasOwn(targets, e.key)) return;
+    e.preventDefault();
+    onSeek(clamp(targets[e.key]));
   };
 
   const style: CSSProperties & { "--p": number } = { "--p": progress };
