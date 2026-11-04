@@ -297,7 +297,6 @@ function stash(
     vy = still ? 0 : (latest.y - first.y) / span;
     const projected = (stashX - (x + vx * PROJECT)) / (stashX - openX);
     const landing = y + vy * PROJECT;
-    // A short pull on the tucked window's grab bar is enough to open it.
     settle(
       Math.abs(vx) > FLICK ? vx < 0 : projected > (tucked ? PULL_OPEN : 0.5),
       Math.abs(landing - mid) < Math.abs(landing)
@@ -381,7 +380,6 @@ type Props = {
   anchorRef: RefObject<HTMLElement | null>;
 };
 
-/** The phone player: a picture-in-picture window stashed in the screen edge, pulled in to open. */
 export function PipWindow({ posts, post, progress, disabled, anchorRef }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);

@@ -10,7 +10,6 @@ export function recordProgress(id: string, fraction: number) {
 
 let resumeId: string | undefined;
 
-/** Asks the next post page for `id` to open where the reader left off. */
 export function resumeNext(id: string) {
   resumeId = id;
 }

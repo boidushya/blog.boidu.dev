@@ -55,8 +55,7 @@ function fits(note: HTMLElement, side: Side, oneLine: boolean) {
   return box.left >= EDGE_PX && box.right <= window.innerWidth - EDGE_PX;
 }
 
-// One line to the left of the avatar when it fits, then wrapped, then under the byline row, so the
-// bubble never covers the byline.
+// Falls back to below the byline row so the bubble never covers the byline.
 function place(note: HTMLElement, avatar: HTMLElement, stayBelow: boolean): Tail {
   note.style.top = "";
   if (!stayBelow && (fits(note, "left", true) || fits(note, "left", false))) return { side: "left" };
