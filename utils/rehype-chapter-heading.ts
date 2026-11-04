@@ -32,13 +32,17 @@ const rehypeChapterHeading: Plugin<[], Root> = () => tree => {
       const words = sungWords(title).flatMap((word, i): ElementContent[] => {
         const sung = span("sung-word", [
           letters(word),
-          { ...letters(word), properties: { className: ["sung-letters", "sung-lit"], ariaHidden: "true" } },
+          { ...letters(word), properties: { className: ["sung-letters", "sung-lit"] } },
         ]);
         return i === 0 ? [sung] : [{ type: "text", value: " " }, sung];
       });
       heading.properties = { ...heading.properties, dataTitle: title };
-      target.properties = { ...target.properties, ariaLabel: title };
-      target.children = [span("sung", words)];
+      target.children = [
+        span("sung", [
+          span("sung-spoken", [{ type: "text", value: title }]),
+          { ...span("", words), properties: { ariaHidden: "true" } },
+        ]),
+      ];
     });
   });
 };

@@ -654,6 +654,11 @@ circle[id^="react-sketch-canvas__"]{
   @apply inline-block;
 }
 
+/* Screen readers get the plain title; the split letters are hidden from them. */
+.sung-spoken {
+  @apply sr-only select-none;
+}
+
 .sung-lit {
   user-select: none;
   @apply hidden;
