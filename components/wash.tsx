@@ -136,7 +136,6 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
           kawarp.current?.instance?.renderFrame();
           loading.current = false;
           setReady(true);
-          if (shown.current.src !== first) load(shown.current.src);
         }}
         onError={error => {
           console.warn(`Wash failed to load ${first}:`, error);

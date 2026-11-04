@@ -11,6 +11,7 @@ import { NEUTRAL_COLORS } from "@/utils/constants";
 import type { CSSVars } from "@/utils/css-vars";
 import { handwriting } from "@/utils/fonts";
 import { useResizeObserver, useWaterMark } from "@/utils/hooks";
+import { clamp } from "@/utils/math";
 import { matchesSearch, usePostSearch } from "@/utils/post-search";
 import { getProgress, pickShuffle } from "@/utils/reading-progress";
 import { pop, retrigger } from "@/utils/retrigger";
@@ -222,7 +223,8 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const [progress, setProgress] = useState<Record<string, number> | null>(null);
   const [timesReady, setTimesReady] = useState(false);
   const [measured, setMeasured] = useState<BlogCard[] | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [copiedId, setCopiedId] = useState<string>();
+  const copied = copiedId === active.id;
 
   const scrollerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLOListElement>(null);
@@ -285,7 +287,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
     (target: number, move = true, carryFocus = true) => {
       const count = linesIn(listRef.current).length;
       if (!count) return;
-      const i = Math.max(0, Math.min(count - 1, target));
+      const i = clamp(target, 0, count - 1);
       clearTimeout(hoverTimer.current);
       if (move) centre(i);
       indexRef.current = i;
@@ -509,9 +511,9 @@ export function Player({ posts }: { posts: BlogCard[] }) {
       return;
     }
     play("success", { emphasis: "subtle" });
-    setCopied(true);
+    setCopiedId(active.id);
     clearTimeout(copyTimer.current);
-    copyTimer.current = setTimeout(() => setCopied(false), COPIED_MS);
+    copyTimer.current = setTimeout(() => setCopiedId(undefined), COPIED_MS);
   };
 
   return (

@@ -1,5 +1,6 @@
 import fs from "fs";
 import { join } from "path";
+import { clamp } from "@/utils/math";
 import sharp from "sharp";
 
 const TARGET_LUMINANCE = 0.2;
@@ -33,7 +34,7 @@ export function washDim(src: string) {
   let dim = cache.get(src);
   if (!dim) {
     dim = averageLuminance(src)
-      .then(lum => Math.min(MAX_DIM, Math.max(MIN_DIM, 1 - TARGET_LUMINANCE / Math.max(lum, 0.01))))
+      .then(lum => clamp(1 - TARGET_LUMINANCE / Math.max(lum, 0.01), MIN_DIM, MAX_DIM))
       .catch(error => {
         console.warn(`Wash dim fell back to the maximum for ${src}:`, error);
         return MAX_DIM;
