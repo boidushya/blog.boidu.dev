@@ -1,5 +1,6 @@
 "use client";
 
+import { WASH_BASE, WASH_KAWARP } from "@/utils/constants";
 import { createStore } from "@/utils/store";
 import { Kawarp, type KawarpRef } from "@kawarp/react";
 import { useReducedMotion } from "motion/react";
@@ -120,17 +121,15 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-0 -z-10 bg-[oklch(0.1_0.01_270)] transition-opacity duration-[600ms] ease-out"
-      style={{ opacity: visible && ready ? 1 : 0 }}
+      className="fixed inset-0 -z-10 transition-opacity duration-[600ms] ease-out"
+      style={{ background: WASH_BASE, opacity: visible && ready ? 1 : 0 }}
     >
       <Kawarp
         ref={kawarp}
         src={first}
         autoPlay={false}
-        blurPasses={8}
+        {...WASH_KAWARP}
         animationSpeed={1.6}
-        saturation={1.4}
-        warpIntensity={0.9}
         transitionDuration={fadeMs()}
         onLoad={() => {
           kawarp.current?.instance?.renderFrame();
@@ -146,8 +145,8 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
         style={{ position: "absolute", inset: 0 }}
       />
       <div
-        className="absolute inset-0 bg-[oklch(0.1_0.01_270)] transition-opacity duration-[1200ms] ease-out"
-        style={{ opacity: shownDim }}
+        className="absolute inset-0 transition-opacity duration-[1200ms] ease-out"
+        style={{ background: WASH_BASE, opacity: shownDim }}
       />
     </div>
   );
