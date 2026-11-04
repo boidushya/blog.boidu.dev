@@ -1298,3 +1298,88 @@ html {
     animation-delay: var(--line-delay, 0ms);
   }
 }
+
+/* Sung quote */
+.sung-quote-text {
+  position: relative;
+  margin: 32px auto 28px;
+  padding-left: 40px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+  color: rgb(var(--color-accent-50));
+}
+
+.blog .sung-quote-text blockquote {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: inherit;
+}
+
+.blog .sung-quote-text blockquote p {
+  margin: 0;
+  color: inherit;
+}
+
+.sung-quote braccato-lyrics {
+  display: block;
+  --blyrics-font-size: 1em;
+  --blyrics-font-weight: 600;
+  --blyrics-line-height: 1.5;
+  --blyrics-padding: 0;
+  --blyrics-scale: 1;
+  --blyrics-active-scale: 1;
+  --blyrics-lyric-active-color: rgb(var(--color-accent-50));
+  --blyrics-lyric-inactive-color: color-mix(in oklab, rgb(var(--color-accent-50)) 32%, transparent);
+  --blyrics-animate-highlight-glow: 0;
+  --blyrics-animate-word-wobble: 0;
+  --blyrics-animate-line-scale: 0;
+  --blyrics-animate-scroll: 0;
+}
+
+.sung-quote :is(.blyrics-container, .blyrics--line) {
+  font-family: inherit;
+}
+
+.sung-quote .blyrics-container {
+  padding: 0 !important;
+}
+
+.sung-quote .blyrics-container > div {
+  padding: 0 !important;
+  cursor: default;
+}
+
+.sung-quote-open,
+.sung-quote-close {
+  font-weight: 700;
+  line-height: 1;
+  color: rgb(var(--color-accent-400));
+  rotate: -6deg;
+}
+
+.sung-quote-open {
+  position: absolute;
+  left: -2px;
+  top: -6px;
+  font-size: 64px;
+}
+
+.sung-quote-close {
+  position: relative;
+  display: inline-block;
+  top: 0.06em;
+  margin-left: 4px;
+  height: 0.5em;
+  font-size: 52px;
+  vertical-align: top;
+}
+
+.sung-quote-player {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: -4px auto 32px;
+}
