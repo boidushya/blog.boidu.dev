@@ -43,7 +43,7 @@ const PostSearch = () => {
           onKeyDown={e => e.key === "Escape" && setPostSearch("")}
           data-cuelume-type
           data-cuelume-emphasis="subtle"
-          className="w-9 h-full pt-[1.5px] pl-9 text-[15px] bg-transparent rounded-full outline-none text-accent-100 placeholder:text-transparent placeholder:transition-colors transition-[width] duration-300 ease-[cubic-bezier(0.2,0,0,1)] focus:w-40 focus:pr-8 focus:placeholder:text-accent-400/60 [&:not(:placeholder-shown)]:w-40 [&:not(:placeholder-shown)]:pr-8 sm:w-36 sm:pr-8 sm:placeholder:text-accent-400 sm:focus:w-56 sm:focus:placeholder:text-accent-400/60 sm:[&:not(:placeholder-shown)]:w-56 [&::-webkit-search-cancel-button]:hidden"
+          className="w-9 h-full pt-px pl-9 text-[15px] leading-[21px] bg-transparent rounded-full outline-none text-accent-100 placeholder:text-transparent placeholder:transition-colors transition-[width] duration-300 ease-[cubic-bezier(0.2,0,0,1)] focus:w-40 focus:pr-8 focus:placeholder:text-accent-400/60 [&:not(:placeholder-shown)]:w-40 [&:not(:placeholder-shown)]:pr-8 sm:w-36 sm:pr-8 sm:placeholder:text-accent-400 sm:focus:w-56 sm:focus:placeholder:text-accent-400/60 sm:[&:not(:placeholder-shown)]:w-56 [&::-webkit-search-cancel-button]:hidden"
         />
         <AnimatePresence initial={false}>
           {query && (

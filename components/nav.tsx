@@ -118,7 +118,7 @@ const Navbar = () => {
           Boidu's Blog
         </Link>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center h-10 gap-2">
           <AnimatePresence initial={false}>{isHome && <PostSearch key="search" />}</AnimatePresence>
           <SoundToggle />
           <ThemeSwitcher />
