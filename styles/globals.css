@@ -1634,64 +1634,6 @@ html:has(.player) .radix-tooltip__content {
   }
 
   .player-art {
-    position: fixed;
-    z-index: 10;
-    left: 10px;
-    right: 10px;
-    bottom: calc(10px + env(safe-area-inset-bottom));
-    display: grid;
-    grid-template-columns: 72px minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 10px 12px;
-    padding: 10px 10px 12px;
-    border-radius: 18px;
-    background: oklch(0.14 0.01 270 / 0.6);
-    -webkit-backdrop-filter: blur(24px) saturate(1.5);
-    backdrop-filter: blur(24px) saturate(1.5);
-    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 10%), 0 12px 30px oklch(0 0 0 / 0.35);
-  }
-
-  .player-cover {
-    grid-area: 1 / 1;
-    border-radius: 8px;
-    box-shadow: none;
-  }
-
-  .player-track-name {
-    font-size: 22px;
-  }
-
-  .player-track-sub {
-    margin-top: 2px;
-    font-size: 12px;
-  }
-
-  .player-track {
-    grid-area: 1 / 2;
-    min-width: 0;
-  }
-
-  .player-controls {
-    grid-area: 1 / 3;
-    margin: 0;
-  }
-
-  .player-controls > .player-btn,
-  .player-controls-mid > button {
-    display: none;
-  }
-
-  .progress-bar.player-bar {
-    grid-area: 2 / 1 / 3 / -1;
-    height: 4px;
-    border-radius: 999px;
-  }
-
-  .player-bar .progress-bar-fill {
-    border-radius: inherit;
-  }
-
-  .player-bar .progress-bar-times {
     display: none;
   }
 }
@@ -1714,6 +1656,305 @@ html:has(.player) .radix-tooltip__content {
     transition: opacity 150ms ease-out;
     scale: 1;
     filter: none;
+  }
+}
+
+/* Phone player: a window stashed in the screen edge (components/pip-window.tsx) */
+.pip-window {
+  --pip-bottom: calc(18px + env(safe-area-inset-bottom));
+  --w: min(100vw * 0.62, 320px);
+  --h: calc(var(--w) * 9 / 16);
+  --pip-lift: 0 1px 1px oklch(0.1 0.04 20 / 0.4), 0 4px 8px -2px oklch(0.1 0.04 20 / 0.35), 0 16px 28px -8px oklch(0.08 0.04 20 / 0.5), 0 40px 70px -18px oklch(0.06 0.04 20 / 0.7);
+  --pip-lift-held: 0 1px 1px oklch(0.1 0.04 20 / 0.4), 0 8px 14px -4px oklch(0.1 0.04 20 / 0.4), 0 24px 40px -10px oklch(0.08 0.04 20 / 0.55), 0 56px 90px -20px oklch(0.06 0.04 20 / 0.8);
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .pip-window {
+    display: contents;
+  }
+}
+
+.pip-glow {
+  position: fixed;
+  z-index: -1;
+  left: 0;
+  bottom: var(--pip-bottom);
+  width: var(--w);
+  height: var(--h);
+  pointer-events: none;
+  mix-blend-mode: plus-lighter;
+  opacity: 0.75;
+  transform: translate3d(calc(100vw - var(--w) / 2 - var(--peek) / 2), 0, 0) scale(0.4, 1.15);
+  will-change: transform, opacity;
+}
+
+.pip-glow-in {
+  position: absolute;
+  inset: 0;
+}
+
+.pip-glow-in > span {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  /* Own layer for WebKit 27's magenta blur smear; a filter hint instead makes Chrome cut the blur off in a hard line. */
+  will-change: opacity;
+}
+
+.pip-glow-near {
+  scale: 1.15;
+  filter: blur(16px) contrast(1.2) saturate(1.4);
+  opacity: 0.7;
+}
+
+.pip-glow-near img {
+  scale: 4.2;
+}
+
+.pip-glow-far {
+  scale: 2.4;
+  filter: blur(40px) contrast(1.2) saturate(1.5) brightness(1.2);
+  opacity: 0.5;
+}
+
+.pip-glow-far img {
+  scale: 2.6;
+}
+
+.pip-glow::after {
+  content: "";
+  position: absolute;
+  inset: -75%;
+  opacity: 0.06;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  -webkit-mask-image: radial-gradient(closest-side, #000 20%, transparent);
+  mask-image: radial-gradient(closest-side, #000 20%, transparent);
+}
+
+.pip-frame {
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  bottom: var(--pip-bottom);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  transform: translate3d(calc(100vw - var(--peek)), 0, 0);
+  will-change: transform;
+}
+
+.pip-body {
+  position: relative;
+  perspective: 700px;
+}
+
+.pip-card {
+  position: relative;
+  isolation: isolate;
+  width: var(--w);
+  height: var(--h);
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  background: #0d0e12;
+  box-shadow: var(--pip-lift);
+  transform-origin: 100% 50%;
+  rotate: y -8deg;
+  cursor: grab;
+  transition: scale 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+.pip-card:has(.pip-toggle:focus-visible) {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.pip-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(150deg, rgb(255 255 255 / 60%), rgb(255 255 255 / 10%) 30%, rgb(255 255 255 / 0) 55%, rgb(255 255 255 / 22%));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.pip-art {
+  position: absolute;
+  inset: 0;
+  transform: translateX(calc(var(--peek) / 2 - var(--w) / 2));
+}
+
+.pip-window img {
+  object-fit: cover;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 320ms ease-out;
+}
+
+.pip-window img[data-on] {
+  opacity: 1;
+}
+
+.pip-unread {
+  position: absolute;
+  inset: 0;
+  filter: grayscale(1) brightness(0.3);
+  clip-path: inset(0 0 calc(var(--read) * 100%) 0);
+  transition: clip-path 600ms var(--ease);
+}
+
+.pip-mark {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  translate: 0 calc((1 - var(--read)) * 100%);
+  transition: translate 600ms var(--ease), opacity 200ms ease-out;
+}
+
+.pip-mark::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -0.75px;
+  height: 1.5px;
+  background: #fff;
+  box-shadow: 0 0 8px rgb(255 255 255 / 70%);
+}
+
+.pip-mark[data-edge] {
+  opacity: 0;
+}
+
+.pip-handle {
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  translate: 0 -50%;
+  width: 4px;
+  height: 30px;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 75%);
+  box-shadow: 0 0 0 0.5px rgb(0 0 0 / 25%), 0 1px 4px rgb(0 0 0 / 35%);
+  pointer-events: none;
+}
+
+.pip-toggle {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pip-toggle:focus-visible {
+  outline: none;
+}
+
+.pip-card .pip-play {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  right: 12px;
+  opacity: 0;
+  scale: 0.8;
+  box-shadow: 0 1px 2px oklch(0.1 0.04 20 / 0.4), 0 8px 20px -6px oklch(0.08 0.04 20 / 0.7);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pip-label {
+  position: absolute;
+  right: 4px;
+  bottom: calc(100% + 8px);
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  text-align: right;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 12px oklch(0.08 0.03 20 / 0.6));
+  opacity: 0;
+  will-change: opacity;
+  transition: opacity 120ms ease-out;
+}
+
+.pip-frame[data-shown] .pip-label {
+  opacity: 1;
+  transition-duration: 200ms;
+}
+
+.pip-name {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.05;
+  color: #f6f7f9;
+}
+
+/* Caveat's last glyph overhangs its advance, so the roll's clip box gets room on the right. */
+.pip-name .pip-layer {
+  padding-inline: 0.1em 0.3em;
+  margin-inline: -0.1em -0.3em;
+}
+
+.pip-meta {
+  display: flex;
+  align-items: baseline;
+  font-size: 11.5px;
+  line-height: 1.3;
+  color: rgb(255 255 255 / 62%);
+  white-space: nowrap;
+}
+
+.pip-pct {
+  display: inline-flex;
+  margin-right: 8px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+}
+
+.pip-tags b {
+  font-weight: 500;
+  color: rgb(255 255 255 / 88%);
+}
+
+.pip-tags i {
+  font-style: normal;
+  margin-inline: 0.35em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pip-frame[data-held] .pip-card {
+    scale: 1.02;
+    box-shadow: var(--pip-lift-held);
+    cursor: grabbing;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pip-card {
+    transition: none;
+  }
+
+  .pip-card .pip-play,
+  .pip-handle {
+    transition: opacity 200ms ease-out;
+  }
+
+  .pip-unread,
+  .pip-mark {
+    transition: opacity 200ms ease-out;
   }
 }
 

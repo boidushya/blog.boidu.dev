@@ -1,5 +1,6 @@
 "use client";
 
+import { PipWindow } from "@/components/pip-window";
 import { NextIcon, PlayIcon, PreviousIcon } from "@/components/player-icons";
 import { ProgressBar } from "@/components/progress-bar";
 import { SungTitle } from "@/components/sung-title";
@@ -667,6 +668,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
           </div>
         </section>
       </div>
+      <PipWindow posts={posts} post={active} read={done} disabled={empty} anchorRef={noteRef} />
     </div>
   );
 }
