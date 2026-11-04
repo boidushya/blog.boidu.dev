@@ -1112,6 +1112,7 @@ html {
 
 /* Player controls */
 .play-button {
+  user-select: none;
   position: relative;
   display: grid;
   place-items: center;
@@ -1179,6 +1180,7 @@ html {
 }
 
 .progress-bar {
+  user-select: none;
   position: relative;
   flex: 1;
   height: 24px;
@@ -1221,10 +1223,8 @@ html {
 
 .progress-bar-times .t {
   display: inline-flex;
-}
-
-.progress-bar-times .pip-layer {
-  text-box: trim-both cap alphabetic;
+  /* The digits sit high in their line box; the full box stays as the roll's clip. */
+  translate: 0 0.16em;
 }
 
 .pip-line {
@@ -1377,6 +1377,7 @@ html {
 
 .sung-quote-open,
 .sung-quote-close {
+  user-select: none;
   font-weight: 700;
   line-height: 1;
   color: rgb(var(--color-accent-400));
@@ -1485,6 +1486,7 @@ html {
 
 /* Tape lands anchor end first with a glint, then a swipe from the stuck end presses it flat and clear. */
 .foreword-tape {
+  user-select: none;
   position: absolute;
   top: -12px;
   width: 96px;
@@ -1738,6 +1740,7 @@ html {
 }
 
 .foreword > .foreword-sig {
+  user-select: none;
   position: relative;
   width: fit-content;
   margin: 8px max(0px, calc((100% - 640px) / 2)) 0 auto;

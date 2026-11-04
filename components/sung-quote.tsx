@@ -6,7 +6,6 @@ import { Handwriting } from "@/components/handwriting";
 import { PlayButton } from "@/components/play-button";
 import { ProgressBar } from "@/components/progress-bar";
 import { IS_DEV } from "@/utils/constants";
-import { observeReveal } from "@/utils/reveal";
 import type { BraccatoLyricsElement } from "@braccato/core/element";
 import { type DetailedHTMLProps, type HTMLAttributes, type ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -27,7 +26,7 @@ const formatTime = (seconds: number) =>
 
 const normalizeWords = (text: string) => text.trim().split(/\s+/).join(" ");
 
-type Controls = { toggle: () => void; seek: (fraction: number) => void; runSilently: () => void };
+type Controls = { toggle: () => void; seek: (fraction: number) => void };
 
 type Props = {
   lyrics: string;
@@ -42,7 +41,6 @@ export function SungQuote({ lyrics, audio, children }: Props) {
   const controls = useRef<Controls>(undefined);
   const [rendered, setRendered] = useState(false);
   const [closeSlot, setCloseSlot] = useState<HTMLElement | null>(null);
-  const [opened, setOpened] = useState(false);
   const [sung, setSung] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -59,13 +57,12 @@ export function SungQuote({ lyrics, audio, children }: Props) {
     const sound = new Audio(audio);
     sound.preload = "metadata";
     let frame = 0;
-    let silenced = false;
-    let span = { begin: 0, end: 0 };
+    let sungEnd = 0;
 
     const write = (time: number, isPlaying: boolean) => {
       view.currentTime = time;
       view.playing = isPlaying;
-      setSung(time >= span.end);
+      setSung(time >= sungEnd);
     };
 
     const writeAudio = () => {
@@ -83,31 +80,9 @@ export function SungQuote({ lyrics, audio, children }: Props) {
       step();
     };
 
-    const takeOver = () => {
-      silenced = true;
-      setOpened(true);
-    };
-
-    const runSilently = () => {
-      if (silenced) return;
-      setOpened(true);
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        write(span.end, false);
-        return;
-      }
-      const start = performance.now();
-      loop(() => {
-        const time = Math.min(span.begin + (performance.now() - start) / 1000, span.end);
-        const done = time >= span.end;
-        write(time, !done);
-        return !done;
-      });
-    };
-
     sound.addEventListener(
       "play",
       () => {
-        takeOver();
         setPlaying(true);
         loop(() => {
           writeAudio();
@@ -134,12 +109,10 @@ export function SungQuote({ lyrics, audio, children }: Props) {
       },
       seek: fraction => {
         if (!sound.duration) return;
-        takeOver();
         if (sound.paused) cancelAnimationFrame(frame);
         sound.currentTime = fraction * sound.duration;
         writeAudio();
       },
-      runSilently,
     };
 
     view.addEventListener(
@@ -171,10 +144,9 @@ export function SungQuote({ lyrics, audio, children }: Props) {
 
       const parsed = detectParser(ttml).parse(ttml, sound.duration * 1000);
       const sungLines = parsed.filter(line => !line.isInstrumental);
-      const first = sungLines[0];
       const last = sungLines[sungLines.length - 1];
-      if (!first || !last) return;
-      span = { begin: first.startTimeMs / 1000, end: (last.startTimeMs + last.durationMs) / 1000 };
+      if (!last) return;
+      sungEnd = (last.startTimeMs + last.durationMs) / 1000;
 
       if (IS_DEV) {
         const sungText = normalizeWords(sungLines.map(line => line.words).join(" "));
@@ -186,6 +158,7 @@ export function SungQuote({ lyrics, audio, children }: Props) {
       view.host = { getScrollElement: () => view };
       view.theme = THEME;
       view.lyrics = parsed;
+      write(sungEnd, false);
       setDuration(sound.duration);
     })();
 
@@ -197,18 +170,11 @@ export function SungQuote({ lyrics, audio, children }: Props) {
     };
   }, [lyrics, audio]);
 
-  // Observed only once the quote has its final height, so the first reading is not taken off the tall pre-render layout.
-  useEffect(() => {
-    const figure = figureRef.current;
-    if (!rendered || !figure) return;
-    return observeReveal(figure, 0.8, () => controls.current?.runSilently());
-  }, [rendered]);
-
   return (
     <figure ref={figureRef} className="sung-quote">
       <div className="sung-quote-text">
         <span className="sung-quote-open" aria-hidden="true">
-          <Handwriting text="“" shown={opened} />
+          <Handwriting text="“" shown={rendered} />
         </span>
         <blockquote ref={quoteRef} className={rendered ? "sr-only" : undefined}>
           {children}
