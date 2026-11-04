@@ -1,6 +1,7 @@
 "use client";
 
 import { setPostSearch, usePostSearch } from "@/utils/post-search";
+import { isTypingTarget } from "@/utils/typing";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef } from "react";
 
@@ -13,6 +14,19 @@ const PostSearch = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => () => setPostSearch(""), []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const slash = e.key === "/" && !e.metaKey && !e.ctrlKey && !e.altKey && !isTypingTarget(e.target);
+      const commandK = e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey) && !e.altKey && !e.shiftKey;
+      if (!slash && !commandK) return;
+      e.preventDefault();
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
     <label className="relative flex items-center mr-4 h-9 rounded-full bg-[var(--player-chrome)] text-white/60 [box-shadow:var(--player-chrome-ring)] transition-[background-color,box-shadow,color] duration-200 ease-out hover:bg-white/[0.09] focus-within:bg-white/[0.1] focus-within:text-white/80 focus-within:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.16)]">
