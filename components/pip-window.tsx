@@ -34,6 +34,7 @@ const FADE_MS = 200;
 const HINT_AFTER_MS = 1400;
 const HINT_HOLD_MS = 2400;
 const HINTED_KEY = "pip-hinted";
+const BUSY_EVENTS = ["pointerdown", "wheel", "keydown"] as const;
 const ART_SIZES = `(min-width: ${Math.ceil(MAX_WIDTH_PX / WIDTH)}px) ${MAX_WIDTH_PX}px, ${WIDTH * 100}vw`;
 
 type Parts = Record<"frame" | "card" | "art" | "handle" | "toggle" | "play" | "label" | "glow", HTMLElement>;
@@ -335,9 +336,18 @@ function stash(
   frame.addEventListener("keydown", onKey);
   toggle.addEventListener("click", onClick);
   addEventListener("resize", place);
+  const skipHint = () => {
+    clearTimeout(hintTimer);
+    unwatchBusy();
+  };
+  const unwatchBusy = () => {
+    for (const type of BUSY_EVENTS) removeEventListener(type, skipHint, true);
+  };
   // A stranger cannot tell what the tucked edge is, so on a first visit it opens once by itself and tucks back.
-  if (onHint)
+  if (onHint) {
+    for (const type of BUSY_EVENTS) addEventListener(type, skipHint, { capture: true, passive: true });
     hintTimer = setTimeout(() => {
+      unwatchBusy();
       if (open || drag || !frame.getClientRects().length) return;
       onHint();
       settle(true);
@@ -345,9 +355,11 @@ function stash(
         if (open && !drag) settle(false);
       }, HINT_HOLD_MS);
     }, HINT_AFTER_MS);
+  }
   return () => {
     stopped = true;
     clearTimeout(hintTimer);
+    unwatchBusy();
     cancelAnimationFrame(raf);
     noteWatch.disconnect();
     frame.removeEventListener("pointerdown", onDown);
