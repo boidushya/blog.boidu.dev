@@ -3,6 +3,7 @@
 import PostSearch from "@/components/post-search";
 import SoundToggle from "@/components/sound-toggle";
 import ThemeSwitcher from "@/components/theme-switcher";
+import { AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
@@ -64,23 +65,61 @@ function useNavMode() {
   return headerRef;
 }
 
+const SHIFT_MS = 400;
+
+function useWidthShift() {
+  const navRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const ends = Array.from(nav.children) as HTMLElement[];
+    const measureEdges = () => {
+      const navLeft = nav.getBoundingClientRect().left - nav.offsetLeft;
+      return ends.map((end, i) => navLeft + end.offsetLeft + (i ? end.offsetWidth : 0));
+    };
+    let edges = measureEdges();
+    let viewport = window.innerWidth;
+    const observer = new ResizeObserver(() => {
+      const next = measureEdges();
+      const animate = window.innerWidth === viewport && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (animate)
+        ends.forEach((end, i) => {
+          const dx = edges[i] - next[i];
+          if (dx)
+            end.animate([{ transform: `translateX(${dx}px)` }, { transform: "none" }], {
+              duration: SHIFT_MS,
+              easing: "cubic-bezier(0.2, 0, 0, 1)",
+            });
+        });
+      edges = next;
+      viewport = window.innerWidth;
+    });
+    observer.observe(nav);
+    return () => observer.disconnect();
+  }, []);
+
+  return navRef;
+}
+
 const Navbar = () => {
   const headerRef = useNavMode();
   const isHome = usePathname() === "/";
+  const navRef = useWidthShift();
 
   return (
     <header ref={headerRef} data-mode="top" className="site-nav">
-      <nav className="flex items-center justify-between w-full py-5 mx-auto sm:py-8">
+      <nav ref={navRef} className="flex items-center justify-between w-full py-5 mx-auto sm:py-8">
         <Link
           href="/"
           data-cuelume-navigate
-          className="text-2xl font-bold tracking-tight site-nav__logo text-accent-400"
+          className="min-w-0 text-2xl font-bold tracking-tight truncate site-nav__logo text-accent-400"
         >
           Boidu's Blog
         </Link>
 
         <div className="flex items-center gap-2">
-          {isHome && <PostSearch />}
+          <AnimatePresence initial={false}>{isHome && <PostSearch key="search" />}</AnimatePresence>
           <SoundToggle />
           <ThemeSwitcher />
         </div>
