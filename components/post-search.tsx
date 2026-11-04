@@ -27,16 +27,11 @@ const PostSearch = () => {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          fill="currentColor"
           aria-hidden="true"
-          className="absolute w-4 h-4 pointer-events-none left-2.5 translate-y-[1.5px]"
+          className="absolute w-4 h-4 pointer-events-none left-2.5"
         >
-          <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-          <path d="M21 21l-6 -6" />
+          <path d="M10.5 2a8.5 8.5 0 1 0 5.262 15.176l3.652 3.652a1 1 0 0 0 1.414-1.414l-3.652-3.652A8.5 8.5 0 0 0 10.5 2M4 10.5a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0" />
         </svg>
         <input
           ref={inputRef}
@@ -48,7 +43,7 @@ const PostSearch = () => {
           onKeyDown={e => e.key === "Escape" && setPostSearch("")}
           data-cuelume-type
           data-cuelume-emphasis="subtle"
-          className="w-9 h-full pl-9 text-[15px] bg-transparent rounded-full outline-none text-accent-100 placeholder:text-transparent placeholder:transition-colors transition-[width] duration-300 ease-[cubic-bezier(0.2,0,0,1)] focus:w-40 focus:pr-8 focus:placeholder:text-accent-400/60 [&:not(:placeholder-shown)]:w-40 [&:not(:placeholder-shown)]:pr-8 sm:w-36 sm:pr-8 sm:placeholder:text-accent-400 sm:focus:w-56 sm:focus:placeholder:text-accent-400/60 sm:[&:not(:placeholder-shown)]:w-56 [&::-webkit-search-cancel-button]:hidden"
+          className="w-9 h-full pt-[1.5px] pl-9 text-[15px] bg-transparent rounded-full outline-none text-accent-100 placeholder:text-transparent placeholder:transition-colors transition-[width] duration-300 ease-[cubic-bezier(0.2,0,0,1)] focus:w-40 focus:pr-8 focus:placeholder:text-accent-400/60 [&:not(:placeholder-shown)]:w-40 [&:not(:placeholder-shown)]:pr-8 sm:w-36 sm:pr-8 sm:placeholder:text-accent-400 sm:focus:w-56 sm:focus:placeholder:text-accent-400/60 sm:[&:not(:placeholder-shown)]:w-56 [&::-webkit-search-cancel-button]:hidden"
         />
         <AnimatePresence initial={false}>
           {query && (
