@@ -375,6 +375,8 @@ export function Player({ posts }: { posts: BlogCard[] }) {
 
   const unhover = useCallback(() => clearTimeout(hoverTimer.current), []);
 
+  useLayoutEffect(() => () => clearTimeout(hoverTimer.current), [visible]);
+
   useLayoutEffect(() => {
     const vars = Object.entries(getPaletteVariables(NEUTRAL_COLORS));
     for (const [name, value] of vars) document.body.style.setProperty(name, value);
@@ -519,7 +521,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
               style={{ ...cssVars({ "--o": opacity, "--b": `${blur}px` }), visibility: hidden ? "hidden" : undefined }}
               onPointerMove={e => hover(i, e)}
               onPointerLeave={unhover}
-              onFocus={e => select(i, e.currentTarget.matches(":focus-visible"))}
+              onFocus={e => i !== indexRef.current && select(i, e.currentTarget.matches(":focus-visible"))}
             >
               <h2>
                 <SungTitle title={post.title} />

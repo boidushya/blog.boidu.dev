@@ -22,9 +22,18 @@ export function useWash(src: string | undefined, dim: number) {
 /** Mounted once in the layout, so the wash can fade out after the page that asked for it is gone. */
 export function PageWash() {
   const image = pageWash.use();
-  const [state, setState] = useState({ image, last: image, visits: 0 });
-  if (image !== state.image)
-    setState({ image, last: image ?? state.last, visits: image && !state.image ? state.visits + 1 : state.visits });
+  const [state, setState] = useState({ image, last: image, visits: 0, hiddenAt: 0 });
+  if (image !== state.image) {
+    const now = performance.now();
+    // Coming back after the fade-out finished starts a fresh wash; coming back mid-fade picks the old one up again.
+    const faded = !state.image && now - state.hiddenAt >= PAGE_FADE_MS;
+    setState({
+      image,
+      last: image ?? state.last,
+      visits: image && faded ? state.visits + 1 : state.visits,
+      hiddenAt: image ? state.hiddenAt : now,
+    });
+  }
   if (!state.last) return null;
   return <Wash key={state.visits} src={state.last.src} dim={state.last.dim} shown={!!image} />;
 }
@@ -44,8 +53,8 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
     kawarp.current
       ?.loadImage(target)
       .then(() => {
-        if (shown.current.src !== target) return load(shown.current.src);
         shown.current.busyUntil = performance.now() + FADE_MS;
+        if (shown.current.src !== target) return load(shown.current.src);
         if (stillFrames.current) kawarp.current?.instance?.renderFrame();
       })
       .catch(error => console.warn(`Wash failed to load ${target}:`, error));
