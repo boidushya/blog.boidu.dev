@@ -1,7 +1,9 @@
 "use client";
 
 import { PauseIcon, PlayIcon } from "@/components/player-icons";
+import { resumeNext } from "@/utils/reading-progress";
 import { pop } from "@/utils/retrigger";
+import Link from "next/link";
 import { useRef } from "react";
 
 type Props = {
@@ -32,5 +34,34 @@ export function PlayButton({ playing, onToggle, label, className }: Props) {
       <PlayIcon className="i-play" />
       <PauseIcon className="i-pause" />
     </button>
+  );
+}
+
+type LinkProps = {
+  href: string;
+  postId: string;
+  label: string;
+  disabled: boolean;
+  className?: string;
+  inert?: boolean;
+};
+
+export function PlayLink({ href, postId, label, disabled, className, inert }: LinkProps) {
+  return (
+    <Link
+      className={className ? `play-button ${className}` : "play-button"}
+      href={href}
+      aria-label={label}
+      aria-disabled={disabled}
+      inert={inert}
+      data-cuelume-navigate={disabled ? undefined : ""}
+      onClick={e => {
+        if (disabled) return e.preventDefault();
+        pop(e.currentTarget);
+        resumeNext(postId);
+      }}
+    >
+      <PlayIcon />
+    </Link>
   );
 }

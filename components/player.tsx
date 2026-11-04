@@ -1,7 +1,8 @@
 "use client";
 
 import { PipWindow } from "@/components/pip-window";
-import { NextIcon, PlayIcon, PreviousIcon } from "@/components/player-icons";
+import { PlayLink } from "@/components/play-button";
+import { NextIcon, PreviousIcon } from "@/components/player-icons";
 import { ProgressBar } from "@/components/progress-bar";
 import { SungTitle } from "@/components/sung-title";
 import { TrackName, TrackTags } from "@/components/track-lines";
@@ -14,7 +15,7 @@ import { handwriting } from "@/utils/fonts";
 import { useResizeObserver, useWaterMark } from "@/utils/hooks";
 import { clamp } from "@/utils/math";
 import { matchesSearch, usePostSearch } from "@/utils/post-search";
-import { getProgress, pickShuffle, resumeNext } from "@/utils/reading-progress";
+import { getProgress, pickShuffle } from "@/utils/reading-progress";
 import { pop, retrigger } from "@/utils/retrigger";
 import { createStore } from "@/utils/store";
 import { timeSweep } from "@/utils/sweep";
@@ -610,20 +611,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
               >
                 <PreviousIcon />
               </Control>
-              <Link
-                className="play-button"
-                href={active.link}
-                aria-label="Read"
-                aria-disabled={empty}
-                data-cuelume-navigate={empty ? undefined : ""}
-                onClick={e => {
-                  if (empty) return e.preventDefault();
-                  pop(e.currentTarget);
-                  resumeNext(active.id);
-                }}
-              >
-                <PlayIcon />
-              </Link>
+              <PlayLink href={active.link} postId={active.id} label="Read" disabled={empty} />
               <Control
                 label="Older post"
                 disabled={atEnd}

@@ -1,17 +1,14 @@
 "use client";
 
 import { RollingText } from "@/components/pip-line";
-import { PlayIcon } from "@/components/player-icons";
+import { PlayLink } from "@/components/play-button";
 import { TrackName, TrackTags } from "@/components/track-lines";
 import { WASH_FADE_MS, WASH_SETTLE_MS } from "@/components/wash";
 import type { BlogCard } from "@/lib/blogs";
 import type { CSSVars } from "@/utils/css-vars";
 import { clamp01 } from "@/utils/math";
 import { prefersReducedMotion } from "@/utils/motion";
-import { resumeNext } from "@/utils/reading-progress";
-import { pop } from "@/utils/retrigger";
 import Image from "next/image";
-import Link from "next/link";
 import { type RefObject, useEffect, useId, useRef, useState } from "react";
 
 const PEEK = 84;
@@ -425,21 +422,14 @@ export function PipWindow({ posts, post, progress, disabled, anchorRef }: Props)
               aria-label={`Player for ${post.title}, ${pct}% read`}
               data-cuelume-open={open ? undefined : "open"}
             />
-            <Link
-              className="play-button pip-play"
+            <PlayLink
               href={post.link}
-              aria-label={`Read ${post.title}`}
-              aria-disabled={disabled}
+              postId={post.id}
+              label={`Read ${post.title}`}
+              disabled={disabled}
+              className="pip-play"
               inert={!open}
-              data-cuelume-navigate={disabled ? undefined : ""}
-              onClick={e => {
-                if (disabled) return e.preventDefault();
-                pop(e.currentTarget);
-                resumeNext(post.id);
-              }}
-            >
-              <PlayIcon />
-            </Link>
+            />
           </div>
           <div id={labelId} className="pip-label" aria-hidden={!open}>
             <TrackName post={post} className="pip-name" />
