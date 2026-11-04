@@ -364,12 +364,16 @@ export function PipWindow({ posts, post, read, disabled, anchorRef }: Props) {
     <div ref={rootRef} className="pip-window" style={style}>
       <div className="pip-glow" aria-hidden="true">
         <div className="pip-glow-in enter [--i:1]">
-          <span className="pip-glow-far">
-            <Art posts={posts} active={post.id} />
-          </span>
-          <span className="pip-glow-near">
-            <Art posts={posts} active={post.id} />
-          </span>
+          {posts.map(each => (
+            <span key={each.id} className="pip-glow-post" data-on={each.id === post.id || undefined}>
+              <span className="pip-glow-far">
+                <Image src={each.image} alt="" fill sizes={ART_SIZES} draggable={false} />
+              </span>
+              <span className="pip-glow-near">
+                <Image src={each.image} alt="" fill sizes={ART_SIZES} draggable={false} />
+              </span>
+            </span>
+          ))}
         </div>
       </div>
       <div className="pip-frame">

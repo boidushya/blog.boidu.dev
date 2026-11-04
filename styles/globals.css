@@ -1710,7 +1710,19 @@ html:has(.player) {
   inset: 0;
 }
 
-.pip-glow-in > span {
+/* The crossfade runs on the post, outside the blur: Chrome crops a blur whose content is mid-animation. */
+.pip-glow-post {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--wash-fade) ease-out var(--wash-settle);
+}
+
+.pip-glow-post[data-on] {
+  opacity: 1;
+}
+
+.pip-glow-post > span {
   position: absolute;
   inset: 0;
   overflow: hidden;
@@ -1819,8 +1831,8 @@ html:has(.player) {
 }
 
 .pip-glow img {
-  transition-duration: var(--wash-fade);
-  transition-delay: var(--wash-settle);
+  opacity: 1;
+  transition: none;
 }
 
 .pip-unread {
