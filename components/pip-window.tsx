@@ -144,7 +144,16 @@ function stash(
     glow.style.transform = `translate3d(${x - shift}px, ${y}px, 0) scale(${0.4 + 0.6 * p}, ${1.15 - 0.15 * p})`;
   };
 
-  const rest = () => frame.toggleAttribute("data-shown", open);
+  // Only a tap on the resting, tucked window opens it; any other tap is swallowed as a grab.
+  const cue = () => {
+    if (open || raf || drag?.moved) toggle.removeAttribute("data-cuelume-open");
+    else toggle.setAttribute("data-cuelume-open", "open");
+  };
+
+  const rest = () => {
+    frame.toggleAttribute("data-shown", open);
+    cue();
+  };
 
   const step = (now: number) => {
     const dt = Math.min((now - (last || now)) / 1000, 1 / 30) / SUBSTEPS;
@@ -190,6 +199,7 @@ function stash(
     }
     last = 0;
     raf = requestAnimationFrame(step);
+    cue();
   };
 
   const retarget = () => {
@@ -205,6 +215,7 @@ function stash(
     if (raf) return;
     last = 0;
     raf = requestAnimationFrame(step);
+    cue();
   };
 
   const follow = () => {
@@ -254,6 +265,7 @@ function stash(
       if (Math.hypot(dx, dy) <= TAP_SLOP) return;
       drag.moved = true;
       frame.setPointerCapture(e.pointerId);
+      cue();
       frame.removeAttribute("data-shown");
     }
     x = band(drag.ox + dx, openX, stashX, w);
@@ -313,6 +325,7 @@ function stash(
   measure();
   x = tx = stashX;
   render();
+  cue();
   const noteWatch = new MutationObserver(follow);
   const note = anchor();
   if (note) noteWatch.observe(note, { attributes: true, childList: true, subtree: true, characterData: true });
@@ -420,7 +433,6 @@ export function PipWindow({ posts, post, progress, disabled, anchorRef }: Props)
               aria-expanded={open}
               aria-controls={labelId}
               aria-label={`Player for ${post.title}, ${pct}% read`}
-              data-cuelume-open={open ? undefined : "open"}
             />
             <PlayLink
               href={post.link}
