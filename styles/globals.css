@@ -197,6 +197,12 @@ circle[id^="react-sketch-canvas__"]{
   @apply mt-0;
 }
 
+/* Lines around the sheet sit close to it, so they read as the author handing over and taking back. */
+.post-body > .foreword:first-child,
+.post-body > .src-block:first-child > .foreword {
+  margin-top: 48px;
+}
+
 .post-body img,
 .post-body video {
   @apply w-full h-auto rounded-md;
@@ -1076,25 +1082,25 @@ html {
   --i: 3;
 }
 
-/* A foreword sheet enters in the first body block's slot, then its own first chunks follow. */
+/* A foreword sheet enters right after the line that introduces it, then its own first chunks follow. */
 .foreword {
-  --i: 3;
-}
-
-.foreword > .chapter {
   --i: 4;
 }
 
-.foreword > .byline {
+.foreword > .chapter {
   --i: 5;
 }
 
-.foreword > .byline + * {
+.foreword > .byline {
   --i: 6;
 }
 
-.foreword > .byline + * + * {
+.foreword > .byline + * {
   --i: 7;
+}
+
+.foreword > .byline + * + * {
+  --i: 8;
 }
 
 .player {
@@ -2345,7 +2351,7 @@ html:has(.player) {
   --torn: polygon(1px 0, calc(100% - 2px) 0, 100% 22%, calc(100% - 3px) 41%, 100% 63%, calc(100% - 2px) 82%, calc(100% - 1px) 100%, 2px 100%, 0 79%, 3px 58%, 0 37%, 2px 18%);
   position: relative;
   max-width: 768px;
-  margin: 48px auto 72px;
+  margin: 32px auto;
   padding: 48px 32px 40px;
   border-radius: 3px;
   background:
