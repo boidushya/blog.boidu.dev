@@ -1792,3 +1792,53 @@ html {
     rotate: none;
   }
 }
+
+/* Inline margin note */
+:is(p, li):has(> .margin-note-inline) {
+  position: relative;
+}
+
+.margin-note-inline-bracket {
+  position: absolute;
+  left: calc(100% + 14px);
+  width: 10px;
+  color: rgb(var(--color-accent-400));
+  user-select: none;
+}
+
+.post-body .margin-note-inline-icon {
+  position: absolute;
+  left: calc(100% + 30px);
+  width: 26px;
+  height: 26px;
+  margin-top: -13px;
+  border-radius: 0;
+  outline: none;
+  user-select: none;
+}
+
+.margin-note-inline-text {
+  position: absolute;
+  left: calc(100% + 30px);
+  width: 11rem;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: rgb(var(--color-accent-400));
+  translate: 0 -50%;
+}
+
+/* Below this the column has no side margin left to hold the note. */
+@media (max-width: 800px) {
+  .margin-note-inline-bracket {
+    display: none;
+  }
+
+  .post-body .margin-note-inline-icon {
+    position: static;
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    margin: 0 0 0 0.25em;
+    vertical-align: -0.25em;
+  }
+}
