@@ -45,7 +45,7 @@ function timeSweep(heading: HTMLElement): SungWord[] {
   return words;
 }
 
-export function Chapter({ n, children }: { n: string; children: React.ReactNode }) {
+export function Chapter({ n, label, children }: { n?: string; label?: string; children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const [armed, setArmed] = useState(false);
   const [shown, setShown] = useState(false);
@@ -78,10 +78,10 @@ export function Chapter({ n, children }: { n: string; children: React.ReactNode 
   return (
     <div ref={ref} data-chapter={n} data-armed={armed || undefined} data-shown={shown || undefined} className="chapter">
       <div className="chapter-rule">
-        <span className="sr-only">{`Chapter ${n}`}</span>
+        <span className="sr-only">{label ?? `Chapter ${n}`}</span>
         <span aria-hidden="true" className="chapter-hand">
           <Handwriting
-            text={`ch. ${n}`}
+            text={label ?? `ch. ${n}`}
             delay={0.1}
             shown={shown}
             onTimed={end => ref.current?.style.setProperty("--ink-end", `${Math.round(end * 1000)}ms`)}
