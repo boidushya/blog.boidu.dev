@@ -47,7 +47,13 @@ export function Chapter({ n, label, children }: ChapterProps) {
   }, []);
 
   return (
-    <div ref={ref} data-chapter={n} data-armed={armed || undefined} data-shown={shown || undefined} className="chapter">
+    <div
+      ref={ref}
+      data-chapter={n ?? ""}
+      data-armed={armed || undefined}
+      data-shown={shown || undefined}
+      className="chapter"
+    >
       <div className="chapter-rule">
         <span className="sr-only">{label ?? `Chapter ${n}`}</span>
         <span aria-hidden="true" className="chapter-hand">

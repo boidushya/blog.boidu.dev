@@ -25,7 +25,7 @@ function scrollToChapter(el: HTMLElement, behavior: ScrollBehavior, attempts = 3
   );
 }
 
-type ChapterEntry = { id: string; n: string; title: string; el: HTMLElement };
+type ChapterEntry = { id: string; n: string; title: string; el: HTMLElement; tint?: string };
 
 export function ChapterRail({ children }: { children: React.ReactNode }) {
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -50,6 +50,8 @@ export function ChapterRail({ children }: { children: React.ReactNode }) {
             n: el.dataset.chapter ?? "",
             title: heading.dataset.title ?? heading.textContent ?? "",
             el,
+            // An unnumbered chapter (a foreword) takes its writer's byline colour as its marker.
+            tint: el.closest(".foreword")?.querySelector<HTMLElement>(".byline-avatar")?.style.background,
           },
         ];
       })
@@ -119,7 +121,13 @@ export function ChapterRail({ children }: { children: React.ReactNode }) {
                         i === active ? "text-accent-50" : "text-fg-subtle hover:text-fg-muted"
                       }`}
                     >
-                      <span className="tabular-nums text-fg-faint">{chapter.n}</span>
+                      {chapter.n ? (
+                        <span className="tabular-nums text-fg-faint">{chapter.n}</span>
+                      ) : (
+                        <span aria-hidden="true" className="flex justify-center w-[1ch] shrink-0 pt-[0.45em]">
+                          <span className="w-1.5 h-1.5 rounded-full bg-fg-faint" style={{ background: chapter.tint }} />
+                        </span>
+                      )}
                       {chapter.title}
                     </a>
                   </li>
