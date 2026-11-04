@@ -12,13 +12,7 @@ function Signature({ name }: { name: string }) {
   const shown = useReveal(ref, 0.6);
   return (
     <div ref={ref} role="img" aria-label={name} className="foreword-sig" data-shown={shown || undefined}>
-      <Handwriting
-        text={name}
-        delay={0.1}
-        shown={shown}
-        className="foreword-sig-name"
-        onTimed={end => ref.current?.style.setProperty("--ink-end", `${Math.round(end * 1000)}ms`)}
-      />
+      <Handwriting text={name} delay={0.1} shown={shown} className="foreword-sig-name" inkEndOn={ref} />
       <svg viewBox="0 0 120 18" preserveAspectRatio="none" aria-hidden="true">
         <path pathLength={1} d="M2 12 C30 6 70 4 118 9 C90 10 60 13 40 16" />
       </svg>

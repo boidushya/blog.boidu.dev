@@ -163,7 +163,8 @@ export function SungQuote({ lyrics, audio, children }: Props) {
       view.host = { getScrollElement: () => view };
       view.theme = THEME;
       view.lyrics = parsed;
-      write(sungEnd, false);
+      if (sound.currentTime) writeAudio();
+      else write(sungEnd, false);
     })().catch((error: unknown) => {
       // The quote stays as plain text; the player still plays the clip.
       if (!signal.aborted) console.error("SungQuote: lyrics failed to load", error);

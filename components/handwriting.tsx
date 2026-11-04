@@ -41,26 +41,27 @@ export function Handwriting({
   delay = 0,
   shown,
   className = "",
-  onTimed,
+  inkEndOn,
 }: {
   text: string;
   delay?: number;
   shown?: boolean;
   className?: string;
-  onTimed?: (endSeconds: number) => void;
+  inkEndOn?: React.RefObject<HTMLElement | null>;
 }) {
   const reduceMotion = useReducedMotion();
   const words = text.split(" ");
   const wordRefs = useRef<HTMLSpanElement[]>([]);
   const [timings, setTimings] = useState<WordTiming[]>([]);
-  const onTimedRef = useRef(onTimed);
-  onTimedRef.current = onTimed;
+  const inkEndRef = useRef(inkEndOn);
+  inkEndRef.current = inkEndOn;
 
   useLayoutEffect(() => {
     const measure = () => {
       const next = timeWords(wordRefs.current.slice(0, words.length), delay);
       setTimings(next);
-      onTimedRef.current?.(Math.max(delay, ...next.map(t => t.delay + t.duration)));
+      const end = Math.max(delay, ...next.map(t => t.delay + t.duration));
+      inkEndRef.current?.current?.style.setProperty("--ink-end", `${Math.round(end * 1000)}ms`);
     };
     measure();
     const observer = new ResizeObserver(measure);

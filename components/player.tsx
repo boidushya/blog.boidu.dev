@@ -224,7 +224,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const [timesReady, setTimesReady] = useState(false);
   const [measured, setMeasured] = useState<BlogCard[] | null>(null);
   const [copiedId, setCopiedId] = useState<string>();
-  const copied = copiedId === active.id;
+  const copied = copiedId === active?.id;
 
   const scrollerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLOListElement>(null);
