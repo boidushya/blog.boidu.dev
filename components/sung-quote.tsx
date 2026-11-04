@@ -147,6 +147,7 @@ export function SungQuote({ lyrics, audio, children }: Props) {
     );
 
     sound.addEventListener("seeking", resetProof, { signal });
+    sound.addEventListener("waiting", resetProof, { signal });
 
     controls.current = {
       toggle: () => {
