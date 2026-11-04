@@ -1,9 +1,8 @@
+import { sungWords } from "@/utils/sung";
 import type { Element, ElementContent, Root } from "hast";
 import { toText } from "hast-util-to-text";
 import type { Plugin } from "unified";
 import { visit } from "unist-util-visit";
-
-const LONG_WORD = 7;
 
 const span = (className: string, children: ElementContent[]): Element => ({
   type: "element",
@@ -12,8 +11,7 @@ const span = (className: string, children: ElementContent[]): Element => ({
   children,
 });
 
-function letters(word: string): Element {
-  const long = word.length >= LONG_WORD;
+function letters({ word, long }: { word: string; long: boolean }): Element {
   return span(
     "sung-letters",
     Array.from(word, char =>
@@ -31,7 +29,7 @@ const rehypeChapterHeading: Plugin<[], Root> = () => tree => {
       const target =
         heading.children.find((child): child is Element => child.type === "element" && child.tagName === "a") ??
         heading;
-      const words = title.split(/\s+/).flatMap((word, i): ElementContent[] => {
+      const words = sungWords(title).flatMap((word, i): ElementContent[] => {
         const sung = span("sung-word", [
           letters(word),
           { ...letters(word), properties: { className: ["sung-letters", "sung-lit"], ariaHidden: "true" } },
