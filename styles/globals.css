@@ -1684,7 +1684,7 @@ html:has(.player) .radix-tooltip__content {
   height: var(--h);
   pointer-events: none;
   mix-blend-mode: plus-lighter;
-  opacity: 0.75;
+  opacity: 0.6;
   transform: translate3d(calc(100vw - var(--w) / 2 - var(--peek) / 2), 0, 0) scale(0.4, 1.15);
   will-change: transform, opacity;
 }
@@ -1800,6 +1800,11 @@ html:has(.player) .radix-tooltip__content {
 
 .pip-window img[data-on] {
   opacity: 1;
+}
+
+.pip-glow img {
+  transition-duration: var(--wash-fade);
+  transition-delay: var(--wash-settle);
 }
 
 .pip-unread {

@@ -3,6 +3,7 @@
 import { RollingText } from "@/components/pip-line";
 import { PlayIcon } from "@/components/player-icons";
 import { TrackName, TrackTags } from "@/components/track-lines";
+import { WASH_FADE_MS, WASH_SETTLE_MS } from "@/components/wash";
 import type { BlogCard } from "@/lib/blogs";
 import type { CSSVars } from "@/utils/css-vars";
 import { clamp01 } from "@/utils/math";
@@ -120,7 +121,7 @@ function stash(root: HTMLElement, parts: Parts, anchor: () => Element | null, on
     play.style.opacity = String(detail);
     play.style.scale = String(0.8 + 0.2 * detail);
     handle.style.opacity = String(1 - clamp01(p * 2.2));
-    glow.style.opacity = String(0.75 + 0.25 * p);
+    glow.style.opacity = String(0.6 + 0.4 * p);
     glow.style.transform = `translate3d(${x - shift}px, ${y}px, 0) scale(${0.4 + 0.6 * p}, ${1.15 - 0.15 * p})`;
   };
 
@@ -312,7 +313,12 @@ export function PipWindow({ posts, post, read, disabled, anchorRef }: Props) {
   const [open, setOpen] = useState(false);
   const labelId = useId();
   const pct = Math.round(read * 100);
-  const style: CSSVars = { "--peek": `${PEEK}px`, "--read": read };
+  const style: CSSVars = {
+    "--peek": `${PEEK}px`,
+    "--read": read,
+    "--wash-fade": `${WASH_FADE_MS}ms`,
+    "--wash-settle": `${WASH_SETTLE_MS}ms`,
+  };
 
   useEffect(() => {
     const root = rootRef.current;

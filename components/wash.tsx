@@ -5,8 +5,8 @@ import { Kawarp, type KawarpRef } from "@kawarp/react";
 import { useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
-const SETTLE_MS = 180;
-const FADE_MS = 1200;
+export const WASH_SETTLE_MS = 180;
+export const WASH_FADE_MS = 1200;
 const PAGE_FADE_MS = 600;
 const RESIZE_SETTLE_MS = 150;
 const LOAD_TIMEOUT_MS = 10_000;
@@ -48,7 +48,7 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
   const shown = useRef({ src, busyUntil: 0 });
   const stillFrames = useRef(reduceMotion);
   stillFrames.current = reduceMotion;
-  const fadeMs = () => (stillFrames.current ? 0 : FADE_MS);
+  const fadeMs = () => (stillFrames.current ? 0 : WASH_FADE_MS);
 
   const loading = useRef(true);
 
@@ -103,7 +103,7 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
     const flush = () => {
-      const wait = loading.current ? SETTLE_MS : shown.current.busyUntil - performance.now();
+      const wait = loading.current ? WASH_SETTLE_MS : shown.current.busyUntil - performance.now();
       if (wait > 0) {
         timer = setTimeout(flush, wait);
         return;
@@ -113,7 +113,7 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
       shown.current = { src, busyUntil: performance.now() + fadeMs() };
       load(src);
     };
-    timer = setTimeout(flush, SETTLE_MS);
+    timer = setTimeout(flush, WASH_SETTLE_MS);
     return () => clearTimeout(timer);
   }, [src, dim]);
 
