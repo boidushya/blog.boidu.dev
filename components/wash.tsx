@@ -36,6 +36,20 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
   const [shownDim, setShownDim] = useState(dim);
   const reduceMotion = useReducedMotion();
   const shown = useRef({ src, busyUntil: 0 });
+  const stillFrames = useRef(reduceMotion);
+  stillFrames.current = reduceMotion;
+
+  // Kawarp does not drop an older image that finishes loading late, so the latest choice is loaded again over it.
+  function load(target: string) {
+    kawarp.current
+      ?.loadImage(target)
+      .then(() => {
+        if (shown.current.src !== target) return load(shown.current.src);
+        shown.current.busyUntil = performance.now() + FADE_MS;
+        if (stillFrames.current) kawarp.current?.instance?.renderFrame();
+      })
+      .catch(error => console.warn(`Wash failed to load ${target}:`, error));
+  }
 
   useEffect(() => {
     if (!ready) return;
@@ -74,16 +88,11 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
       setShownDim(dim);
       if (shown.current.src === src) return;
       shown.current = { src, busyUntil: performance.now() + FADE_MS };
-      kawarp.current
-        ?.loadImage(src)
-        .then(() => {
-          if (reduceMotion) kawarp.current?.instance?.renderFrame();
-        })
-        .catch(error => console.warn(`Wash failed to load ${src}:`, error));
+      load(src);
     };
     timer = setTimeout(flush, SETTLE_MS);
     return () => clearTimeout(timer);
-  }, [src, dim, reduceMotion]);
+  }, [src, dim]);
 
   return (
     <div
@@ -103,6 +112,7 @@ function Wash({ src, dim, shown: visible }: WashImage & { shown: boolean }) {
         onLoad={() => {
           kawarp.current?.instance?.renderFrame();
           setReady(true);
+          if (shown.current.src !== first) load(shown.current.src);
         }}
         style={{ position: "absolute", inset: 0 }}
       />

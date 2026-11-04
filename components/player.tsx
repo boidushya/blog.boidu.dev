@@ -297,6 +297,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const inkRef = useRef<HTMLSpanElement>(null);
   const indexRef = useRef(0);
   const followFocus = useRef(false);
+  const committedIndex = useRef(0);
   const pointer = useRef({ x: -1, y: -1 });
   const hoverTimer = useRef<Timer>(undefined);
   const drawTimer = useRef<Timer>(undefined);
@@ -345,8 +346,16 @@ export function Player({ posts }: { posts: BlogCard[] }) {
       const count = linesIn(listRef.current).length;
       if (!count) return;
       const i = Math.max(0, Math.min(count - 1, target));
+      clearTimeout(hoverTimer.current);
       if (move) centre(i);
       indexRef.current = i;
+      // A focused title follows the selection once its line is visible, so Enter opens what is highlighted.
+      const focused = document.activeElement;
+      if (focused instanceof HTMLElement && focused.matches(".player-line")) {
+        followFocus.current = i !== committedIndex.current;
+        const line = linesIn(listRef.current)[i];
+        if (!followFocus.current && line !== focused) line?.focus({ preventScroll: true });
+      }
       setIndex(i);
     },
     [centre]
@@ -396,6 +405,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
 
   useLayoutEffect(() => {
     indexRef.current = index;
+    committedIndex.current = index;
     if (followFocus.current) {
       followFocus.current = false;
       linesIn(listRef.current)[index]?.focus({ preventScroll: true });
@@ -425,19 +435,6 @@ export function Player({ posts }: { posts: BlogCard[] }) {
     );
   }, [index, measured, visible, lyricsRef]);
 
-  // A focused title follows the selection once the new line is visible, so Enter opens what is highlighted.
-  const moveSelection = useCallback(
-    (steps: number) => {
-      const focused = document.activeElement;
-      const from = indexRef.current;
-      select(from + steps);
-      if (!(focused instanceof HTMLElement && focused.matches(".player-line"))) return;
-      if (indexRef.current === from) linesIn(listRef.current)[from]?.focus({ preventScroll: true });
-      else followFocus.current = true;
-    },
-    [select]
-  );
-
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!isDesktop()) return;
@@ -448,11 +445,11 @@ export function Player({ posts }: { posts: BlogCard[] }) {
       const step = KEY_STEPS.get(e.key);
       if (step === undefined) return;
       e.preventDefault();
-      moveSelection(step);
+      select(indexRef.current + step);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [moveSelection]);
+  }, [select]);
 
   useEffect(() => {
     let bank = 0;
@@ -469,14 +466,14 @@ export function Player({ posts }: { posts: BlogCard[] }) {
         steps += Math.sign(bank);
         bank -= Math.sign(bank) * WHEEL_STEP_PX;
       }
-      if (steps) moveSelection(steps);
+      if (steps) select(indexRef.current + steps);
     };
     window.addEventListener("wheel", onWheel, { passive: true });
     return () => {
       window.removeEventListener("wheel", onWheel);
       clearTimeout(idle);
     };
-  }, [moveSelection]);
+  }, [select]);
 
   useEffect(() => {
     const phone = matchMedia(`(max-width: ${PHONE_MAX_PX}px)`);

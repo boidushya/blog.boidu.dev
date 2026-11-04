@@ -3,10 +3,11 @@
 import PostSearch from "@/components/post-search";
 import SoundToggle from "@/components/sound-toggle";
 import ThemeSwitcher from "@/components/theme-switcher";
+import { useResizeObserver } from "@/utils/hooks";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type ReactNode, useEffect, useRef } from "react";
+import { type ReactNode, useCallback, useEffect, useRef } from "react";
 
 type NavMode = "top" | "hidden" | "pill";
 
@@ -83,38 +84,27 @@ function Collapse({ children }: { children: ReactNode }) {
 }
 
 function useWidthShift() {
-  const navRef = useRef<HTMLElement>(null);
+  const last = useRef<{ edges: number[]; viewport: number } | null>(null);
 
-  useEffect(() => {
-    const nav = navRef.current;
-    if (!nav) return;
+  const shift = useCallback((nav: HTMLElement) => {
     const ends = Array.from(nav.children) as HTMLElement[];
-    const measureEdges = () => {
-      const navLeft = nav.getBoundingClientRect().left - nav.offsetLeft;
-      return ends.map((end, i) => navLeft + end.offsetLeft + (i ? end.offsetWidth : 0));
-    };
-    let edges = measureEdges();
-    let viewport = window.innerWidth;
-    const observer = new ResizeObserver(() => {
-      const next = measureEdges();
-      const animate = window.innerWidth === viewport && !matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (animate)
-        ends.forEach((end, i) => {
-          const dx = edges[i] - next[i];
-          if (dx)
-            end.animate([{ transform: `translateX(${dx}px)` }, { transform: "none" }], {
-              duration: SHIFT_MS,
-              easing: "cubic-bezier(0.2, 0, 0, 1)",
-            });
+    const navLeft = nav.getBoundingClientRect().left - nav.offsetLeft;
+    const edges = ends.map((end, i) => navLeft + end.offsetLeft + (i ? end.offsetWidth : 0));
+    const previous = last.current;
+    last.current = { edges, viewport: window.innerWidth };
+    if (!previous || previous.viewport !== window.innerWidth) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    ends.forEach((end, i) => {
+      const dx = previous.edges[i] - edges[i];
+      if (dx)
+        end.animate([{ transform: `translateX(${dx}px)` }, { transform: "none" }], {
+          duration: SHIFT_MS,
+          easing: "cubic-bezier(0.2, 0, 0, 1)",
         });
-      edges = next;
-      viewport = window.innerWidth;
     });
-    observer.observe(nav);
-    return () => observer.disconnect();
   }, []);
 
-  return navRef;
+  return useResizeObserver<HTMLElement>(shift);
 }
 
 const Navbar = () => {
