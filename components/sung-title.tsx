@@ -1,4 +1,5 @@
 import { sungWords } from "@/utils/sung";
+import { memo } from "react";
 
 function Letters({ word, long, lit }: { word: string; long: boolean; lit?: boolean }) {
   return (
@@ -12,7 +13,7 @@ function Letters({ word, long, lit }: { word: string; long: boolean; lit?: boole
   );
 }
 
-export function SungTitle({ title }: { title: string }) {
+export const SungTitle = memo(function SungTitle({ title }: { title: string }) {
   return (
     <span className="sung">
       {sungWords(title).map(({ word, long }, i) => (
@@ -26,4 +27,4 @@ export function SungTitle({ title }: { title: string }) {
       ))}
     </span>
   );
-}
+});
