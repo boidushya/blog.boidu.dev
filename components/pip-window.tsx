@@ -64,6 +64,12 @@ function band(value: number, lo: number, hi: number, dim: number) {
   return value;
 }
 
+const ancestorAnimations = (el: Element) =>
+  document.getAnimations().filter(animation => {
+    const target = animation.effect instanceof KeyframeEffect ? animation.effect.target : null;
+    return target !== null && target !== el && target.contains(el);
+  });
+
 function partsIn(root: HTMLElement): Parts | null {
   const part = (name: keyof Parts) => root.querySelector<HTMLElement>(`.pip-${name}`);
   const [frame, card, art, handle, toggle, play, label, glow] = [
@@ -106,6 +112,7 @@ function stash(
   let drag: Drag | null = null;
   let swallowTap = false;
   let hintTimer: ReturnType<typeof setTimeout> | undefined;
+  let stopped = false;
 
   const measure = () => {
     const width = document.documentElement.clientWidth;
@@ -186,6 +193,26 @@ function stash(
     }
     last = 0;
     raf = requestAnimationFrame(step);
+  };
+
+  const retarget = () => {
+    if (stopped || !atMid || drag) return;
+    const next = midY();
+    if (Math.abs(next - ty) < 0.5) return;
+    ty = next;
+    if (prefersReducedMotion()) {
+      y = ty;
+      vy = 0;
+      return render();
+    }
+    if (raf) return;
+    last = 0;
+    raf = requestAnimationFrame(step);
+  };
+
+  const follow = () => {
+    const note = anchor();
+    if (note) Promise.allSettled(ancestorAnimations(note).map(animation => animation.finished)).then(retarget);
   };
 
   const place = () => {
@@ -289,6 +316,9 @@ function stash(
   measure();
   x = tx = stashX;
   render();
+  const noteWatch = new MutationObserver(follow);
+  const note = anchor();
+  if (note) noteWatch.observe(note, { attributes: true, childList: true, subtree: true, characterData: true });
   frame.addEventListener("pointerdown", onDown);
   frame.addEventListener("pointermove", onMove);
   frame.addEventListener("pointerup", onRelease);
@@ -307,8 +337,10 @@ function stash(
       }, HINT_HOLD_MS);
     }, HINT_AFTER_MS);
   return () => {
+    stopped = true;
     clearTimeout(hintTimer);
     cancelAnimationFrame(raf);
+    noteWatch.disconnect();
     frame.removeEventListener("pointerdown", onDown);
     frame.removeEventListener("pointermove", onMove);
     frame.removeEventListener("pointerup", onRelease);
