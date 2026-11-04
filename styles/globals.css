@@ -1135,45 +1135,43 @@ html:has(.player) .radix-tooltip__content {
   color: rgb(255 255 255 / 0.85);
 }
 
-@media (min-width: 861px) {
-  html:has(.player) {
-    overflow: hidden;
-    scrollbar-gutter: auto;
-  }
+html:has(.player) {
+  overflow: hidden;
+  overscroll-behavior: none;
+  scrollbar-gutter: auto;
+}
 
+.site:has(.player) {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
+.site:has(.player) > main {
+  flex: 1;
+  min-height: 0;
+}
+
+.player,
+.player-stage {
+  height: 100%;
+}
+
+@media (min-width: 861px) {
   .site:has(.player) {
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    height: 100dvh;
     max-width: 1360px;
     padding-inline: 56px;
-  }
-
-  .site:has(.player) > main {
-    flex: 1;
-    min-height: 0;
   }
 
   .site:has(.player) footer {
     height: 64px;
   }
-
-  .player,
-  .player-stage {
-    height: 100%;
-  }
 }
 
 @media (max-width: 860px) {
-  html:has(.player) {
-    scroll-padding-top: 0;
-    scroll-snap-type: y mandatory;
-  }
-
   .site:has(.player) footer {
-    margin-bottom: calc(120px + env(safe-area-inset-bottom) + var(--player-tail, 0px));
-    scroll-snap-align: end;
+    display: none;
   }
 }
 
@@ -1462,10 +1460,6 @@ html:has(.player) .radix-tooltip__content {
   list-style: none;
 }
 
-.player-band {
-  display: none;
-}
-
 .player-line {
   position: relative;
   display: block;
@@ -1623,37 +1617,22 @@ html:has(.player) .radix-tooltip__content {
   }
 
   .player-lyrics {
-    height: auto;
-    margin-inline: 0;
-    overflow: visible;
-    padding: 14svh 0 64px;
-    /* The list slides up inside its sticky box, so the footer is pulled up over the space it leaves. */
-    margin-bottom: calc(-1 * var(--player-travel, 0px));
-    -webkit-mask-image: none;
-    mask-image: none;
+    --gutter: 16px;
+    margin-inline: calc(-1 * var(--gutter));
+    touch-action: pinch-zoom;
+    -webkit-mask-image: linear-gradient(transparent, #000 40px, #000 calc(100% - 40px), transparent);
+    mask-image: linear-gradient(transparent, #000 40px, #000 calc(100% - 40px), transparent);
   }
 
   .player-scroller {
-    position: sticky;
-    inset: auto;
-    top: var(--player-stick, 0px);
-    transition: none;
-  }
-
-  .player-band {
-    display: block;
-    height: 28svh;
-    scroll-margin-top: var(--player-focus, 0px);
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-  }
-
-  .player-band:last-child {
-    height: 0;
+    left: var(--gutter);
+    right: var(--gutter);
+    top: 34%;
   }
 
   .player-empty {
-    left: 0;
+    left: var(--gutter);
+    top: 34%;
   }
 
   .player-line {
@@ -1666,6 +1645,12 @@ html:has(.player) .radix-tooltip__content {
 
   .player-art {
     display: none;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 860px) {
+  .player-lyrics {
+    --gutter: 24px;
   }
 }
 

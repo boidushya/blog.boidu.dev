@@ -41,6 +41,9 @@ const PHONE_MAX_PX = 860;
 const HOVER_MS = 90;
 const WHEEL_STEP_PX = 90;
 const WHEEL_IDLE_MS = 220;
+const SWIPE_PX = 36;
+const FLICK_PX = 12;
+const FLICK_PX_PER_MS = 0.4;
 const NOTE_FADE_MS = 130;
 const COPIED_MS = 1600;
 const KEY_STEPS = new Map([
@@ -53,6 +56,7 @@ const KEY_STEPS = new Map([
 ]);
 
 type Timer = ReturnType<typeof setTimeout> | undefined;
+type Swipe = { id: number; x: number; y: number; t: number };
 
 // Outlives the page, so coming home by any route lands on the post picked last.
 const picked = createStore<string | undefined>(undefined);
@@ -61,13 +65,6 @@ type NoteSide = "right" | "below" | "below-left" | "above";
 const linesIn = (list: HTMLElement | null) => Array.from(list?.querySelectorAll<HTMLElement>(".player-line") ?? []);
 
 const isDesktop = () => innerWidth > PHONE_MAX_PX;
-
-// Offsets skip transforms, so the entrance slide does not shift the measured layout.
-function pageTop(el: HTMLElement) {
-  let top = 0;
-  for (let at: Element | null = el; at instanceof HTMLElement; at = at.offsetParent) top += at.offsetTop;
-  return top;
-}
 
 function falloff(distance: number) {
   const opacity = 1 - distance * 0.1 - distance * distance * 0.02;
@@ -260,12 +257,13 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   const copyTimer = useRef<Timer>(undefined);
   const scrollOffset = useRef(0);
   const lyricsWidth = useRef(-1);
-  const landed = useRef(false);
+  const swipe = useRef<Swipe | null>(null);
+  const swiped = useRef(false);
 
   const centre = useCallback((i: number) => {
     const line = linesIn(listRef.current)[i];
     const scroller = scrollerRef.current;
-    if (!line || !scroller || !isDesktop()) return;
+    if (!line || !scroller) return;
     scrollOffset.current = -line.offsetTop - line.offsetHeight / 2;
     scroller.style.translate = `0 ${scrollOffset.current}px`;
   }, []);
@@ -349,6 +347,32 @@ export function Player({ posts }: { posts: BlogCard[] }) {
 
   const unhover = useCallback(() => clearTimeout(hoverTimer.current), []);
 
+  const startSwipe = useCallback((e: PointerEvent) => {
+    swiped.current = false;
+    swipe.current =
+      e.pointerType === "mouse" || !e.isPrimary
+        ? null
+        : { id: e.pointerId, x: e.clientX, y: e.clientY, t: e.timeStamp };
+  }, []);
+
+  // Each swipe steps one post however far it travels, so the list never skips past a title.
+  const endSwipe = useCallback(
+    (e: PointerEvent) => {
+      const start = swipe.current;
+      swipe.current = null;
+      if (!start || start.id !== e.pointerId) return;
+      const dx = e.clientX - start.x;
+      const dy = e.clientY - start.y;
+      const travel = Math.abs(dy);
+      if (travel <= Math.abs(dx)) return;
+      const flick = travel > FLICK_PX && travel / Math.max(e.timeStamp - start.t, 1) > FLICK_PX_PER_MS;
+      if (travel < SWIPE_PX && !flick) return;
+      swiped.current = true;
+      select(indexRef.current + (dy < 0 ? 1 : -1));
+    },
+    [select]
+  );
+
   useLayoutEffect(() => () => clearTimeout(hoverTimer.current), [visible]);
 
   useLayoutEffect(() => {
@@ -415,7 +439,6 @@ export function Player({ posts }: { posts: BlogCard[] }) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (!isDesktop()) return;
       if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
       if (isTypingTarget(e.target)) return;
       const step = KEY_STEPS.get(e.key);
@@ -431,7 +454,7 @@ export function Player({ posts }: { posts: BlogCard[] }) {
     let bank = 0;
     let idle: Timer;
     const onWheel = (e: WheelEvent) => {
-      if (!isDesktop() || e.ctrlKey) return;
+      if (e.ctrlKey) return;
       clearTimeout(idle);
       idle = setTimeout(() => {
         bank = 0;
@@ -450,69 +473,6 @@ export function Player({ posts }: { posts: BlogCard[] }) {
       clearTimeout(idle);
     };
   }, [select]);
-
-  useEffect(() => {
-    const phone = matchMedia(`(max-width: ${PHONE_MAX_PX}px)`);
-    const list = listRef.current;
-    const scroller = scrollerRef.current;
-    const lyrics = lyricsRef.current;
-    const band = lyrics?.querySelector<HTMLElement>(".player-band");
-    if (!list || !scroller || !lyrics || !band) return;
-    const { body } = document;
-    let frame = 0;
-
-    // One band of page scroll moves the list one title, so every swipe snaps exactly one post on.
-    const follow = () => {
-      frame = 0;
-      const lines = linesIn(list);
-      if (!phone.matches || !lines.length) return;
-      const at = clamp(scrollY / band.offsetHeight, 0, lines.length - 1);
-      const from = Math.floor(at);
-      const to = Math.min(from + 1, lines.length - 1);
-      const top = (i: number) => lines[i].offsetTop - lines[0].offsetTop;
-      scrollOffset.current = -(top(from) + (top(to) - top(from)) * (at - from));
-      scroller.style.translate = `0 ${scrollOffset.current}px`;
-      select(Math.round(at), false, false);
-    };
-
-    const fit = () => {
-      const lines = linesIn(list);
-      if (!phone.matches || !lines.length) {
-        body.style.removeProperty("--player-tail");
-        return;
-      }
-      lyrics.style.setProperty(
-        "--player-stick",
-        `${pageTop(lyrics) + Number.parseFloat(getComputedStyle(lyrics).paddingTop)}px`
-      );
-      lyrics.style.setProperty("--player-focus", `${pageTop(band)}px`);
-      lyrics.style.setProperty("--player-travel", `${lines[lines.length - 1].offsetTop - lines[0].offsetTop}px`);
-      const travel = (lines.length - 1) * band.offsetHeight;
-      const tail = Number.parseFloat(body.style.getPropertyValue("--player-tail")) || 0;
-      const room = document.documentElement.scrollHeight - tail - innerHeight;
-      body.style.setProperty("--player-tail", `${Math.max(0, travel - room)}px`);
-      if (!landed.current) {
-        landed.current = true;
-        if (indexRef.current) window.scrollTo({ top: indexRef.current * band.offsetHeight, behavior: "instant" });
-      }
-      follow();
-    };
-
-    const onScroll = () => {
-      frame ||= requestAnimationFrame(follow);
-    };
-    const observer = new ResizeObserver(fit);
-    observer.observe(list);
-    addEventListener("resize", fit);
-    addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      observer.disconnect();
-      removeEventListener("resize", fit);
-      removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(frame);
-      body.style.removeProperty("--player-tail");
-    };
-  }, [visible, select, lyricsRef]);
 
   useEffect(
     () => () => {
@@ -717,6 +677,17 @@ export function Player({ posts }: { posts: BlogCard[] }) {
             clearTimeout(hoverTimer.current);
             centre(indexRef.current);
           }}
+          onPointerDown={startSwipe}
+          onPointerUp={endSwipe}
+          onPointerCancel={() => {
+            swipe.current = null;
+          }}
+          onClickCapture={e => {
+            if (!swiped.current) return;
+            swiped.current = false;
+            e.preventDefault();
+            e.stopPropagation();
+          }}
         >
           {empty && <p className={`player-empty ${handwriting.className}`}>nothing matches</p>}
           <div ref={scrollerRef} className="player-scroller">
@@ -731,9 +702,6 @@ export function Player({ posts }: { posts: BlogCard[] }) {
               <span ref={inkRef} className="player-ink" />
             </div>
           </div>
-          {visible.map(post => (
-            <span key={post.id} className="player-band" aria-hidden="true" />
-          ))}
         </section>
       </div>
       <PipWindow posts={posts} post={active} read={done} disabled={empty} anchorRef={noteRef} />
