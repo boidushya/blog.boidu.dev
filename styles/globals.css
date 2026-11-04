@@ -1224,7 +1224,7 @@ html {
 .progress-bar-times .t {
   display: inline-flex;
   /* The digits sit high in their line box; the full box stays as the roll's clip. */
-  translate: 0 0.16em;
+  translate: 0 0.09em;
 }
 
 .pip-line {
