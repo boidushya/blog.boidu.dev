@@ -58,6 +58,7 @@ export function PlayLink({ href, postId, label, disabled, className, inert }: Li
       onClick={e => {
         if (disabled) return e.preventDefault();
         pop(e.currentTarget);
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
         resumeNext(postId);
       }}
     >
