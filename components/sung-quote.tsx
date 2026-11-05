@@ -271,6 +271,8 @@ export function SungQuote({ lyrics, audio, children }: Props) {
               playing={playing}
               onToggle={() => controls.current?.toggle()}
               label={playing ? "Pause the quote" : "Play the quote"}
+              pops={open}
+              cue={playing}
             />
           </motion.div>
           <motion.div layout layoutDependency={open} transition={resize} className="sung-quote-seek">

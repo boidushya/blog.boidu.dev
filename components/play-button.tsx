@@ -11,13 +11,17 @@ type Props = {
   onToggle: () => void;
   label: string;
   className?: string;
+  /** Off where the press already moves the button, such as a player that morphs open around it. */
+  pops?: boolean;
+  /** Off where the press starts media, so the cue does not land on the audio switch. */
+  cue?: boolean;
 };
 
-export function PlayButton({ playing, onToggle, label, className }: Props) {
+export function PlayButton({ playing, onToggle, label, className, pops = true, cue = true }: Props) {
   const ref = useRef<HTMLButtonElement>(null);
 
   const onClick = () => {
-    if (ref.current) pop(ref.current);
+    if (pops && ref.current) pop(ref.current);
     onToggle();
   };
 
@@ -28,7 +32,7 @@ export function PlayButton({ playing, onToggle, label, className }: Props) {
       className={className ? `play-button ${className}` : "play-button"}
       aria-label={label}
       data-playing={playing || undefined}
-      data-cuelume-tap=""
+      data-cuelume-tap={cue ? "" : undefined}
       onClick={onClick}
     >
       <PlayIcon className="i-play" />
