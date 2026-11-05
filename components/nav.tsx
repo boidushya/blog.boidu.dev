@@ -14,6 +14,8 @@ import { type ReactNode, useCallback, useEffect, useRef } from "react";
 
 type NavMode = "top" | "hidden" | "pill";
 
+const NAV_SETTLE_MS = 300;
+
 /**
  * At the top the nav sits in the page and scrolls away with it. Out of view it becomes a pill off
  * screen, which slides in on any scroll up and out again on scroll down. Back at the top it settles
@@ -26,19 +28,22 @@ function useNavMode() {
     const header = headerRef.current;
     if (!header) return;
 
+    let release = 0;
     const setMode = (mode: NavMode, instant = false) => {
       if (header.dataset.mode === mode) return;
       if (mode !== "top" && header.dataset.mode === "top") header.style.height = `${header.offsetHeight}px`;
       if (instant) header.setAttribute("data-instant", "");
       header.dataset.mode = mode;
-      if (mode === "top") header.style.height = "";
+      clearTimeout(release);
+      // The flat nav grows back over its transition; holding the header height keeps the page from shifting under it.
+      if (mode === "top") release = window.setTimeout(() => (header.style.height = ""), NAV_SETTLE_MS);
       if (instant) {
         void header.offsetWidth;
         requestAnimationFrame(() => header.removeAttribute("data-instant"));
       }
     };
 
-    return watchScroll((y, dy) => {
+    const stopScroll = watchScroll((y, dy) => {
       const mode = header.dataset.mode as NavMode;
       if (y <= 2) setMode("top");
       else if (mode === "top") {
@@ -46,6 +51,10 @@ function useNavMode() {
       } else if (mode === "pill" && dy > SCROLL_INTENT_PX) setMode("hidden");
       else if (mode === "hidden" && dy < -SCROLL_INTENT_PX) setMode("pill");
     });
+    return () => {
+      stopScroll();
+      clearTimeout(release);
+    };
   }, []);
 
   return headerRef;
