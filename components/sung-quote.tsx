@@ -5,8 +5,9 @@ import "@braccato/core/styles/lyrics.css";
 import { Handwriting } from "@/components/handwriting";
 import { PlayButton } from "@/components/play-button";
 import { ProgressBar } from "@/components/progress-bar";
-import { clock } from "@/utils/clock";
+import { clipLength, clock } from "@/utils/clock";
 import { IS_DEV } from "@/utils/constants";
+import { useResizeObserver } from "@/utils/hooks";
 import type { BraccatoLyricsElement } from "@braccato/core/element";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -46,6 +47,9 @@ export function SungQuote({ lyrics, audio, children }: Props) {
   const quoteRef = useRef<HTMLQuoteElement>(null);
   const viewRef = useRef<BraccatoLyricsElement>(null);
   const controls = useRef<Controls>(undefined);
+  const labelRef = useResizeObserver<HTMLSpanElement>(label =>
+    label.parentElement?.parentElement?.style.setProperty("--label-w", `${label.offsetWidth}px`)
+  );
   const [rendered, setRendered] = useState(false);
   const [closeSlot, setCloseSlot] = useState<HTMLElement | null>(null);
   const [sung, setSung] = useState(false);
@@ -228,6 +232,8 @@ export function SungQuote({ lyrics, audio, children }: Props) {
     };
   }, [lyrics, audio]);
 
+  const open = playing || (progress > 0 && progress * duration < duration - END_SLACK_SECONDS);
+
   return (
     <figure ref={figureRef} className="sung-quote">
       <div className="sung-quote-text">
@@ -240,20 +246,27 @@ export function SungQuote({ lyrics, audio, children }: Props) {
         <braccato-lyrics ref={viewRef} aria-hidden="true" inert />
         {closeSlot && createPortal(<Handwriting text="”" shown={sung} />, closeSlot)}
       </div>
-      <div className="sung-quote-player">
+      <div className="sung-quote-player" data-open={open || undefined}>
         <PlayButton
           playing={playing}
           onToggle={() => controls.current?.toggle()}
           label={playing ? "Pause the quote" : "Play the quote"}
         />
-        <ProgressBar
-          progress={progress}
-          now={now}
-          total={clock(duration / 60)}
-          max={duration}
-          label="Seek"
-          onSeek={fraction => controls.current?.seek(fraction)}
-        />
+        <div className="sung-quote-seek">
+          <span ref={labelRef} className="sung-quote-label" aria-hidden="true">
+            Hear it <span>· {clipLength(duration / 60)}</span>
+          </span>
+          <div className="sung-quote-bar" inert={!open}>
+            <ProgressBar
+              progress={progress}
+              now={now}
+              total={clock(duration / 60)}
+              max={duration}
+              label="Seek"
+              onSeek={fraction => controls.current?.seek(fraction)}
+            />
+          </div>
+        </div>
       </div>
     </figure>
   );

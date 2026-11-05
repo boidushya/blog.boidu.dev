@@ -2334,10 +2334,138 @@ html:has(.player) {
 }
 
 .sung-quote-player {
+  --pad: 6px;
+  --knob: 36px;
+  --gap: 10px;
+  --label-line: 20px;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin: -4px auto 32px;
+  gap: var(--gap);
+  box-sizing: border-box;
+  width: calc(var(--knob) + var(--gap) + var(--label-w, 88px) + var(--pad) * 2 + (var(--knob) - var(--label-line)) / 2 + 2px);
+  margin: -4px 0 32px 40px;
+  padding: var(--pad);
+  padding-right: calc(var(--pad) + (var(--knob) - var(--label-line)) / 2);
+  border: 1px solid transparent;
+  --round: calc(var(--knob) / 2 + var(--pad) + 1px);
+  border-radius: var(--round);
+  background: color-mix(in oklab, rgb(var(--color-accent-50)) 5%, transparent);
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 0.08),
+    inset 0 1px 0 oklch(1 0 0 / 0.06),
+    0 8px 24px -6px oklch(0 0 0 / 0.6);
+  opacity: 0.6;
+  transition-property: width, margin-left, padding-right, border-radius, opacity, translate, box-shadow;
+  transition-duration: 300ms;
+  transition-timing-function: var(--ease);
+}
+
+.sung-quote-player:is([data-open], :focus-within) {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .sung-quote-player:hover {
+    opacity: 1;
+  }
+}
+
+/* Open, the right side squares off around the seek bar: equal space on every side, corners concentric with the bar's. */
+.sung-quote-player[data-open] {
+  --bar-inset: calc(var(--pad) + (var(--knob) - 24px) / 2);
+  width: 100%;
+  margin-left: 0;
+  padding-right: var(--bar-inset);
+  border-radius: var(--round) calc(6px + var(--bar-inset) + 1px) calc(6px + var(--bar-inset) + 1px) var(--round);
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 0.08),
+    inset 0 1px 0 oklch(1 0 0 / 0),
+    0 0 0 0 oklch(0 0 0 / 0);
+}
+
+.sung-quote-player .play-button {
+  width: var(--knob);
+  height: var(--knob);
+}
+
+.sung-quote-seek {
+  display: grid;
+  flex: 1;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.sung-quote-seek > * {
+  grid-area: 1 / 1;
+}
+
+.sung-quote-label {
+  justify-self: start;
+  color: rgb(var(--color-accent-200));
+  font-size: 14px;
+  line-height: var(--label-line);
+  white-space: nowrap;
+  transition:
+    opacity 300ms var(--ease) 100ms,
+    filter 300ms var(--ease) 100ms;
+}
+
+.sung-quote-label span {
+  opacity: 0.55;
+}
+
+.sung-quote-bar {
+  opacity: 0;
+  transition: opacity 150ms ease-out;
+}
+
+.sung-quote-player[data-open] .sung-quote-label {
+  opacity: 0;
+  transition: opacity 150ms ease-out;
+}
+
+.sung-quote-player[data-open] .sung-quote-bar {
+  opacity: 1;
+  transition: opacity 300ms var(--ease) 100ms;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sung-quote-player {
+    translate: 0 -2px;
+  }
+
+  .sung-quote-player[data-open] {
+    translate: none;
+  }
+
+  .sung-quote-player[data-open] .sung-quote-label {
+    filter: blur(4px);
+    transition:
+      opacity 150ms ease-out,
+      filter 150ms ease-out;
+  }
+
+  .sung-quote-bar {
+    filter: blur(4px);
+    transition:
+      opacity 150ms ease-out,
+      filter 150ms ease-out;
+  }
+
+  .sung-quote-player[data-open] .sung-quote-bar {
+    filter: blur(0);
+    transition:
+      opacity 300ms var(--ease) 100ms,
+      filter 300ms var(--ease) 100ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sung-quote-player {
+    transition-property: opacity;
+  }
 }
 
 /* Foreword */
