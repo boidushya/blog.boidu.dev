@@ -2393,67 +2393,96 @@ html:has(.player) {
   vertical-align: top;
 }
 
-.sung-quote-player {
+.sung-quote-dock {
   --pad: 6px;
   --knob: 24px;
   --gap: 10px;
   --label-line: 1cap;
   --ease: cubic-bezier(0.2, 0, 0, 1);
-  display: flex;
-  position: relative;
-  font-size: 14px;
-  align-items: center;
-  gap: var(--gap);
-  box-sizing: border-box;
-  width: calc(var(--knob) + var(--gap) + var(--label-w, 88px) + var(--pad) * 2 + (var(--knob) - var(--label-line)) / 2 + 2px);
-  margin: -4px 0 32px 40px;
-  padding: var(--pad);
-  padding-right: calc(var(--pad) + (var(--knob) - var(--label-line)) / 2);
-  border: 1px solid transparent;
   --round: calc(var(--knob) / 2 + var(--pad) + 1px);
-  border-radius: var(--round);
-  background: color-mix(in oklab, rgb(var(--color-accent-50)) 5%, transparent);
-  box-shadow:
-    0 0 0 1px oklch(1 0 0 / 0.08),
-    inset 0 1px 0 oklch(1 0 0 / 0.06),
-    0 8px 24px -6px oklch(0 0 0 / 0.6);
+  --rest-w: calc(var(--knob) + var(--gap) + var(--label-w, 88px) + var(--pad) * 2 + (var(--knob) - var(--label-line)) / 2 + 2px);
+  position: relative;
+  margin: -4px 0 32px;
+  font-size: 14px;
   opacity: 0.6;
-  transition-property: width, margin-left, padding-right, border-radius, opacity, translate, box-shadow;
+  transition-property: opacity, translate;
   transition-duration: 300ms;
   transition-timing-function: var(--ease);
 }
 
-.sung-quote-player:is([data-open], :focus-within) {
+.sung-quote-dock[data-open] {
+  --knob: 36px;
+}
+
+.sung-quote-dock:is([data-open], :focus-within) {
   opacity: 1;
 }
 
 @media (hover: hover) {
-  .sung-quote-player:hover {
+  .sung-quote-dock:hover {
     opacity: 1;
   }
 }
 
+/* The pill's surface sits behind its contents as an empty box, so its size, corners and shadow
+   ease with CSS while Motion moves the contents; a scaled box would stretch the ring and shadow. */
+.sung-quote-surface {
+  position: absolute;
+  top: 0;
+  left: 40px;
+  box-sizing: border-box;
+  width: var(--rest-w);
+  height: calc(var(--knob) + var(--pad) * 2 + 2px);
+  border: 1px solid transparent;
+  border-radius: var(--round);
+  background: color-mix(in oklab, rgb(var(--color-accent-50)) 5%, transparent);
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 0.08),
+    0 8px 24px -6px oklch(0 0 0 / 0.6);
+  pointer-events: none;
+  transition-property: left, width, height, border-radius, box-shadow;
+  transition-duration: 300ms;
+  transition-timing-function: var(--ease);
+}
+
+.sung-quote-dock[data-open] .sung-quote-surface {
+  left: 0;
+  width: 100%;
+  border-radius: var(--round) calc(6px + var(--pad) + 1px) calc(6px + var(--pad) + 1px) var(--round);
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 0.08),
+    0 0 0 0 oklch(0 0 0 / 0);
+}
+
+.sung-quote-player {
+  display: flex;
+  position: relative;
+  align-items: center;
+  gap: var(--gap);
+  box-sizing: border-box;
+  width: var(--rest-w);
+  margin-left: 40px;
+  padding: var(--pad);
+  padding-right: calc(var(--pad) + (var(--knob) - var(--label-line)) / 2);
+  border: 1px solid transparent;
+}
+
 /* Open, the right side squares off around the seek bar with equal space on every side. */
 .sung-quote-player[data-open] {
-  --knob: 36px;
   --bar-inset: calc(var(--pad) + (var(--knob) - 24px) / 2);
   width: 100%;
   margin-left: 0;
   padding-right: var(--bar-inset);
-  border-radius: var(--round) calc(6px + var(--pad) + 1px) calc(6px + var(--pad) + 1px) var(--round);
-  box-shadow:
-    0 0 0 1px oklch(1 0 0 / 0.08),
-    inset 0 1px 0 oklch(1 0 0 / 0),
-    0 0 0 0 oklch(0 0 0 / 0);
+}
+
+.sung-quote-knob {
+  display: grid;
+  flex: none;
 }
 
 .sung-quote-player .play-button {
   width: var(--knob);
   height: var(--knob);
-  transition:
-    transform 140ms ease,
-    width 300ms var(--ease),
-    height 300ms var(--ease);
 }
 
 /* Collapsed, the whole pill is the play button's hit area. */
@@ -2466,7 +2495,8 @@ html:has(.player) {
   font-size: 14px;
 }
 
-.sung-quote-player:not([data-open]) .play-button {
+.sung-quote-player:not([data-open]) .sung-quote-knob {
+  position: relative;
   z-index: 1;
 }
 
@@ -2524,11 +2554,11 @@ html:has(.player) {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .sung-quote-player {
+  .sung-quote-dock {
     translate: 0 -2px;
   }
 
-  .sung-quote-player[data-open] {
+  .sung-quote-dock[data-open] {
     translate: none;
   }
 
@@ -2559,8 +2589,8 @@ html:has(.player) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sung-quote-player {
-    transition-property: opacity;
+  .sung-quote-surface {
+    transition-property: none;
   }
 }
 

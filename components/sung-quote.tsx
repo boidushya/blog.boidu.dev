@@ -9,6 +9,7 @@ import { clipLength, clock } from "@/utils/clock";
 import { IS_DEV } from "@/utils/constants";
 import { useResizeObserver } from "@/utils/hooks";
 import type { BraccatoLyricsElement } from "@braccato/core/element";
+import { motion, useReducedMotion } from "motion/react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -22,6 +23,10 @@ declare module "react" {
 
 const THEME = "/* blyrics-letter-wave = false; */";
 const END_SLACK_SECONDS = 0.05;
+
+// The pill resizes through transforms; animating its width re-lays out the whole quote every frame on iOS.
+const RESIZE = { duration: 0.3, ease: [0.2, 0, 0, 1] } as const;
+const INSTANT = { duration: 0 } as const;
 // Chromium crawls the audio clock for a moment after play or seek, so the sweep only runs once the clock keeps pace.
 const PROOF_MS = 150;
 const MIN_PACE = 0.5;
@@ -48,7 +53,7 @@ export function SungQuote({ lyrics, audio, children }: Props) {
   const viewRef = useRef<BraccatoLyricsElement>(null);
   const controls = useRef<Controls>(undefined);
   const labelRef = useResizeObserver<HTMLSpanElement>(label =>
-    label.parentElement?.parentElement?.style.setProperty("--label-w", `${label.offsetWidth}px`)
+    label.closest<HTMLElement>(".sung-quote-dock")?.style.setProperty("--label-w", `${label.offsetWidth}px`)
   );
   const [rendered, setRendered] = useState(false);
   const [closeSlot, setCloseSlot] = useState<HTMLElement | null>(null);
@@ -238,6 +243,7 @@ export function SungQuote({ lyrics, audio, children }: Props) {
   }, [lyrics, audio]);
 
   const open = playing || (progress > 0 && progress * duration < duration - END_SLACK_SECONDS);
+  const resize = useReducedMotion() ? INSTANT : RESIZE;
 
   return (
     <figure ref={figureRef} className="sung-quote">
@@ -251,27 +257,51 @@ export function SungQuote({ lyrics, audio, children }: Props) {
         <braccato-lyrics ref={viewRef} aria-hidden="true" inert />
         {closeSlot && createPortal(<Handwriting text="”" shown={sung} />, closeSlot)}
       </div>
-      <div className="sung-quote-player" data-open={open || undefined}>
-        <PlayButton
-          playing={playing}
-          onToggle={() => controls.current?.toggle()}
-          label={playing ? "Pause the quote" : "Play the quote"}
-        />
-        <div className="sung-quote-seek">
-          <span ref={labelRef} className="sung-quote-label" aria-hidden="true">
-            Hear it <span>· {clipLength(duration / 60)}</span>
-          </span>
-          <div className="sung-quote-bar" inert={!open}>
-            <ProgressBar
-              progress={progress}
-              now={now}
-              total={clock(duration / 60)}
-              max={duration}
-              label="Seek"
-              onSeek={fraction => controls.current?.seek(fraction)}
+      <div className="sung-quote-dock" data-open={open || undefined}>
+        <span className="sung-quote-surface" aria-hidden="true" />
+        <motion.div
+          layout
+          layoutDependency={open}
+          transition={resize}
+          className="sung-quote-player"
+          data-open={open || undefined}
+        >
+          <motion.div layout layoutDependency={open} transition={resize} className="sung-quote-knob">
+            <PlayButton
+              playing={playing}
+              onToggle={() => controls.current?.toggle()}
+              label={playing ? "Pause the quote" : "Play the quote"}
             />
-          </div>
-        </div>
+          </motion.div>
+          <motion.div layout layoutDependency={open} transition={resize} className="sung-quote-seek">
+            <motion.span
+              layout="position"
+              layoutDependency={open}
+              transition={resize}
+              ref={labelRef}
+              className="sung-quote-label"
+              aria-hidden="true"
+            >
+              Hear it <span>· {clipLength(duration / 60)}</span>
+            </motion.span>
+            <motion.div
+              layout="position"
+              layoutDependency={open}
+              transition={resize}
+              className="sung-quote-bar"
+              inert={!open}
+            >
+              <ProgressBar
+                progress={progress}
+                now={now}
+                total={clock(duration / 60)}
+                max={duration}
+                label="Seek"
+                onSeek={fraction => controls.current?.seek(fraction)}
+              />
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </div>
     </figure>
   );
