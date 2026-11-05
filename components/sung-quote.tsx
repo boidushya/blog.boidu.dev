@@ -251,7 +251,7 @@ export function SungQuote({ lyrics, audio, children }: Props) {
         <span className="sung-quote-open" aria-hidden="true">
           <Handwriting text="“" shown={rendered} />
         </span>
-        <blockquote ref={quoteRef} className={rendered ? "sr-only" : undefined}>
+        <blockquote ref={quoteRef} className={rendered ? "reader-text" : undefined}>
           {children}
         </blockquote>
         <braccato-lyrics ref={viewRef} aria-hidden="true" inert />

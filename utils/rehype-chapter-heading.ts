@@ -35,14 +35,15 @@ const rehypeChapterHeading: Plugin<[], Root> = () => tree => {
         const sung = span("sung-word", [letters(word), letters(word, true)]);
         return i === 0 ? [sung] : [{ type: "text", value: " " }, sung];
       });
+      const spoken = typeof n === "string" ? `Chapter ${n}: ${title}` : title;
       heading.properties = {
         ...heading.properties,
         dataTitle: title,
-        ariaLabel: typeof n === "string" ? `Chapter ${n}: ${title}` : title,
+        ariaLabel: spoken,
       };
       heading.children = [
         span("sung", [
-          span("sung-spoken", [{ type: "text", value: title }]),
+          span("sung-spoken", [{ type: "text", value: spoken }]),
           { ...span("", words), properties: { ariaHidden: "true", inert: true } },
         ]),
         ...anchors,

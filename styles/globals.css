@@ -53,6 +53,27 @@ button,
   @apply select-none;
 }
 
+/* Hidden on screen, read by screen readers and kept by Safari Reader, which drops text hidden with `clip`. */
+.reader-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Drawn as usual but left out of Safari Reader, which drops an element whose own visibility is hidden
+   (it keeps aria-hidden text, so layered visuals such as karaoke runs would otherwise read twice). */
+.reader-skip {
+  visibility: hidden;
+}
+
+.reader-skip > * {
+  visibility: visible;
+}
+
 @layer base {
   :focus-visible {
     outline: 2px solid rgb(var(--color-accent-200) / 0.7);
@@ -685,9 +706,14 @@ circle[id^="react-sketch-canvas__"]{
   @apply inline-block;
 }
 
-/* Screen readers get the plain title; the split letters are hidden from them. */
+/* Screen readers and Safari Reader get the plain title; the split letters are hidden from both. */
 .sung-spoken {
-  @apply sr-only select-none;
+  @apply reader-text select-none;
+}
+
+.sung > [aria-hidden="true"],
+.chapter-hand {
+  @apply reader-skip;
 }
 
 .sung-lit {
@@ -2336,6 +2362,10 @@ html:has(.player) {
 .blog .sung-quote-text blockquote p {
   margin: 0;
   color: inherit;
+}
+
+.sung-quote :is(braccato-lyrics, .sung-quote-open) {
+  @apply reader-skip;
 }
 
 .sung-quote braccato-lyrics {
