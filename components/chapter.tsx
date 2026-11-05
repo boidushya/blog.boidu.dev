@@ -55,7 +55,6 @@ export function Chapter({ n, label, children }: ChapterProps) {
       className="chapter"
     >
       <div className="chapter-rule">
-        <span className="sr-only">{label ?? `Chapter ${n}`}</span>
         <span aria-hidden="true" className="chapter-hand">
           <Handwriting text={label ?? `ch. ${n}`} delay={0.1} shown={shown} inkEndOn={ref} />
           <svg viewBox="0 0 34 26">

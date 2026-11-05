@@ -17,7 +17,7 @@ export const SungTitle = memo(function SungTitle({ title }: { title: string }) {
   return (
     <span className="sung">
       <span className="sung-spoken">{title}</span>
-      <span aria-hidden="true">
+      <span aria-hidden="true" inert>
         {sungWords(title).map(({ word, long }, i) => (
           <span key={i}>
             {i > 0 && " "}

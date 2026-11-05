@@ -34,7 +34,6 @@ export function Foreword({
   const ref = useRef<HTMLElement>(null);
   const outroRef = useRef<HTMLParagraphElement>(null);
   const outroShown = useReveal(outroRef, 0.6);
-  const [labelledBy, setLabelledBy] = useState<string>();
   const [taped, setTaped] = useState(false);
   const { style, crease } = layTapes(seed);
   const creaseStyle: CSSVars | undefined = crease && { "--d": `${crease.at}ms` };
@@ -42,7 +41,6 @@ export function Foreword({
   useEffect(() => {
     const sheet = ref.current;
     if (!sheet) return;
-    setLabelledBy(sheet.querySelector("h2")?.id || undefined);
     let cancelled = false;
     const entrance = sheet
       .getAnimations({ subtree: true })
@@ -61,7 +59,7 @@ export function Foreword({
       className="foreword enter"
       data-wide
       data-taped={taped || undefined}
-      aria-labelledby={labelledBy}
+      aria-label={`Foreword by ${signer}`}
       style={style}
     >
       {([0, 1] as const).map(tape => (

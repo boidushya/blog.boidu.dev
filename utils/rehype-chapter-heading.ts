@@ -22,13 +22,12 @@ function letters({ word, long }: { word: string; long: boolean }): Element {
 
 const rehypeChapterHeading: Plugin<[], Root> = () => tree => {
   visit(tree, node => {
-    if (node.type !== "mdxJsxFlowElement" || (node as { name?: string }).name !== "Chapter") return;
+    if (node.type !== "mdxJsxFlowElement" || node.name !== "Chapter") return;
+    const n = node.attributes.find(attribute => attribute.type === "mdxJsxAttribute" && attribute.name === "n")?.value;
     visit(node, "element", (heading: Element) => {
       if (heading.tagName !== "h2") return;
       const title = toText(heading).trim();
-      const target =
-        heading.children.find((child): child is Element => child.type === "element" && child.tagName === "a") ??
-        heading;
+      const anchors = heading.children.filter(child => child.type === "element" && child.tagName === "a");
       const words = sungWords(title).flatMap((word, i): ElementContent[] => {
         const sung = span("sung-word", [
           letters(word),
@@ -36,12 +35,17 @@ const rehypeChapterHeading: Plugin<[], Root> = () => tree => {
         ]);
         return i === 0 ? [sung] : [{ type: "text", value: " " }, sung];
       });
-      heading.properties = { ...heading.properties, dataTitle: title };
-      target.children = [
+      heading.properties = {
+        ...heading.properties,
+        dataTitle: title,
+        ariaLabel: typeof n === "string" ? `Chapter ${n}: ${title}` : title,
+      };
+      heading.children = [
         span("sung", [
           span("sung-spoken", [{ type: "text", value: title }]),
-          { ...span("", words), properties: { ariaHidden: "true" } },
+          { ...span("", words), properties: { ariaHidden: "true", inert: true } },
         ]),
+        ...anchors,
       ];
     });
   });

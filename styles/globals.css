@@ -315,7 +315,7 @@ circle[id^="react-sketch-canvas__"]{
 .blog h4,
 .blog h5,
 .blog h6 {
-  @apply mt-10 mb-3 sm:mt-12 sm:mb-4 !text-accent-50;
+  @apply relative mt-10 mb-3 sm:mt-12 sm:mb-4 !text-accent-50;
   text-wrap: balance;
 }
 
@@ -379,16 +379,12 @@ circle[id^="react-sketch-canvas__"]{
 }
 
 .blog a.heading-anchor {
-  @apply relative text-inherit no-underline;
+  @apply absolute inset-0 no-underline;
 }
 
 .blog a.heading-anchor::before {
   content: "#";
   @apply max-md:hidden absolute right-full pr-3 font-normal text-fg-faint opacity-0 transition-[opacity,color];
-}
-
-.blog a.heading-anchor:focus-visible::before {
-  @apply opacity-100;
 }
 
 @media (hover: hover) {
