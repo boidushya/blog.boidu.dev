@@ -2489,6 +2489,64 @@ html:has(.player) {
   }
 }
 
+/* Chapter rail */
+.chapter-rail {
+  --track: 22px;
+  position: relative;
+  opacity: 0.6;
+  transition: opacity 300ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.chapter-rail:focus-within {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .chapter-rail:hover {
+    opacity: 1;
+  }
+}
+
+.chapter-track {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--track);
+  border-radius: 6px;
+  background: color-mix(in oklab, rgb(var(--color-accent-50)) 5%, transparent);
+}
+
+.chapter-fill {
+  background: color-mix(in oklab, rgb(var(--color-accent-50)) 12%, transparent);
+}
+
+.chapter-marker {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  width: var(--track);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-fg-faint);
+}
+
+.chapter-digit {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.chapter-lit {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.chapter-lit a {
+  color: transparent;
+}
+
+.chapter-lit .chapter-marker {
+  color: rgb(var(--color-accent-50));
+}
+
 /* Foreword */
 @property --glint {
   syntax: "<percentage>";
