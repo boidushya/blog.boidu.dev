@@ -1,5 +1,8 @@
+diff --git a/node_modules/cuelume/.bun-tag-9db689e0b1551dd3 b/.bun-tag-9db689e0b1551dd3
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
 diff --git a/dist/audio/engine.js b/dist/audio/engine.js
-index c1efb7d917aa0e4b42298a7fc22ea4ef5186405e..e6f9460fe86cb688f28965dc5e5d0d0d7ff44133 100644
+index c1efb7d917aa0e4b42298a7fc22ea4ef5186405e..0656ac3981e6526267f980626bc6194aa0c68836 100644
 --- a/dist/audio/engine.js
 +++ b/dist/audio/engine.js
 @@ -14,6 +14,8 @@ const WALK_GAP_MS = 1000;
@@ -19,7 +22,22 @@ index c1efb7d917aa0e4b42298a7fc22ea4ef5186405e..e6f9460fe86cb688f28965dc5e5d0d0d
      if (sharedContext && sharedBus)
          silence(sharedContext, sharedBus);
  }
-@@ -172,10 +175,19 @@ export function playInContext(sound, options, interaction, part = "both", gestur
+@@ -76,6 +79,14 @@ export function unlock() {
+     }
+ }
+ function getAudioContext() {
++    // A closed context never plays again; Safari can leave one behind after the screen locks,
++    // and only a fresh one brings sound back without a reload.
++    if (sharedContext?.state === "closed") {
++        sharedContext = null;
++        sharedBus = null;
++        voices.clear();
++        waiting = null;
++    }
+     if (sharedContext)
+         return sharedContext;
+     if (typeof window === "undefined")
+@@ -172,10 +183,19 @@ export function playInContext(sound, options, interaction, part = "both", gestur
          renderRecipe(context, getBus, voices, name, played, part);
      }
      else {
@@ -41,3 +59,24 @@ index c1efb7d917aa0e4b42298a7fc22ea4ef5186405e..e6f9460fe86cb688f28965dc5e5d0d0d
              }, () => { });
          }
          catch {
+diff --git a/dist/audio/render.js b/dist/audio/render.js
+index 7b82d07e841ad7944a799caac2cdcf306f501626..01c569e6c9719120bd4d6943617c84301c946122 100644
+--- a/dist/audio/render.js
++++ b/dist/audio/render.js
+@@ -119,12 +119,15 @@ export function layersFor({ recipe, emphasis, shape, step }, part) {
+         return { ...bent, offset: (bent.offset ?? 0) + delay };
+     }));
+ }
++const PLAYBACK_LEAD = 0.01;
+ export function renderRecipe(context, getBus, voices, sound, played, part) {
+     const { recipe, volume } = played;
+     const layers = layersFor(played, part);
+     if (layers.length === 0)
+         return;
+-    const now = context.currentTime;
++    // Every play starts a little ahead of the clock: a cold renderer can let a source scheduled
++    // for "now" slip past, and a short cue then plays nothing at all.
++    const now = context.currentTime + PLAYBACK_LEAD;
+     const bus = getBus();
+     const { output, room } = bus;
+     const master = context.createGain();

@@ -29,24 +29,23 @@ export function setSoundsEnabled(on: boolean) {
 }
 
 /**
- * Applies the stored preference and unlocks audio on the reader's first click or key press
- * anywhere. Browsers allow sound only after a gesture, and scrolling never counts.
+ * Applies the stored preference and wakes audio on every click or key press anywhere. Browsers
+ * allow sound only after a gesture, and scrolling never counts; Safari also suspends or closes
+ * audio when the screen locks, so a later gesture has to wake it again, not just the first.
  */
 export function startSounds() {
   enabled = getSoundsEnabled();
   setEnabled(enabled);
-  const unlockOnce = () => {
-    stop();
+  const wake = () => {
     unlock();
     wakeWalk();
   };
-  const stop = () => {
-    window.removeEventListener("pointerdown", unlockOnce, true);
-    window.removeEventListener("keydown", unlockOnce, true);
+  window.addEventListener("pointerdown", wake, true);
+  window.addEventListener("keydown", wake, true);
+  return () => {
+    window.removeEventListener("pointerdown", wake, true);
+    window.removeEventListener("keydown", wake, true);
   };
-  window.addEventListener("pointerdown", unlockOnce, true);
-  window.addEventListener("keydown", unlockOnce, true);
-  return stop;
 }
 
 // Pentatonic steps above C3, so any run of notes stays consonant.
@@ -61,8 +60,9 @@ const WALK_HARMONICS = [
 // Safari only starts an AudioContext inside a gesture, so the walk context is made and resumed there.
 function wakeWalk() {
   if (typeof AudioContext === "undefined") return;
+  if (walkContext?.state === "closed") walkContext = undefined;
   walkContext ??= new AudioContext();
-  walkContext.resume();
+  if (walkContext.state !== "running") walkContext.resume();
 }
 
 /**
