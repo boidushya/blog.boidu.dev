@@ -157,7 +157,12 @@ export function SungQuote({ lyrics, audio, children }: Props) {
       toggle: () => {
         if (!sound.paused) return sound.pause();
         if (sound.ended || sound.currentTime >= sound.duration - END_SLACK_SECONDS) sound.currentTime = 0;
-        sound.play().catch((error: unknown) => console.error("SungQuote: playback failed", error));
+        // Opens on the tap; iOS only fetches the clip now, and waiting for "play" stalls the pill.
+        setPlaying(true);
+        sound.play().catch((error: unknown) => {
+          setPlaying(false);
+          console.error("SungQuote: playback failed", error);
+        });
       },
       seek: fraction => {
         if (!sound.duration) return;
