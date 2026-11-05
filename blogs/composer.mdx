@@ -113,11 +113,9 @@ I've been a Premiere Pro guy all my life. The first time I opened DaVinci Resolv
 
 I wanted lyrics to feel like that: a linear workflow that matches what you'd do in your head anyway, with the heavy tools waiting around for when a song actually needs them.
 
-From day one the goal was that a kid should be able to use it. If a complete beginner can't get from "I have a song" to "I have synced lyrics" without asking for help, something's broken. You shouldn't even need to know what TTML is, since it's just the file you get at the end.
+From day one the goal was that a kid should be able to use it. If a complete beginner can't get from "I have a song" to "I have synced lyrics" without asking for help, something's broken. You shouldn't even need to know what TTML is, since it's just the file you get at the end. No account, nothing to install.
 
-Composer runs entirely in your browser, your audio never leaves your machine, and there's no account to make.
-
-The tabs go in the order you'd actually do things:
+The tabs go in the order you'd do things:
 
 1. **Import** an audio file or paste a YouTube link
 2. **Edit** to import or write lyrics, assign singers, add background vocals
@@ -219,7 +217,7 @@ I always wanted a kid to be able to use Composer, but I didn't want it to be a t
 
 ### Vocal separation, and the person behind it
 
-Composer can pull the vocals out of a song right in your browser. Click a button, give it about a minute and voila! Just the vocals to sync against, with the instrumentals out of the way. Not long ago you'd have needed a desktop app for that. (If you already have the stems, you can import those instead.)
+Composer can pull the vocals out of a song right in your browser. Click a button, give it about a minute and voila! Just the vocals to sync against, with the instrumentals out of the way. Not long ago you'd have needed a desktop app for that.
 
 This one is almost entirely [Adalie's](https://github.com/adaliea) work. She got the model running in the browser, figured out how to cut the audio into chunks and stitch them back together without the seams popping, set it up to use WebGPU with a WASM fallback, and shipped the whole thing while I was busy <Peek src="/composer/old-man-yells.mp4" alt="Newspaper headline from The Simpsons: Old man yells at cloud, with Grandpa Simpson shaking his fist at the sky">yelling at the Timeline</Peek>. The model itself is [HTDemucs](https://github.com/facebookresearch/demucs) from Facebook AI Research, but everything between "model file on a server" and "vocals playing in your browser tab" is hers.
 
@@ -233,7 +231,7 @@ Then there's the beat grid. Composer detects the song's tempo on your device and
 
 These two are the part of Composer I'm proudest of, so bear with me.
 
-They exist because of runner.66 from our Discord. Before Composer, they synced lyrics with a custom Audacity plugin, because they were OBSESSED with getting the timing exactly right. AMLL Tool was, and I know this will come as a HUGE shock to everyone, _not_ it. And back then Composer leaned way more towards beginners, so neither one cut it.
+They exist because of runner.66 from our Discord. Before Composer, they synced lyrics with a custom Audacity plugin, because they were OBSESSED with getting the timing exactly right. AMLL Tool was, and I know this will come as a HUGE shock to everyone, not it. And back then Composer leaned way more towards beginners, so neither one cut it.
 
 They also know a ridiculous amount about a ridiculous number of things, from how spectrograms work to vocal separation to the politics among the top dogs of the osu! community. We disagree on plenty, but when it comes to syncing lyrics, they're as pro as it gets (they'd say neurotic). This is someone who used to time variable BPM osu! maps, which almost nobody wanted to do.
 
@@ -276,15 +274,15 @@ Everything above is Composer as it is today. It took a while to get there, so he
 
 Composer's first commit went in late one night in January. All the tabs were there from that first night, and the Timeline was always the big one.
 
+![Composer's Timeline in January](/composer/composer-january.png)
+_Composer back in Jan_
+
 My first go at it was a single waveform with the words sitting on top as regions. It lasted a day. Just after midnight I scrapped the whole thing and started over with the layout it still has today, every line stacked under the waveform as its own track.
 
 That evening I told contributors in our Discord I was almost done, and asked if they'd take it for a spin and tell me everything that annoyed them. Two and a half hours later I told them to ignore that, because "Composer was kil". The commit that got it working again is literally called "fix: FINALLY", and the link was in Discord a minute after the Timeline got merged.
 
 ![Discord reply: "its not kil" with the link to Composer](/composer/not-kil.png)
 _Went from kil to back from kil in six hrs_
-
-![Composer's Timeline in January](/composer/composer-january.png)
-_Composer back in Jan_
 
 And then I didn't touch it for two months.
 
@@ -322,7 +320,7 @@ I'd been so locked in on the redesign that I didn't notice a bunch of older deci
 
 So that's the history. The rest is about how I build Composer these days, including the time I walked straight back into a trap I'd already written a whole post about.
 
-Unlike Better Lyrics, Composer has been heavily AI assisted from the start. That made shipping a whole lot faster, but writing the code stopped being the slow part, so now the slow part is deciding how every small thing should look and feel. The big features get specs and mockups. The small stuff I fix the moment it feels off, because I use Composer a lot, and using it as much as I do is the best protection I've found against it slowly turning into the tool I built it to replace. Owning the design from the ground up is what keeps that kind of problem from getting baked in to begin with.
+Unlike Better Lyrics, Composer has been heavily AI assisted from the start. That made shipping a whole lot faster, but writing the code stopped being the slow part. Now it's deciding how every small thing should look and feel. The big features get specs and mockups. The small stuff I fix the moment it feels off, because I use Composer a lot, and using it as much as I do is the best protection I've found against it slowly turning into the tool I built it to replace. Owning the design from the ground up is what keeps that kind of problem from getting baked in to begin with.
 
 ### Walking into my own trap
 
