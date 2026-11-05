@@ -1978,6 +1978,17 @@ html:has(.player) {
   transition-duration: 200ms;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .pip-label {
+    filter: drop-shadow(0 1px 12px oklch(0.08 0.03 20 / 0.6)) blur(2px);
+    transition-property: opacity, filter;
+  }
+
+  .pip-frame[data-shown] .pip-label {
+    filter: drop-shadow(0 1px 12px oklch(0.08 0.03 20 / 0.6)) blur(0);
+  }
+}
+
 .pip-name {
   font-size: 28px;
   font-weight: 700;
