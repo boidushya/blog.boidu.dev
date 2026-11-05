@@ -1590,7 +1590,10 @@ html:has(.player) {
   opacity: 1;
 }
 
+/* Opaque strokes faded as one layer, so the overlap where the head meets the stem is not brighter. */
 .player-note svg {
+  color: #fff;
+  opacity: 0.75;
   flex: none;
   width: 34px;
   height: 26px;
@@ -1602,13 +1605,19 @@ html:has(.player) {
   rotate: -35deg;
 }
 
-.player-note[data-side="below-left"] {
-  flex-direction: row-reverse;
+.player-note .player-hook,
+.player-note[data-side="below-left"] .player-arrow {
+  display: none;
 }
 
-.player-note[data-side="below-left"] svg {
-  scale: -1 1;
-  margin-left: -26px;
+/* The hook leaves the end of the date and curls back to point at the title's last word. */
+.player-note[data-side="below-left"] {
+  flex-direction: row-reverse;
+  transform-origin: calc(100% - 25.5px) 4px;
+}
+
+.player-note[data-side="below-left"] .player-hook {
+  display: block;
 }
 
 .player-note[data-side="above"] svg {

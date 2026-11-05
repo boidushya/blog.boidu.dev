@@ -92,7 +92,7 @@ function tipIn(side: NoteSide, inkWidth: number): [number, number] {
     const dy = -17;
     return [30 + dx * Math.cos(r) - dy * Math.sin(r), 22 + dx * Math.sin(r) + dy * Math.cos(r)];
   }
-  if (side === "below-left") return [inkWidth + 28, 5];
+  if (side === "below-left") return [inkWidth + 8.5, 4];
   if (side === "above") return [6, 39];
   return [6, 5];
 }
@@ -112,7 +112,6 @@ function placeNote(
   const last = words[words.length - 1];
   const inkWidth = ink.offsetWidth;
   const wide = inkWidth + 34;
-  const narrow = inkWidth + 8;
   const wordRight = last.offsetLeft + last.offsetWidth;
   const wordTop = lineTop + last.offsetTop;
   const wordBottom = wordTop + last.offsetHeight;
@@ -123,7 +122,7 @@ function placeNote(
 
   const fits = (side: NoteSide, x: number) => {
     const left = x - tipIn(side, inkWidth)[0];
-    return left >= 0 && left + (side === "below-left" ? narrow : wide) <= width;
+    return left >= 0 && left + wide <= width;
   };
   const anchorIn = (row: HTMLElement[], side: NoteSide) =>
     row
@@ -141,7 +140,7 @@ function placeNote(
       return ["above", anchor.offsetLeft + anchor.offsetWidth + 6, lineTop + anchor.offsetTop + 2];
     }
     if (fits("below", wordRight + 6)) return ["below", wordRight + 6, wordBottom - 2];
-    if (fits("below-left", wordRight + 6)) return ["below-left", wordRight + 6, wordBottom - 2];
+    if (fits("below-left", wordRight + 6)) return ["below-left", wordRight + 6, wordBottom - 8];
     const anchor = anchorIn(
       words.filter(w => Math.abs(w.offsetTop - last.offsetTop) < 4),
       "below"
@@ -694,9 +693,13 @@ export function Player({ posts }: { posts: BlogCard[] }) {
               {lines}
             </ol>
             <div ref={noteRef} className={`player-note ${boidoodleNova.className}`} aria-hidden="true">
-              <svg viewBox="0 0 34 26">
+              <svg viewBox="0 0 34 26" className="player-arrow">
                 <path pathLength={1} d="M30 22 C22 22 10 18 6 5" />
                 <path pathLength={1} d="M2.5 10 L6 4.5 L11 8.5" />
+              </svg>
+              <svg viewBox="0 0 34 26" className="player-hook">
+                <path pathLength={1} d="M1 20 C24 22 32 5 9 4" />
+                <path pathLength={1} d="M13 0.5 L8.5 4 L13 7.5" />
               </svg>
               <span ref={inkRef} className="player-ink" />
             </div>
