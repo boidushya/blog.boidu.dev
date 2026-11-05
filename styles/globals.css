@@ -2335,11 +2335,13 @@ html:has(.player) {
 
 .sung-quote-player {
   --pad: 6px;
-  --knob: 36px;
+  --knob: 24px;
   --gap: 10px;
-  --label-line: 20px;
+  --label-line: 1cap;
   --ease: cubic-bezier(0.2, 0, 0, 1);
   display: flex;
+  position: relative;
+  font-size: 14px;
   align-items: center;
   gap: var(--gap);
   box-sizing: border-box;
@@ -2371,13 +2373,14 @@ html:has(.player) {
   }
 }
 
-/* Open, the right side squares off around the seek bar: equal space on every side, corners concentric with the bar's. */
+/* Open, the right side squares off around the seek bar with equal space on every side. */
 .sung-quote-player[data-open] {
+  --knob: 36px;
   --bar-inset: calc(var(--pad) + (var(--knob) - 24px) / 2);
   width: 100%;
   margin-left: 0;
   padding-right: var(--bar-inset);
-  border-radius: var(--round) calc(6px + var(--bar-inset) + 1px) calc(6px + var(--bar-inset) + 1px) var(--round);
+  border-radius: var(--round) calc(6px + var(--pad) + 1px) calc(6px + var(--pad) + 1px) var(--round);
   box-shadow:
     0 0 0 1px oklch(1 0 0 / 0.08),
     inset 0 1px 0 oklch(1 0 0 / 0),
@@ -2387,6 +2390,24 @@ html:has(.player) {
 .sung-quote-player .play-button {
   width: var(--knob);
   height: var(--knob);
+  transition:
+    transform 140ms ease,
+    width 300ms var(--ease),
+    height 300ms var(--ease);
+}
+
+/* Collapsed, the whole pill is the play button's hit area. */
+.sung-quote-player:not([data-open]) .play-button::after {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--pad) - 1px);
+  right: calc(-1 * (var(--gap) + var(--label-w, 88px) + var(--pad) + (var(--knob) - var(--label-line)) / 2 + 1px));
+  border-radius: var(--round);
+  font-size: 14px;
+}
+
+.sung-quote-player:not([data-open]) .play-button {
+  z-index: 1;
 }
 
 .sung-quote-seek {
@@ -2404,8 +2425,8 @@ html:has(.player) {
 .sung-quote-label {
   justify-self: start;
   color: rgb(var(--color-accent-200));
-  font-size: 14px;
-  line-height: var(--label-line);
+  line-height: 1;
+  text-box: trim-both cap alphabetic;
   white-space: nowrap;
   transition:
     opacity 300ms var(--ease) 100ms,
