@@ -69,5 +69,8 @@
     "supports-color": "8.1.1",
     "utf-8-validate": "5.0.10",
     "@biomejs/biome": "1.8.3"
+  },
+  "patchedDependencies": {
+    "cuelume@0.2.8": "patches/cuelume@0.2.8.patch"
   }
 }

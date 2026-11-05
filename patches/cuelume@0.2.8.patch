@@ -1,0 +1,43 @@
+diff --git a/dist/audio/engine.js b/dist/audio/engine.js
+index c1efb7d917aa0e4b42298a7fc22ea4ef5186405e..e6f9460fe86cb688f28965dc5e5d0d0d7ff44133 100644
+--- a/dist/audio/engine.js
++++ b/dist/audio/engine.js
+@@ -14,6 +14,8 @@ const WALK_GAP_MS = 1000;
+ let sharedContext = null;
+ let sharedBus = null;
+ const voices = new Map();
++/** The latest play waiting for the context to start; earlier ones would all start at once and add up. */
++let waiting = null;
+ let enabled = true;
+ let globalVolume = 1;
+ let activeTheme = "default";
+@@ -35,6 +37,7 @@ export function setEnabled(value) {
+         return;
+     held.clear();
+     voices.clear();
++    waiting = null;
+     if (sharedContext && sharedBus)
+         silence(sharedContext, sharedBus);
+ }
+@@ -172,10 +175,19 @@ export function playInContext(sound, options, interaction, part = "both", gestur
+         renderRecipe(context, getBus, voices, name, played, part);
+     }
+     else {
++        // Every play still asks to resume (inside its own gesture), but only the latest one sounds when
++        // the context starts: each waiting play would otherwise start at the same instant and add up.
++        // A release joins its own waiting press into the whole cue; it never replaces another cue.
++        if (part !== "release" || !waiting)
++            waiting = { played, part, render: (as) => renderRecipe(context, getBus, voices, name, played, as) };
++        else if (waiting.played === played && waiting.part === "press")
++            waiting.part = "both";
+         try {
+             void context.resume().then(() => {
+-                if (enabled && context.state === "running")
+-                    renderRecipe(context, getBus, voices, name, played, part);
++                const next = waiting;
++                waiting = null;
++                if (next && enabled && context.state === "running")
++                    next.render(next.part);
+             }, () => { });
+         }
+         catch {

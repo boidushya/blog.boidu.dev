@@ -66,6 +66,9 @@
       },
     },
   },
+  "patchedDependencies": {
+    "cuelume@0.2.8": "patches/cuelume@0.2.8.patch",
+  },
   "packages": {
     "@alloc/quick-lru": ["@alloc/quick-lru@5.2.0", "", {}, "sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw=="],
 
