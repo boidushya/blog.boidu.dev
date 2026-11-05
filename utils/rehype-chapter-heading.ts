@@ -11,11 +11,14 @@ const span = (className: string, children: ElementContent[]): Element => ({
   children,
 });
 
-function letters({ word, long }: { word: string; long: boolean }): Element {
+function letters({ word, long }: { word: string; long: boolean }, lit = false): Element {
+  const className = long ? "sung-letter sung-letter--long" : "sung-letter";
   return span(
-    "sung-letters",
+    lit ? "sung-letters sung-lit" : "sung-letters",
     Array.from(word, char =>
-      span(long ? "sung-letter sung-letter--long" : "sung-letter", [{ type: "text", value: char }])
+      lit
+        ? { ...span(className, []), properties: { className: className.split(" "), dataChar: char } }
+        : span(className, [{ type: "text", value: char }])
     )
   );
 }
@@ -29,10 +32,7 @@ const rehypeChapterHeading: Plugin<[], Root> = () => tree => {
       const title = toText(heading).trim();
       const anchors = heading.children.filter(child => child.type === "element" && child.tagName === "a");
       const words = sungWords(title).flatMap((word, i): ElementContent[] => {
-        const sung = span("sung-word", [
-          letters(word),
-          { ...letters(word), properties: { className: ["sung-letters", "sung-lit"] } },
-        ]);
+        const sung = span("sung-word", [letters(word), letters(word, true)]);
         return i === 0 ? [sung] : [{ type: "text", value: " " }, sung];
       });
       heading.properties = {

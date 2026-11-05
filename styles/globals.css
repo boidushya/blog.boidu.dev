@@ -666,6 +666,11 @@ circle[id^="react-sketch-canvas__"]{
   @apply hidden;
 }
 
+/* The lit copy is drawn from data-char so Safari Reader, which keeps aria-hidden text, sees each title once. */
+.sung-lit .sung-letter::before {
+  content: attr(data-char);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .chapter[data-armed] .chapter-rule::after {
     scale: 0 1;

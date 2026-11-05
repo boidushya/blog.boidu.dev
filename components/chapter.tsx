@@ -17,7 +17,7 @@ type ChapterProps = { children: React.ReactNode } & (
 );
 
 export function Chapter({ n, label, children }: ChapterProps) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLElement>(null);
   const [armed, setArmed] = useState(false);
   const [shown, setShown] = useState(false);
 
@@ -47,7 +47,7 @@ export function Chapter({ n, label, children }: ChapterProps) {
   }, []);
 
   return (
-    <div
+    <hgroup
       ref={ref}
       data-chapter={n ?? ""}
       data-armed={armed || undefined}
@@ -64,6 +64,6 @@ export function Chapter({ n, label, children }: ChapterProps) {
         </span>
       </div>
       {children}
-    </div>
+    </hgroup>
   );
 }
