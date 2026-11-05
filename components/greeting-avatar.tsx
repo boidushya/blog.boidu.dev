@@ -96,7 +96,7 @@ const draw = (points: Point[], at: (x: number, y: number) => [number, number]) =
 // coordinates are relative to the tail tip, so a change of size grows the bubble away from the avatar.
 // The stroke closes a little past where it began, the way a pen loop does.
 function bubblePath(w: number, h: number, tail: Tail) {
-  const r = h * 0.45;
+  const r = h * 0.36;
   const mid = h / 2;
   if (tail.side === "below") {
     const t = tail.x;
@@ -279,7 +279,7 @@ export function GreetingAvatar({ home = false }: { home?: boolean }) {
       type="button"
       aria-label="Say hi to Boidushya"
       onClick={onClick}
-      className="greeting-avatar relative z-10 rounded-full pressable focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-400"
+      className="greeting-avatar relative z-10 rounded-full pressable"
     >
       <Image src={logo} placeholder="blur" alt="" className="w-8 h-8 border rounded-full border-accent-600" />
       <span ref={noteRef} aria-live="polite" className="greeting-avatar__note">

@@ -13,7 +13,9 @@
 }
 
 
-:root {
+/* Declared on body too, so the homepage's neutral palette on body re-resolves them. */
+:root,
+body {
   --color-fg-body: color-mix(in oklab, rgb(var(--color-accent-200)) 85%, rgb(var(--color-accent-400)));
   --color-fg-muted: color-mix(in oklab, rgb(var(--color-accent-50)) 55%, rgb(var(--color-accent-400)));
   --color-fg-subtle: color-mix(in oklab, rgb(var(--color-accent-300)), rgb(var(--color-accent-400)));
@@ -24,7 +26,9 @@
   --alert-important-color-stops: 270, 50%;
   --alert-warning-color-stops: 43, 50%;
   --alert-caution-color-stops: 355, 50%;
+}
 
+:root {
   color-scheme: dark;
 }
 
@@ -47,6 +51,31 @@ html {
 button,
 [role^="menuitem"] {
   @apply select-none;
+}
+
+@layer base {
+  :focus-visible {
+    outline: 2px solid rgb(var(--color-accent-400) / 0.55);
+    outline-offset: 2px;
+  }
+
+  :where(a:focus-visible) {
+    border-radius: 4px;
+  }
+}
+
+::selection {
+  background: rgb(var(--color-accent-400) / 0.35);
+  color: rgb(var(--color-accent-50));
+}
+
+html:has(.player) :focus-visible {
+  outline-color: rgb(255 255 255 / 0.4);
+}
+
+html:has(.player) ::selection {
+  background: rgb(255 255 255 / 0.25);
+  color: #fff;
 }
 
 .pressable {
@@ -1148,6 +1177,7 @@ html:has(.player) .radix-tooltip__content {
 
 .site:has(.player) .greeting-avatar__note[data-side="below"] {
   left: 0;
+  padding: 4px 15px 7px;
 }
 
 /* The intro is long, so the homepage bubble always wraps at a reading width. */
@@ -1166,6 +1196,16 @@ html:has(.player) .radix-tooltip__content {
 
 .site:has(.player) footer a:hover {
   color: rgb(255 255 255 / 0.85);
+}
+
+.site:has(.player) .social-container svg {
+  color: rgb(255 255 255 / 0.45);
+}
+
+@media (hover: hover) {
+  .site:has(.player) .social-container a:hover svg {
+    color: rgb(255 255 255 / 0.85);
+  }
 }
 
 html:has(.player) {

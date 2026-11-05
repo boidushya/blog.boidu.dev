@@ -135,7 +135,7 @@ export function Peek({ src, alt, width: wantedWidth, children }: Props) {
         ref={triggerRef}
         tabIndex={0}
         aria-describedby={open ? id : undefined}
-        className="rounded-sm underline decoration-dotted decoration-accent-400/60 decoration-[1.5px] underline-offset-4 transition-[text-decoration-color] duration-150 hover:decoration-accent-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-400"
+        className="rounded-sm underline decoration-dotted decoration-accent-400/60 decoration-[1.5px] underline-offset-4 transition-[text-decoration-color] duration-150 hover:decoration-accent-300"
         onPointerEnter={e => {
           if (e.pointerType === "touch") return;
           pointer.current = { x: e.clientX, y: e.clientY };
