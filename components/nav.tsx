@@ -64,12 +64,17 @@ const SHIFT_MS = 400;
 const HIDDEN = { width: 0, opacity: 0, filter: "blur(4px)", overflow: "hidden" };
 
 function Collapse({ children }: { children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
   return (
     <motion.div
       initial={HIDDEN}
-      animate={{ width: "auto", opacity: 1, filter: "blur(0px)", transitionEnd: { overflow: "visible" } }}
+      animate={{ width: "auto", opacity: 1, filter: "blur(0px)" }}
       exit={HIDDEN}
       transition={{ type: "spring", duration: 0.4, bounce: 0 }}
+      onAnimationComplete={definition => {
+        if (definition !== HIDDEN) ref.current?.style.setProperty("overflow", "visible");
+      }}
+      ref={ref}
       className="shrink-0"
     >
       {children}
