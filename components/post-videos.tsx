@@ -8,6 +8,7 @@ export function PostVideos() {
     const reduce = matchMedia("(prefers-reduced-motion: reduce)");
     const apply = () => {
       for (const video of Array.from(document.querySelectorAll<HTMLVideoElement>("video[data-autoplay]"))) {
+        video.autoplay = !reduce.matches;
         if (reduce.matches) video.pause();
         else
           video.play().catch((error: DOMException) => {

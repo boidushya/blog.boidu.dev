@@ -6,10 +6,12 @@ import Providers from "@/providers";
 import { SITE } from "@/utils/constants";
 import { caveat } from "@/utils/fonts";
 import { colors } from "@/utils/theme";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import NextTopLoader from "nextjs-toploader";
 import React from "react";
+
+export const viewport: Viewport = { viewportFit: "cover" };
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),

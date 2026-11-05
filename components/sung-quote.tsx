@@ -237,7 +237,7 @@ export function SungQuote({ lyrics, audio, children }: Props) {
         <blockquote ref={quoteRef} className={rendered ? "sr-only" : undefined}>
           {children}
         </blockquote>
-        <braccato-lyrics ref={viewRef} aria-hidden="true" />
+        <braccato-lyrics ref={viewRef} aria-hidden="true" inert />
         {closeSlot && createPortal(<Handwriting text="”" shown={sung} />, closeSlot)}
       </div>
       <div className="sung-quote-player">

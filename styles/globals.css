@@ -1170,9 +1170,12 @@ html:has(.player) {
 }
 
 .site:has(.player) {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   height: 100dvh;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .site:has(.player) > main {
@@ -1187,7 +1190,6 @@ html:has(.player) {
 
 @media (min-width: 861px) {
   .site:has(.player) {
-    box-sizing: border-box;
     max-width: 1360px;
     padding-inline: 56px;
   }

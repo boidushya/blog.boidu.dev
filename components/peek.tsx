@@ -95,7 +95,7 @@ export function Peek({ src, alt, width: wantedWidth, children }: Props) {
     if (video && !reduceMotion) {
       video.currentTime = 0;
       video.play().catch((error: DOMException) => {
-        if (error.name !== "AbortError") throw error;
+        if (error.name !== "AbortError" && error.name !== "NotAllowedError") throw error;
       });
     }
   }, [open, place, reduceMotion]);
