@@ -37,6 +37,8 @@ export function startSounds() {
   enabled = getSoundsEnabled();
   setEnabled(enabled);
   const wake = () => {
+    // A running AudioContext holds the output device open, so macOS hands AirPods over even when muted.
+    if (!enabled) return;
     unlock();
     wakeWalk();
   };
