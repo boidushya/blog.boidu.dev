@@ -14,7 +14,7 @@ const rehypeSourceBlocks: Plugin<[], Root> = function () {
       if (!BLOCK_TYPES.has(child.type) || start === undefined || end === undefined) return child;
       const block: Element = {
         type: "element",
-        tagName: "div",
+        tagName: "src-block",
         properties: { className: ["src-block"], dataSrcStart: start, dataSrcEnd: end, dataSrcBody: bodyLength },
         children: [child as ElementContent],
       };

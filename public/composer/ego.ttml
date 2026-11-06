@@ -1,0 +1,15 @@
+<tt xmlns="http://www.w3.org/ns/ttml" xmlns:ttm="http://www.w3.org/ns/ttml#metadata" xmlns:ttp="http://www.w3.org/ns/ttml#parameter" xmlns:itunes="http://music.apple.com/lyric-ttml-internal" xmlns:composer="https://composer.betterlyrics.org/ttml" ttp:timeBase="media" itunes:timing="Word" composer:timing="Word">
+  <head>
+    <metadata>
+      <ttm:title>Ratatouille 205. 영어 실력이 많이 느셨죠 Yes, I think I do</ttm:title>
+      <ttm:agent xml:id="v1" type="person">
+        <ttm:name>Lead</ttm:name>
+      </ttm:agent>
+    </metadata>
+  </head>
+  <body dur="0:19.300">
+    <div>
+      <p begin="0:00.330" end="0:18.636" itunes:key="L1" ttm:agent="v1"><span begin="0:00.330" end="0:00.600">After</span> <span begin="0:00.600" end="0:00.940">reading</span> <span begin="0:00.940" end="0:01.053">a</span> <span begin="0:01.053" end="0:01.260">lot</span> <span begin="0:01.260" end="0:01.440">of</span> <span begin="0:01.440" end="0:02.103">overheated</span> <span begin="0:02.225" end="0:02.680">puffery</span> <span begin="0:02.680" end="0:02.971">about</span> <span begin="0:02.971" end="0:03.180">your</span> <span begin="0:03.180" end="0:03.505">new</span> <span begin="0:03.610" end="0:04.050">cook,</span> <span begin="0:04.532" end="0:04.640">you</span> <span begin="0:04.640" end="0:04.880">know</span> <span begin="0:04.880" end="0:05.070">what</span> <span begin="0:05.070" end="0:05.360">I'm</span> <span begin="0:05.360" end="0:05.960">cra</span><span begin="0:05.960" end="0:06.479">ving?</span> <span begin="0:07.705" end="0:07.845">A</span> <span begin="0:07.845" end="0:08.500">little</span> <span begin="0:09.097" end="0:09.393">per</span><span begin="0:09.393" end="0:10.139">spec</span><span begin="0:10.139" end="0:10.758">tive.</span> <span begin="0:11.220" end="0:11.450">That's</span> <span begin="0:11.450" end="0:11.709">it.</span> <span begin="0:12.530" end="0:12.720">I'd</span> <span begin="0:12.720" end="0:12.930">like</span> <span begin="0:12.930" end="0:13.220">some</span> <span begin="0:13.220" end="0:13.778">fresh,</span> <span begin="0:13.946" end="0:14.316">clear,</span> <span begin="0:14.316" end="0:14.585">well</span> <span begin="0:14.585" end="0:15.177">seasoned</span> <span begin="0:15.277" end="0:15.433">per</span><span begin="0:15.433" end="0:15.833">spec</span><span begin="0:15.833" end="0:16.144">tive.</span> <span begin="0:16.394" end="0:16.526">Can</span> <span begin="0:16.526" end="0:16.664">you</span> <span begin="0:16.664" end="0:17.038">suggest</span> <span begin="0:17.038" end="0:17.178">a</span> <span begin="0:17.178" end="0:17.448">good</span> <span begin="0:17.448" end="0:17.838">wine</span> <span begin="0:17.838" end="0:17.966">to</span> <span begin="0:17.966" end="0:18.153">go</span> <span begin="0:18.153" end="0:18.354">with</span> <span begin="0:18.356" end="0:18.636">that?</span></p>
+    </div>
+  </body>
+</tt>

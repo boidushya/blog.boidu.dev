@@ -158,8 +158,38 @@ export const THEMES = {
   },
 };
 
+/** The homepage sits on a wash of each post's banner, so it uses plain greys whatever theme is picked. */
+export const NEUTRAL_COLORS: IThemeColors = {
+  accent50: "#f6f6f6",
+  accent100: "#e8e8e8",
+  accent200: "#d4d4d4",
+  accent300: "#b4b4b4",
+  accent400: "#8f8f8f",
+  accent500: "#737373",
+  accent600: "#5e5e5e",
+  accent700: "#4d4d4d",
+  accent800: "#404040",
+  accent850: "#363636",
+  accent900: "#0e0e0e",
+};
+
 export const LIGHT_THEMES = ["daybreak", "frost", "aurora", "dawn", "pastel"];
 
 export type TThemeName = keyof typeof THEMES;
 
 export const IS_DEV = process.env.NODE_ENV === "development";
+
+/** Kawarp settings for the page wash, shared by the live wash and the OG card frames. */
+export const WASH_KAWARP = { blurPasses: 8, saturation: 1.4, warpIntensity: 0.9 };
+
+/** The colour under the page wash and its dimming layer. */
+export const WASH_BASE = "oklch(0.1 0.01 270)";
+
+export const SITE = {
+  url: process.env.NEXT_PUBLIC_BASE_URL || "https://blog.boidu.dev",
+  host: "blog.boidu.dev",
+  name: "Boidu's Blog",
+  description: "A blog where I write about my thoughts and experiences.",
+  author: "Boidushya",
+  twitter: "@boidushya",
+};

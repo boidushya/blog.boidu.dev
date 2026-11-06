@@ -1,0 +1,98 @@
+diff --git a/node_modules/cuelume/.bun-tag-7966a6fd09613d30 b/.bun-tag-7966a6fd09613d30
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/node_modules/cuelume/.bun-tag-7a83a49e25336a79 b/.bun-tag-7a83a49e25336a79
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/node_modules/cuelume/.bun-tag-9db689e0b1551dd3 b/.bun-tag-9db689e0b1551dd3
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/dist/audio/engine.js b/dist/audio/engine.js
+index c1efb7d917aa0e4b42298a7fc22ea4ef5186405e..81c58a0d9049b57d289dd5c4d35aa58568d87fab 100644
+--- a/dist/audio/engine.js
++++ b/dist/audio/engine.js
+@@ -14,6 +14,8 @@ const WALK_GAP_MS = 1000;
+ let sharedContext = null;
+ let sharedBus = null;
+ const voices = new Map();
++/** The latest play waiting for the context to start; earlier ones would all start at once and add up. */
++let waiting = null;
+ let enabled = true;
+ let globalVolume = 1;
+ let activeTheme = "default";
+@@ -35,8 +37,17 @@ export function setEnabled(value) {
+         return;
+     held.clear();
+     voices.clear();
++    waiting = null;
+     if (sharedContext && sharedBus)
+         silence(sharedContext, sharedBus);
++    // A running context keeps the output device open, which makes macOS hand AirPods to this Mac.
++    // unlock() resumes it when sound comes back on.
++    const context = sharedContext;
++    if (context?.state === "running")
++        setTimeout(() => {
++            if (!enabled && context.state === "running")
++                void context.suspend().catch(() => false);
++        }, 50);
+ }
+ /**
+  * Switches the material of future playback. Sounds already playing finish as
+@@ -76,6 +87,14 @@ export function unlock() {
+     }
+ }
+ function getAudioContext() {
++    // A closed context never plays again; Safari can leave one behind after the screen locks,
++    // and only a fresh one brings sound back without a reload.
++    if (sharedContext?.state === "closed") {
++        sharedContext = null;
++        sharedBus = null;
++        voices.clear();
++        waiting = null;
++    }
+     if (sharedContext)
+         return sharedContext;
+     if (typeof window === "undefined")
+@@ -172,10 +191,19 @@ export function playInContext(sound, options, interaction, part = "both", gestur
+         renderRecipe(context, getBus, voices, name, played, part);
+     }
+     else {
++        // Every play still asks to resume (inside its own gesture), but only the latest one sounds when
++        // the context starts: each waiting play would otherwise start at the same instant and add up.
++        // A release joins its own waiting press into the whole cue; it never replaces another cue.
++        if (part !== "release" || !waiting)
++            waiting = { played, part, render: (as) => renderRecipe(context, getBus, voices, name, played, as) };
++        else if (waiting.played === played && waiting.part === "press")
++            waiting.part = "both";
+         try {
+             void context.resume().then(() => {
+-                if (enabled && context.state === "running")
+-                    renderRecipe(context, getBus, voices, name, played, part);
++                const next = waiting;
++                waiting = null;
++                if (next && enabled && context.state === "running")
++                    next.render(next.part);
+             }, () => { });
+         }
+         catch {
+diff --git a/dist/audio/render.js b/dist/audio/render.js
+index 7b82d07e841ad7944a799caac2cdcf306f501626..01c569e6c9719120bd4d6943617c84301c946122 100644
+--- a/dist/audio/render.js
++++ b/dist/audio/render.js
+@@ -119,12 +119,15 @@ export function layersFor({ recipe, emphasis, shape, step }, part) {
+         return { ...bent, offset: (bent.offset ?? 0) + delay };
+     }));
+ }
++const PLAYBACK_LEAD = 0.01;
+ export function renderRecipe(context, getBus, voices, sound, played, part) {
+     const { recipe, volume } = played;
+     const layers = layersFor(played, part);
+     if (layers.length === 0)
+         return;
+-    const now = context.currentTime;
++    // Every play starts a little ahead of the clock: a cold renderer can let a source scheduled
++    // for "now" slip past, and a short cue then plays nothing at all.
++    const now = context.currentTime + PLAYBACK_LEAD;
+     const bus = getBus();
+     const { output, room } = bus;
+     const master = context.createGain();

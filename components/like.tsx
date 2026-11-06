@@ -123,7 +123,7 @@ export default function Like({ postId }: { postId: string }) {
       <AnimatePresence>{signModalOpen && <Sign id={postId} />}</AnimatePresence>
       <motion.div
         ref={scope}
-        className={`relative border rounded-full bg-accent-900/50 border-accent-600/50 backdrop-blur hover:bg-accent-850/50 shadow-deep transition-[opacity,transform] ${likeCount === null ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"}`}
+        className={`like-pill relative border rounded-full bg-accent-900/50 border-accent-600/50 backdrop-blur hover:bg-accent-850/50 shadow-deep ${likeCount === null ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"}`}
       >
         <button
           onClick={handleClick}

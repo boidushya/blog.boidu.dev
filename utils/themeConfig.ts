@@ -14,9 +14,10 @@ const hexToRgb = (hex: string | `#${string}`) => {
   return `${r} ${g} ${b}`;
 };
 
-export const getThemeVariables = (themeName: TThemeName): Record<ColorVariable, string> => {
-  const theme = THEMES[themeName];
-  return Object.entries(theme).reduce(
+export const getThemeVariables = (themeName: TThemeName) => getPaletteVariables(THEMES[themeName]);
+
+export const getPaletteVariables = (palette: ThemeColors): Record<ColorVariable, string> => {
+  return Object.entries(palette).reduce(
     (acc, [key, value]) => {
       const kebabKey = key.replace(/(accent)([0-9])/g, "$1-$2").toLowerCase();
       acc[`--color-${kebabKey}` as ColorVariable] = hexToRgb(value);

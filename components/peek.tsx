@@ -34,6 +34,7 @@ export function Peek({ src, alt, width: wantedWidth, children }: Props) {
   const [mounted, setMounted] = useState(false);
   const [near, setNear] = useState(false);
   const [open, setOpen] = useState(false);
+  const tapped = useRef(false);
   const [below, setBelow] = useState(false);
 
   const [ratio, setRatio] = useState(16 / 9);
@@ -94,7 +95,7 @@ export function Peek({ src, alt, width: wantedWidth, children }: Props) {
     if (video && !reduceMotion) {
       video.currentTime = 0;
       video.play().catch((error: DOMException) => {
-        if (error.name !== "AbortError") throw error;
+        if (error.name !== "AbortError" && error.name !== "NotAllowedError") throw error;
       });
     }
   }, [open, place, reduceMotion]);
@@ -134,7 +135,7 @@ export function Peek({ src, alt, width: wantedWidth, children }: Props) {
         ref={triggerRef}
         tabIndex={0}
         aria-describedby={open ? id : undefined}
-        className="rounded-sm underline decoration-dotted decoration-accent-400/60 decoration-[1.5px] underline-offset-4 transition-[text-decoration-color] duration-150 hover:decoration-accent-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-400"
+        className="rounded-sm underline decoration-dotted decoration-accent-400/60 decoration-[1.5px] underline-offset-4 transition-[text-decoration-color] duration-150 hover:decoration-accent-300"
         onPointerEnter={e => {
           if (e.pointerType === "touch") return;
           pointer.current = { x: e.clientX, y: e.clientY };
@@ -146,8 +147,12 @@ export function Peek({ src, alt, width: wantedWidth, children }: Props) {
           place(false);
         }}
         onPointerLeave={e => e.pointerType !== "touch" && hide(CLOSE_DELAY)}
+        onPointerDown={e => {
+          tapped.current = e.pointerType === "touch";
+        }}
         onClick={e => {
-          if ((e.nativeEvent as PointerEvent).pointerType !== "touch") return;
+          // Safari before 18 sends click as a plain MouseEvent, so the press decides whether it was a tap.
+          if (!tapped.current) return;
           pointer.current = { x: e.clientX, y: e.clientY };
           open ? hide() : show();
         }}

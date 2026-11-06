@@ -4,14 +4,17 @@ import { GreetingAvatar } from "@/components/greeting-avatar";
 import InlineEditor from "@/components/inline-editor";
 import Like from "@/components/like";
 import { PostVideos } from "@/components/post-videos";
+import { ReadingTracker } from "@/components/reading-tracker";
 import Sign from "@/components/sign";
 import SignGallery from "@/components/sign-gallery";
 /* eslint-disable @next/next/no-img-element */
 import { getAllPosts, getPostById, isHiddenDraft, rehypePlugins, remarkPlugins } from "@/lib/blogs";
 import { mdxComponents } from "@/lib/mdx-components";
+import { videoSize } from "@/lib/video-size";
 import { FadeInImage } from "@/utils/components";
-import { IS_DEV } from "@/utils/constants";
+import { IS_DEV, SITE } from "@/utils/constants";
 import { getAuthorsData, isYouTubeLink, truncate } from "@/utils/functions";
+import type { Metadata } from "next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -57,7 +60,7 @@ export default async function Post({ params }: { params: Promise<{ id: string }>
             </span>
           )}
           <h1 className="enter !mt-2 !mb-0 sm:!mt-6 sm:!mb-2 text-center">{title}</h1>
-          <div className="enter [--i:1] flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
+          <div className="enter [--i:1] relative z-10 flex items-center justify-center w-full py-3 border-y blog__meta border-accent-800/50">
             <div className="flex mr-3 sm:mr-4 -space-x-2 rtl:space-x-reverse shrink-0">
               <GreetingAvatar />
               {authors.map(item => (
@@ -137,6 +140,7 @@ export default async function Post({ params }: { params: Promise<{ id: string }>
         )}
       </article>
       <ArticleExtra id={id} />
+      <ReadingTracker id={id} />
       {IS_DEV && <InlineEditor id={id} />}
     </>
   );
@@ -150,36 +154,36 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const { title, description, banner, cover } = await getPostById(id);
-  const image = cover ?? banner;
-
-  const processedDescription = truncate(description, 160);
+  const post = await getPostById(id);
+  if (isHiddenDraft(post)) notFound();
+  const { title, publishedAt, authors, labels, video } = post;
+  const description = truncate(post.description, 160);
 
   return {
     title,
-    description: processedDescription,
+    description,
+    alternates: { canonical: `/${post.id}` },
     openGraph: {
       title,
-      description: processedDescription,
-      url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://blog.boidu.dev"}/${id}`,
-      siteName: "blog.boidu.dev",
-      images: [
-        {
-          url: image,
-          width: 1200,
-          height: 675,
-          alt: title,
-        },
-      ],
+      description,
+      url: `/${post.id}`,
+      siteName: SITE.host,
       type: "article",
+      publishedTime: publishedAt,
+      authors: [SITE.author, ...authors.map(author => author.name)],
+      tags: labels,
+      ...(video && {
+        videos: [{ url: new URL(video, SITE.url).href, type: "video/mp4", ...(await videoSize(video)) }],
+      }),
     },
     twitter: {
       card: "summary_large_image",
+      site: SITE.twitter,
+      creator: SITE.twitter,
       title,
-      description: processedDescription,
-      images: [image],
+      description,
     },
   };
 }
