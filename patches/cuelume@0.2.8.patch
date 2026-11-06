@@ -1,8 +1,14 @@
+diff --git a/node_modules/cuelume/.bun-tag-7966a6fd09613d30 b/.bun-tag-7966a6fd09613d30
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/node_modules/cuelume/.bun-tag-7a83a49e25336a79 b/.bun-tag-7a83a49e25336a79
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
 diff --git a/node_modules/cuelume/.bun-tag-9db689e0b1551dd3 b/.bun-tag-9db689e0b1551dd3
 new file mode 100644
 index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
 diff --git a/dist/audio/engine.js b/dist/audio/engine.js
-index c1efb7d917aa0e4b42298a7fc22ea4ef5186405e..0656ac3981e6526267f980626bc6194aa0c68836 100644
+index c1efb7d917aa0e4b42298a7fc22ea4ef5186405e..81c58a0d9049b57d289dd5c4d35aa58568d87fab 100644
 --- a/dist/audio/engine.js
 +++ b/dist/audio/engine.js
 @@ -14,6 +14,8 @@ const WALK_GAP_MS = 1000;
@@ -14,15 +20,25 @@ index c1efb7d917aa0e4b42298a7fc22ea4ef5186405e..0656ac3981e6526267f980626bc6194a
  let enabled = true;
  let globalVolume = 1;
  let activeTheme = "default";
-@@ -35,6 +37,7 @@ export function setEnabled(value) {
+@@ -35,8 +37,17 @@ export function setEnabled(value) {
          return;
      held.clear();
      voices.clear();
 +    waiting = null;
      if (sharedContext && sharedBus)
          silence(sharedContext, sharedBus);
++    // A running context keeps the output device open, which makes macOS hand AirPods to this Mac.
++    // unlock() resumes it when sound comes back on.
++    const context = sharedContext;
++    if (context?.state === "running")
++        setTimeout(() => {
++            if (!enabled && context.state === "running")
++                void context.suspend().catch(() => false);
++        }, 50);
  }
-@@ -76,6 +79,14 @@ export function unlock() {
+ /**
+  * Switches the material of future playback. Sounds already playing finish as
+@@ -76,6 +87,14 @@ export function unlock() {
      }
  }
  function getAudioContext() {
@@ -37,7 +53,7 @@ index c1efb7d917aa0e4b42298a7fc22ea4ef5186405e..0656ac3981e6526267f980626bc6194a
      if (sharedContext)
          return sharedContext;
      if (typeof window === "undefined")
-@@ -172,10 +183,19 @@ export function playInContext(sound, options, interaction, part = "both", gestur
+@@ -172,10 +191,19 @@ export function playInContext(sound, options, interaction, part = "both", gestur
          renderRecipe(context, getBus, voices, name, played, part);
      }
      else {

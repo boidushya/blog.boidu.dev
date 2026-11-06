@@ -25,7 +25,10 @@ export function setSoundsEnabled(on: boolean) {
   }
   // Let the switch-off cue ring out before muting, so turning sounds off is still heard once.
   play("toggle", { theme: "bubble", direction: "back" });
-  muteTimer = setTimeout(() => setEnabled(false), MUTE_TAIL_MS);
+  muteTimer = setTimeout(() => {
+    setEnabled(false);
+    if (walkContext?.state === "running") walkContext.suspend();
+  }, MUTE_TAIL_MS);
 }
 
 /**
