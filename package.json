@@ -60,7 +60,8 @@
     "typescript": "^5.9.3",
     "unified": "^11.0.4",
     "unist-util-modify-children": "^4.0.0",
-    "use-resize-observer": "^9.1.0"
+    "use-resize-observer": "^9.1.0",
+    "wheel-gestures": "^2.3.0"
   },
   "devDependencies": {
     "@shikijs/rehype": "^1.10.0",

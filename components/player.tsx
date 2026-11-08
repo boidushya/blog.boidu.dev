@@ -21,6 +21,7 @@ import { createStore } from "@/utils/store";
 import { timeSweep } from "@/utils/sweep";
 import { getPaletteVariables } from "@/utils/themeConfig";
 import { isTypingTarget } from "@/utils/typing";
+import { wheelSteps } from "@/utils/wheel-gesture";
 import { play } from "cuelume";
 import Image from "next/image";
 import Link from "next/link";
@@ -41,7 +42,6 @@ const PLAYER_SWEEP = { pxPerMs: 0.6, minWordMs: 210, overlapMs: 75, startMs: 60 
 const PHONE_MAX_PX = 860;
 const HOVER_MS = 90;
 const WHEEL_STEP_PX = 90;
-const WHEEL_IDLE_MS = 220;
 const SWIPE_PX = 36;
 const FLICK_PX = 12;
 const FLICK_PX_PER_MS = 0.4;
@@ -453,27 +453,9 @@ export function Player({ posts }: { posts: BlogCard[] }) {
   }, [select]);
 
   useEffect(() => {
-    let bank = 0;
-    let idle: Timer;
-    const onWheel = (e: WheelEvent) => {
-      if (e.ctrlKey) return;
-      clearTimeout(idle);
-      idle = setTimeout(() => {
-        bank = 0;
-      }, WHEEL_IDLE_MS);
-      bank += e.deltaMode === 1 ? e.deltaY * 30 : e.deltaY;
-      let steps = 0;
-      while (Math.abs(bank) >= WHEEL_STEP_PX) {
-        steps += Math.sign(bank);
-        bank -= Math.sign(bank) * WHEEL_STEP_PX;
-      }
-      if (steps) select(indexRef.current + steps);
-    };
-    window.addEventListener("wheel", onWheel, { passive: true });
-    return () => {
-      window.removeEventListener("wheel", onWheel);
-      clearTimeout(idle);
-    };
+    const gestures = wheelSteps(WHEEL_STEP_PX, steps => select(indexRef.current + steps));
+    gestures.observe(window);
+    return () => gestures.disconnect();
   }, [select]);
 
   useEffect(
