@@ -1,38 +1,33 @@
 import "@/styles/globals.css";
 import Footer from "@/components/footer";
 import Navbar from "@/components/nav";
+import { PageWash } from "@/components/wash";
 import Providers from "@/providers";
+import { SITE } from "@/utils/constants";
+import { caveat } from "@/utils/fonts";
 import { colors } from "@/utils/theme";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import NextTopLoader from "nextjs-toploader";
 import React from "react";
 
-export const metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://blog.boidu.dev"),
-  title: "Boidu's Blog",
-  description: "A blog where I write about my thoughts and experiences.",
+export const viewport: Viewport = { viewportFit: "cover" };
+
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE.url),
+  title: SITE.name,
+  description: SITE.description,
   openGraph: {
-    title: "Boidu's Blog",
-    description: "A blog where I write about my thoughts and experiences.",
-    url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://blog.boidu.dev"}`,
-    siteName: "blog.boidu.dev",
-    images: [
-      {
-        url: "https://i.ibb.co/RbdLBCb/og.png",
-        width: 1200,
-        height: 628,
-        alt: "Boidu's Blog",
-      },
-    ],
+    title: SITE.name,
+    description: SITE.description,
+    siteName: SITE.host,
+    url: "/",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    site: "@boidushya",
-    creator: "@boidushya",
-    title: "Boidu's Blog",
-    description: "A blog where I write about my thoughts and experiences.",
-    images: ["https://i.ibb.co/RbdLBCb/og.png"],
+    site: SITE.twitter,
+    creator: SITE.twitter,
   },
 };
 
@@ -52,10 +47,11 @@ export default function RootLayout({
           data-website-id="de3af0e1-5059-4da8-82ff-0129a817a658"
         ></script>
       </head>
-      <body>
-        <div className="relative box-content max-w-3xl px-4 mx-auto sm:px-6">
+      <body className={caveat.variable}>
+        <div className="site relative box-content max-w-3xl px-4 mx-auto sm:px-6">
           <Providers>
             <NextTopLoader color={topLoaderColor} />
+            <PageWash />
             <Navbar />
             <main>{children}</main>
             <Footer />

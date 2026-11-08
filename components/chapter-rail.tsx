@@ -1,7 +1,17 @@
 "use client";
 
+import { boidoodleNova } from "@/utils/fonts";
+import { clamp01 } from "@/utils/math";
 import { endJump, startJump } from "@/utils/reveal";
-import { motion, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useSpring } from "motion/react";
+import {
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "motion/react";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -24,7 +34,7 @@ function scrollToChapter(el: HTMLElement, behavior: ScrollBehavior, attempts = 3
   );
 }
 
-type ChapterEntry = { id: string; n: string; title: string; el: HTMLElement };
+type ChapterEntry = { id: string; n: string; title: string; el: HTMLElement; tint?: string };
 
 export function ChapterRail({ children }: { children: React.ReactNode }) {
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -36,6 +46,10 @@ export function ChapterRail({ children }: { children: React.ReactNode }) {
   const progress = useMotionValue(0);
   const smoothProgress = useSpring(progress, { stiffness: 420, damping: 42, mass: 0.6 });
   const { scrollY } = useScroll();
+  const fillClip = useTransform(
+    reduceMotion ? progress : smoothProgress,
+    p => `inset(0 0 ${(1 - p) * 100}% 0 round 3px)`
+  );
 
   useEffect(() => {
     const els = Array.from(bodyRef.current?.querySelectorAll<HTMLElement>("[data-chapter]") ?? []);
@@ -49,6 +63,8 @@ export function ChapterRail({ children }: { children: React.ReactNode }) {
             n: el.dataset.chapter ?? "",
             title: heading.dataset.title ?? heading.textContent ?? "",
             el,
+            // An unnumbered chapter (a foreword) takes its writer's byline colour as its marker.
+            tint: el.closest(".foreword")?.querySelector<HTMLElement>(".byline-avatar")?.style.background,
           },
         ];
       })
@@ -69,17 +85,46 @@ export function ChapterRail({ children }: { children: React.ReactNode }) {
     setActive(current);
     if (current < 0) return progress.set(0);
 
-    const items = Array.from(list.children) as HTMLElement[];
-    const anchor = (i: number) => items[i].offsetTop + items[i].offsetHeight / 2;
+    const markers = Array.from(list.querySelectorAll<HTMLElement>("[data-marker]"));
+    const anchor = (i: number) => markers[i].offsetTop + markers[i].offsetHeight;
     const from = anchor(current);
-    const to = current + 1 < items.length ? anchor(current + 1) : list.offsetHeight;
+    const to = current + 1 < markers.length ? anchor(current + 1) : list.offsetHeight;
     const chapterEnd = tops[current + 1] ?? bodyRect.bottom;
-    const within = Math.min(1, Math.max(0, (readingLine - tops[current]) / (chapterEnd - tops[current])));
+    const within = clamp01((readingLine - tops[current]) / (chapterEnd - tops[current]));
     progress.set((from + within * (to - from)) / list.offsetHeight);
   }, [chapters, progress]);
 
   useEffect(update, [update]);
   useMotionValueEvent(scrollY, "change", update);
+
+  const entries = (lit: boolean) =>
+    chapters.map((chapter, i) => (
+      <li key={chapter.id}>
+        <a
+          href={`#${chapter.id}`}
+          aria-current={!lit && i === active ? "location" : undefined}
+          data-cuelume-navigate={lit ? undefined : true}
+          data-cuelume-emphasis={lit ? undefined : "subtle"}
+          onClick={event => {
+            event.preventDefault();
+            history.replaceState(null, "", `#${chapter.id}`);
+            scrollToChapter(chapter.el, reduceMotion ? "auto" : "smooth");
+          }}
+          className={`flex items-baseline gap-3 py-2 text-sm leading-snug transition-colors ${
+            i === active ? "text-accent-50" : "text-fg-subtle hover:text-fg-muted"
+          }`}
+        >
+          <span data-marker className={chapter.n ? "chapter-marker" : "chapter-marker self-start items-center h-[1lh]"}>
+            {chapter.n ? (
+              <span className={`chapter-digit ${boidoodleNova.className}`}>{chapter.n}</span>
+            ) : (
+              <span className="w-1.5 h-1.5 rounded-full bg-fg-faint" style={{ background: chapter.tint }} />
+            )}
+          </span>
+          {chapter.title}
+        </a>
+      </li>
+    ));
 
   return (
     <div ref={bodyRef}>
@@ -93,37 +138,14 @@ export function ChapterRail({ children }: { children: React.ReactNode }) {
               initial={false}
               animate={visible ? { opacity: 1, x: 0 } : { opacity: 0, x: reduceMotion ? 0 : -8 }}
               transition={{ type: "spring", duration: 0.3, bounce: 0 }}
-              className="relative"
+              className="chapter-rail"
             >
-              <span aria-hidden="true" className="absolute inset-y-0 left-0 w-px bg-accent-800" />
-              <motion.span
-                aria-hidden="true"
-                className="absolute inset-y-0 left-0 w-px origin-top bg-accent-400"
-                style={{ scaleY: reduceMotion ? progress : smoothProgress }}
-              />
-              <ol ref={listRef}>
-                {chapters.map((chapter, i) => (
-                  <li key={chapter.id}>
-                    <a
-                      href={`#${chapter.id}`}
-                      aria-current={i === active ? "location" : undefined}
-                      data-cuelume-navigate
-                      data-cuelume-emphasis="subtle"
-                      onClick={event => {
-                        event.preventDefault();
-                        history.replaceState(null, "", `#${chapter.id}`);
-                        scrollToChapter(chapter.el, reduceMotion ? "auto" : "smooth");
-                      }}
-                      className={`flex gap-3 py-2 pl-5 text-sm leading-snug transition-colors ${
-                        i === active ? "text-accent-50" : "text-fg-subtle hover:text-fg-muted"
-                      }`}
-                    >
-                      <span className="tabular-nums text-fg-faint">{chapter.n}</span>
-                      {chapter.title}
-                    </a>
-                  </li>
-                ))}
-              </ol>
+              <span aria-hidden="true" className="chapter-track" />
+              <motion.span aria-hidden="true" className="chapter-track chapter-fill" style={{ clipPath: fillClip }} />
+              <ol ref={listRef}>{entries(false)}</ol>
+              <motion.ol aria-hidden="true" inert className="chapter-lit" style={{ clipPath: fillClip }}>
+                {entries(true)}
+              </motion.ol>
             </motion.nav>
           </div>,
           document.body

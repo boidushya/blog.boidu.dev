@@ -21,7 +21,7 @@ const SoundToggle = () => {
           setSoundsEnabled(!on);
           setOn(!on);
         }}
-        className="sound-toggle relative grid p-2 -mx-2 rounded-md place-items-center pressable text-accent-400 hover:text-accent-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-400 after:absolute after:inset-x-0 after:-inset-y-1 after:content-['']"
+        className="sound-toggle relative grid p-2 -mx-2 rounded-md place-items-center pressable text-accent-400 hover:text-accent-300 after:absolute after:inset-x-0 after:-inset-y-1 after:content-['']"
       >
         <svg
           viewBox="0 0 24 24"

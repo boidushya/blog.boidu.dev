@@ -32,7 +32,15 @@ const MoonIcon = () => (
 );
 
 const ThemeSwitcher = () => {
-  const { theme, setTheme } = useTheme();
+  const { theme, switchTheme } = useTheme();
+  const trigger = React.useRef<HTMLButtonElement>(null);
+  const choose = (next: string) => {
+    const box = trigger.current?.getBoundingClientRect();
+    switchTheme(
+      next as TThemeName,
+      box ? { x: box.left + box.width / 2, y: box.top + box.height / 2 } : { x: 0, y: 0 }
+    );
+  };
   const themes = getAllThemes();
 
   const isCurrentThemeLight = LIGHT_THEMES.includes(theme);
@@ -45,7 +53,8 @@ const ThemeSwitcher = () => {
     <DropdownMenu modal={false} onOpenChange={open => open && play("open", { emphasis: "subtle" })}>
       <DropdownMenuTrigger asChild>
         <button
-          className="flex items-center gap-2 px-2 py-2 -mx-2 capitalize rounded-md pressable text-accent-400 hover:text-accent-300 data-[state=open]:text-accent-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-400"
+          ref={trigger}
+          className="flex items-center gap-2 px-2 py-2 -mx-2 capitalize rounded-md pressable text-accent-400 hover:text-accent-300 data-[state=open]:text-accent-200"
           aria-label={`Theme: ${theme}`}
         >
           <span className="pt-[1.5px]">{theme}</span>
@@ -67,7 +76,7 @@ const ThemeSwitcher = () => {
       </DropdownMenuTrigger>
       <DropdownMenuPortal>
         <DropdownMenuContent
-          className="p-2 border rounded-lg shadow min-w-[10rem] bg-accent-900 border-accent-800/50 radix-dropdown__content"
+          className="z-50 p-2 border rounded-lg shadow min-w-[10rem] bg-accent-900 border-accent-800/50 radix-dropdown__content"
           sideOffset={10}
           align="end"
           onPointerDown={() => {
@@ -89,13 +98,7 @@ const ThemeSwitcher = () => {
             <MoonIcon />
           </DropdownMenuLabel>
 
-          <DropdownMenuRadioGroup
-            value={theme}
-            onValueChange={t => {
-              setTheme(t as TThemeName);
-            }}
-            className="flex flex-col gap-1 text-accent-300"
-          >
+          <DropdownMenuRadioGroup value={theme} onValueChange={choose} className="flex flex-col gap-1 text-accent-300">
             {darkThemes.map(t => (
               <DropdownMenuRadioItem
                 key={t}
@@ -120,13 +123,7 @@ const ThemeSwitcher = () => {
             Light
             <SunIcon />
           </DropdownMenuLabel>
-          <DropdownMenuRadioGroup
-            value={theme}
-            onValueChange={t => {
-              setTheme(t as TThemeName);
-            }}
-            className="flex flex-col gap-1 text-accent-300"
-          >
+          <DropdownMenuRadioGroup value={theme} onValueChange={choose} className="flex flex-col gap-1 text-accent-300">
             {lightThemes.map(t => (
               <DropdownMenuRadioItem
                 key={t}

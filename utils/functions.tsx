@@ -22,7 +22,9 @@ export function truncate(str: string, num: number) {
   if (str.length <= num) {
     return str;
   }
-  return str.slice(0, num) + "...";
+  const cut = str.slice(0, num);
+  const space = cut.lastIndexOf(" ");
+  return `${(space > 0 ? cut.slice(0, space) : cut).replace(/[\s,.;:!?-]+$/, "")}…`;
 }
 
 export function getAuthorData(id: string) {

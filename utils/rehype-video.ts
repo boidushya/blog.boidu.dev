@@ -25,6 +25,7 @@ const rehypeVideo: Plugin<[], Root> = function () {
         type: "element",
         tagName: "video",
         properties: {
+          autoplay: true,
           dataAutoplay: true,
           loop: true,
           muted: true,

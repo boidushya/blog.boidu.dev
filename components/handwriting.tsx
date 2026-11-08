@@ -1,8 +1,8 @@
 "use client";
 
-import { handwriting } from "@/utils/fonts";
+import { boidoodleNova, caveat } from "@/utils/fonts";
 import { motion, useReducedMotion } from "motion/react";
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { createContext, useContext, useLayoutEffect, useRef, useState } from "react";
 
 const SECONDS_PER_PX = 0.003;
 const LINE_PAUSE = 0.12;
@@ -32,6 +32,13 @@ function timeWords(words: HTMLElement[], delay: number): WordTiming[] {
   return timings;
 }
 
+const Hand = createContext(boidoodleNova.className);
+
+/** Writes every `Handwriting` inside it in a guest's hand (Caveat), for a guest's own words; boidoodle nova is the author's. */
+export function GuestHand({ children }: { children: React.ReactNode }) {
+  return <Hand value={caveat.className}>{children}</Hand>;
+}
+
 /**
  * Text that writes itself in like a pen. Pass `shown` to drive it directly, or leave it out to
  * follow the "hidden" and "shown" variants of a motion parent.
@@ -41,26 +48,28 @@ export function Handwriting({
   delay = 0,
   shown,
   className = "",
-  onTimed,
+  inkEndOn,
 }: {
   text: string;
   delay?: number;
   shown?: boolean;
   className?: string;
-  onTimed?: (endSeconds: number) => void;
+  inkEndOn?: React.RefObject<HTMLElement | null>;
 }) {
   const reduceMotion = useReducedMotion();
+  const hand = useContext(Hand);
   const words = text.split(" ");
   const wordRefs = useRef<HTMLSpanElement[]>([]);
   const [timings, setTimings] = useState<WordTiming[]>([]);
-  const onTimedRef = useRef(onTimed);
-  onTimedRef.current = onTimed;
+  const inkEndRef = useRef(inkEndOn);
+  inkEndRef.current = inkEndOn;
 
   useLayoutEffect(() => {
     const measure = () => {
       const next = timeWords(wordRefs.current.slice(0, words.length), delay);
       setTimings(next);
-      onTimedRef.current?.(Math.max(delay, ...next.map(t => t.delay + t.duration)));
+      const end = Math.max(delay, ...next.map(t => t.delay + t.duration));
+      inkEndRef.current?.current?.style.setProperty("--ink-end", `${Math.round(end * 1000)}ms`);
     };
     measure();
     const observer = new ResizeObserver(measure);
@@ -74,7 +83,7 @@ export function Handwriting({
   };
 
   return (
-    <motion.span className={`${handwriting.className} ${className}`} {...driven}>
+    <motion.span className={`${hand} select-none ${className}`} {...driven}>
       {words.map((word, i) => (
         <React.Fragment key={`${word}-${i}`}>
           {i > 0 && " "}

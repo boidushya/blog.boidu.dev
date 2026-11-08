@@ -16,8 +16,6 @@ interface SignProps extends ComponentProps<"div"> {
   id: string;
 }
 
-const EMPTY_SVG = `<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="react-sketch-canvas" style="width: 100%; height: 100%;" viewBox="0 0 250 100" width="250" height="100"><g id="react-sketch-canvas__eraser-stroke-group" display="none"><rect id="react-sketch-canvas__mask-background" x="0" y="0" width="100%" height="100%" fill="white"></rect></g><defs></defs><g id="react-sketch-canvas__canvas-background-group"><rect id="react-sketch-canvas__canvas-background" x="0" y="0" width="100%" height="100%" fill="transparent"></rect></g><g id="react-sketch-canvas__stroke-group-0" mask="url(#react-sketch-canvas__eraser-mask-0)"></g></svg>`;
-
 const Sign = ({ id }: SignProps) => {
   const { setOpen } = useSign();
 
@@ -67,12 +65,14 @@ const Sign = ({ id }: SignProps) => {
   };
 
   const handleAddSignature = async () => {
-    const signature = await canvasRef.current?.exportSvg();
-
-    const isBlank = signature === EMPTY_SVG;
-
-    if (signature && !isBlank) {
-      mutation.mutate({ svgText: signature, id });
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    try {
+      if (!(await canvas.exportPaths()).length) return;
+      mutation.mutate({ svgText: await canvas.exportSvg(), id });
+    } catch (error) {
+      console.error("Error exporting sign", error);
+      play("error");
     }
   };
 
@@ -96,7 +96,7 @@ const Sign = ({ id }: SignProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 8, scale: 0.9, filter: "blur(4px)" }}
-      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
       exit={{ opacity: 0, y: 4, scale: 0.96, filter: "blur(4px)", transition: { duration: 0.15, ease: "easeOut" } }}
       transition={{ type: "spring", duration: 0.35, bounce: 0 }}
       style={{ originX: 1, originY: 1 }}
